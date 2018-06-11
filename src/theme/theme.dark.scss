@@ -1,0 +1,34 @@
+.dark-theme {
+  $primary : #1f2936;
+  $secondary: #fa2264;
+  $dark: #2c3956;
+  $dark-light: #3c4b6e;
+
+  ion-content {
+    background-color: #1f2936;
+    color: #fff;
+  }
+
+  .toolbar-title {
+    color: #fff;
+  }
+
+  .header .toolbar-background {
+    background-color: $dark;
+  }
+
+  .toolbar-md-primary .bar-button-default-md {
+    color: $secondary !important;
+  }
+
+  .mat-table {
+    background: linear-gradient(to right,$dark,$dark-light);
+    .mat-header-cell, .crypto-rank, .crypto-symbol {
+      color :#929cb4
+    }
+    .mat-cell{
+      color:white;
+    }
+  }
+
+}

@@ -1,17 +1,64 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Home</ion-title>
+  <ion-navbar color="primary">
+    <ion-buttons left>
+        <button ion-button icon-only>
+          <ion-icon name="chatboxes"></ion-icon>
+        </button>
+    </ion-buttons>
+    <ion-title text-center>All coins</ion-title>
+    <ion-buttons right>
+      <button ion-button icon-only><ion-icon name="notifications"></ion-icon></button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <mat-table  #table [dataSource]="dataSource" matSort>
+     <!-- Rank Column -->
+    <ng-container matColumnDef="rank">
+        <mat-header-cell fxFlex="20px" *matHeaderCellDef mat-sort-header> # </mat-header-cell>
+        <mat-cell  fxFlex="20px" *matCellDef="let element">
+          <span class="crypto-rank ">#{{element.rank}} </span>
+      </mat-cell>
+    </ng-container>
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+          <ion-row align-items-center>
+              <ion-col>
+                  <img [src]="element.image" alt="">
+              </ion-col>
+              <ion-col >
+                  <h5>{{element.name}}</h5>
+                  <span class="crypto-symbol">BTC</span>
+              </ion-col>
+            </ion-row>
+      </mat-cell>
+    </ng-container>
+
+    <!-- price Column -->
+    <ng-container matColumnDef="price">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Price $ </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.price}} </mat-cell>
+    </ng-container>
+
+    <!-- hour Column -->
+    <ng-container matColumnDef="hour">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> hour </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+          <ng-container  *ngIf="element.hour >= 0"; then positive else negative >
+          </ng-container>
+          <ng-container #positive>
+            <span class="nbr-positive">+ {{element.hour}} %</span>
+          </ng-container>
+          <ng-container #negative>
+              <span class="nbr-negative">- {{element.hour}} %</span>
+            </ng-container>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
 </ion-content>
