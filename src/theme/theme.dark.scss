@@ -1,13 +1,29 @@
 .dark-theme {
-  $primary : #1f2936;
-  $secondary: #fa2264;
-  $dark: #2c3956;
-  $dark-light: #3c4b6e;
+  $primary : #201f27;
+  $secondary: #e87f85;
+  $dark: #201f27;
+  $dark-light: #2a2934;
+  $title-text-color : #e6e6e6;
 
   ion-content {
-    background-color: #1f2936;
+    background-color: $primary;
     color: #fff;
   }
+
+  .ion-page {
+    .header::after, .tabbar::before {
+      background: linear-gradient(to right, #ac5d70, #ab689b);
+      bottom: 0;
+      height: 2px;
+    }
+  }
+  .tabbar a[aria-selected=true],
+  .tab-button[aria-selected="true"] .tab-button-icon,
+  .toolbar .back-button,
+  .mat-sort-header-arrow {
+      color:$secondary !important;
+  }
+
 
   .toolbar-title {
     color: #fff;
@@ -31,4 +47,20 @@
     }
   }
 
+  .tabbar.show-tabbar{
+    background-color: $dark;
+  }
+
+  //coin page
+  .coin-info-title, .coin-info-name{
+    text-align: left;
+    color:$title-text-color;
+    padding: 0 15px;
+  }
+  .coin-info-card{
+    background: $dark-light;
+    .card-content *{
+      color:white;
+    }
+  }
 }

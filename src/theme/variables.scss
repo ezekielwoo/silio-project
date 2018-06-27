@@ -41,6 +41,18 @@ $colors: (
   dark:       #222
 );
 
+@font-face {
+  font-family: 'gilroy';
+  src:url('../assets/fonts/gilroy-light-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+ }
+ $font-family-base: "gilroy";
+ $font-family-ios-base: $font-family-base;
+ $font-family-md-base: $font-family-base;
+ $font-family-wp-base: $font-family-base;
+
+
 @import "ionic.theme.default";
 
 

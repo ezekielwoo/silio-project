@@ -2,18 +2,19 @@
   <ion-navbar color="primary">
     <ion-buttons left>
         <button ion-button icon-only>
-          <ion-icon name="chatboxes"></ion-icon>
+          <ion-icon name="ios-stats"></ion-icon>
         </button>
     </ion-buttons>
     <ion-title text-center>All coins</ion-title>
     <ion-buttons right>
-      <button ion-button icon-only><ion-icon name="notifications"></ion-icon></button>
+      <button ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
+      <button ion-button icon-only><ion-icon name="ios-bookmark-outline"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <mat-table  #table [dataSource]="dataSource" matSort>
+<ion-content>
+  <mat-table  #table [dataSource]="dataSource" matSort matSortActive="rank" matSortDirection="asc" matSortDisableClear  (matSortChange)="sortData($event)">
      <!-- Rank Column -->
     <ng-container matColumnDef="rank">
         <mat-header-cell fxFlex="20px" *matHeaderCellDef mat-sort-header> # </mat-header-cell>
@@ -26,39 +27,61 @@
       <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
       <mat-cell *matCellDef="let element">
           <ion-row align-items-center>
-              <ion-col>
                   <img [src]="element.image" alt="">
-              </ion-col>
-              <ion-col >
-                  <h5>{{element.name}}</h5>
+                  <div class="currency-desc">
+                    <h5>{{element.name}}</h5>
                   <span class="crypto-symbol">BTC</span>
-              </ion-col>
+                  </div>
             </ion-row>
       </mat-cell>
     </ng-container>
-
     <!-- price Column -->
     <ng-container matColumnDef="price">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Price $ </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.price}} </mat-cell>
+      <mat-cell *matCellDef="let element"> ${{element.price}} </mat-cell>
     </ng-container>
 
-    <!-- hour Column -->
-    <ng-container matColumnDef="hour">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> hour </mat-header-cell>
+    <!-- 1 hour Column -->
+    <ng-container  matColumnDef="hour">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 1H </mat-header-cell>
       <mat-cell *matCellDef="let element">
-          <ng-container  *ngIf="element.hour >= 0"; then positive else negative >
-          </ng-container>
-          <ng-container #positive>
+          <div *ngIf="element.hour >= 0 then positive else negative" ></div>
+          <ng-template #positive>
             <span class="nbr-positive">+ {{element.hour}} %</span>
-          </ng-container>
-          <ng-container #negative>
-              <span class="nbr-negative">- {{element.hour}} %</span>
-            </ng-container>
+          </ng-template>
+          <ng-template #negative>
+              <span class="nbr-negative">{{element.hour}} %</span>
+          </ng-template>
+      </mat-cell>
+    </ng-container>
+    <!-- 24 hour Column -->
+    <ng-container matColumnDef="hour24">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 24H </mat-header-cell>
+      <mat-cell *matCellDef="let element" >
+          <div *ngIf="element.hour >= 0 then positive else negative" ></div>
+          <ng-template #positive>
+            <span class="nbr-positive">+ {{element.hour}} %</span>
+          </ng-template>
+          <ng-template #negative>
+              <span class="nbr-negative">{{element.hour}} %</span>
+          </ng-template>
+      </mat-cell>
+    </ng-container>
+    <!-- 7 DAYS Column -->
+    <ng-container matColumnDef="days">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 7D </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+          <div *ngIf="element.hour >= 0 then positive else negative" ></div>
+          <ng-template #positive>
+            <span class="nbr-positive">+ {{element.hour}} %</span>
+          </ng-template>
+          <ng-template #negative>
+              <span class="nbr-negative">{{element.hour}} %</span>
+          </ng-template>
       </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openCrypto(row)"></mat-row>
   </mat-table>
 </ion-content>

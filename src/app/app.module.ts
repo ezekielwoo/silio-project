@@ -1,3 +1,5 @@
+import { GlobalMarketPage } from './../pages/global-market/global-market';
+import { CryptoDetailsPage } from './../pages/crypto-details/crypto-details';
 import { AngularMaterialModule } from './angular-material.module';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -5,6 +7,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CdkTableModule} from '@angular/cdk/table';
+import { HttpModule } from '@angular/http'
 
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
@@ -20,14 +23,17 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    CryptoDetailsPage,
+    GlobalMarketPage
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
     CdkTableModule,
-    IonicModule.forRoot(MyApp)
+    HttpModule,
+    IonicModule.forRoot(MyApp, { mode: 'md'})
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -35,7 +41,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    CryptoDetailsPage,
+    GlobalMarketPage
   ],
   providers: [
     StatusBar,

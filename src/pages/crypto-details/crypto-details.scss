@@ -1,0 +1,29 @@
+page-crypto-details {
+  .content {
+    text-align: center;
+  }
+  .crypto-price{
+    font-size: 45px;
+  }
+  .crypto-info span{
+    display: block;
+  }
+  .coin-info-card  {
+    padding: 15px 0;
+    *{
+      font-size: 17px;
+    }
+    .row {
+      margin : 10px 0;
+    }
+  }
+  .toolbar-title{
+    text-align: center;
+    .crypto_symbol{
+      display: block;
+      font-size: 11px;
+      font-weight: normal;
+    }
+  }
+
+}
