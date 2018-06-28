@@ -3,17 +3,36 @@ page-home {
   .mat-table * {
     font-size: 10px !important;
   }
+
+  .mat-header-row{
+    position: fixed;
+    margin-bottom: 50px;
+    z-index: 9;
+    background: #201f27;
+    top: 55px;
+    width: 100%;
+  }
+
+  .mat-table{
+    padding-top: 60px;
+  }
+
   .mat-row{
     padding: 0 10px;
   }
+
   .mat-column-rank {
     flex: 0 0 auto;
   }
-  .mat-column-price {
+
+  .mat-column-price, .mat-column-market_cap{
     flex: 2;
     font-weight: bold;
     font-size: 11px !important;
   }
+
+
+
   .mat-column-name{
     flex: 2;
     .row {

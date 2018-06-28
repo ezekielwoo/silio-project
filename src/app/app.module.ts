@@ -8,6 +8,7 @@ import { MyApp } from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CdkTableModule} from '@angular/cdk/table';
 import { HttpModule } from '@angular/http'
+import { HttpClientModule } from '@angular/common/http';
 
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
@@ -16,6 +17,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { ApiProvider } from '../providers/api/api';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     AngularMaterialModule,
     CdkTableModule,
     HttpModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp, { mode: 'md'})
   ],
   bootstrap: [IonicApp],
@@ -48,7 +51,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ApiProvider
   ]
 })
 export class AppModule {}
