@@ -1,16 +1,32 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>BitCoin <span class="crypto_symbol">BTC</span></ion-title>
+    <ion-title> {{coin.name}} <span class="crypto_symbol"> {{coin.symbol | uppercase}} </span></ion-title>
   </ion-navbar>
 </ion-header>
 
 
 <ion-content>
-  <h1 class="crypto-price">1500 $</h1>
-  <p class="crypto-info">
-    <span>+444 $ in last month</span>
-    <span>0.2558$</span>
-  </p>
+  <h1 class="crypto-price">{{coin.market_data.current_price.usd | number : '1.2-2'}} $</h1>
+  <div class="crypto-info">
+    <ion-row>
+       <ion-col text-right>
+          <span class="coin-red">24h Low </span>
+       </ion-col>
+       <ion-col col-1 > / </ion-col>
+       <ion-col text-left>
+          <span class="coin-green">24h High</span>
+       </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col text-right>
+            {{coin.market_data.high_24h.usd | number : '1.2-2' }} (USD)
+        </ion-col>
+        <ion-col col-1> - </ion-col>
+        <ion-col text-left>
+            {{coin.market_data.low_24h.usd | number : '1.2-2' }}  (USD)
+        </ion-col>
+     </ion-row>
+  </div>
   <div id="chart-container" style="display: block;"></div>
   <div class="coin-info">
     <h1 class="coin-info-title">
@@ -21,32 +37,66 @@
           <ion-col col-6 text-left>
             <span class="coin-info-name">Rank</span>
           </ion-col>
-          <ion-col col-6>
-            #2
+          <ion-col col-6 class="coin-info-detail">
+           # {{coin.coingecko_rank}}
           </ion-col>
         </ion-row>
         <ion-row>
             <ion-col col-6 text-left>
               <span class="coin-info-name">Market cap</span>
             </ion-col>
-            <ion-col col-6>
-              $8787855.55
+            <ion-col col-6 class="coin-info-detail">
+                {{coin.market_data.market_cap.usd | number : '1.2-2' }} (USD)
             </ion-col>
         </ion-row>
         <ion-row>
             <ion-col col-6 text-left>
-              <span class="coin-info-name">Volum (24h)</span>
+              <span class="coin-info-name">Total volume</span>
             </ion-col>
-            <ion-col col-6>
-              $8787855.55
+            <ion-col col-6 class="coin-info-detail">
+                {{coin.market_data.total_volume.usd | number : '1.2-2' }} (USD)
             </ion-col>
         </ion-row>
         <ion-row>
             <ion-col col-6 text-left>
-              <span class="coin-info-name">Volum (24h)</span>
+              <span class="coin-info-name">(24h)</span>
             </ion-col>
-            <ion-col col-6>
-              $8787855.55
+            <ion-col col-6 class="coin-info-detail">
+                <div *ngIf="coin.market_data.price_change_percentage_24h >= 0 then positive else negative" ></div>
+                <ng-template #positive>
+                  <span class="nbr-positive">+ {{coin.market_data.price_change_percentage_24h | number : '1.2-2' }} %</span>
+                </ng-template>
+                <ng-template #negative>
+                    <span class="nbr-negative">{{coin.market_data.price_change_percentage_24h | number : '1.2-2' }} %</span>
+                </ng-template>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col col-6 text-left>
+              <span class="coin-info-name">(7days)</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail">
+                <div *ngIf="coin.market_data.price_change_percentage_7d >= 0 then positive else negative" ></div>
+                <ng-template #positive>
+                  <span class="nbr-positive">+ {{coin.market_data.price_change_percentage_7d | number : '1.2-2' }} %</span>
+                </ng-template>
+                <ng-template #negative>
+                    <span class="nbr-negative">{{coin.market_data.price_change_percentage_7d | number : '1.2-2' }} %</span>
+                </ng-template>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col col-6 text-left>
+              <span class="coin-info-name">(24h)</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail">
+                <div *ngIf="coin.market_data.price_change_percentage_24h >= 0 then positive else negative" ></div>
+                <ng-template #positive>
+                  <span class="nbr-positive">+ {{coin.market_data.price_change_percentage_24h | number : '1.2-2' }} %</span>
+                </ng-template>
+                <ng-template #negative>
+                    <span class="nbr-negative">{{coin.market_data.price_change_percentage_24h | number : '1.2-2' }} %</span>
+                </ng-template>
             </ion-col>
         </ion-row>
     </div>

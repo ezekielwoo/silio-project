@@ -1,3 +1,4 @@
+import { ApiProvider } from './../../providers/api/api';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import * as HighCharts from 'HighCharts';
@@ -11,10 +12,21 @@ import 'rxjs/add/operator/map';
 })
 export class CryptoDetailsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public http: Http) {
+   //coin info
+   coin : any = {};
+  constructor(public navCtrl: NavController,
+             public navParams: NavParams,
+             public api:ApiProvider,
+             public http: Http) {
+      this.coin = this.navParams.get('coin');
+      this.api.getCoinInfo(this.coin.id).then((data)=>{
+        this.coin = data;
+      })
   }
 
   ionViewDidLoad() {
+
+    console.log(this.coin.name);
     var url = 'https://cdn.rawgit.com/highcharts/highcharts/057b672172ccc6c08fe7dbb27fc17ebca3f5b770/samples/data/usdeur.json';
 
     this.http.get(url).map(res => res.json()).subscribe(data => {

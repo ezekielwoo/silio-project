@@ -52,8 +52,8 @@ export class HomePage {
       this.dataSource.sort = this.sort;
     })
   }
-  openCrypto(row) {
-    this.navCtrl.push(CryptoDetailsPage);
+  openCrypto(data) {
+    this.navCtrl.push(CryptoDetailsPage,{coin : data});
   }
 
   loadMoreCoins(infiniteScroll){

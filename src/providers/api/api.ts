@@ -26,5 +26,16 @@ export class ApiProvider {
     })
   }
 
+  getCoinInfo(id) {
+    // https://api.coingecko.com/api/v3/coins/bitcoin
+    return new Promise((resolve, reject)=> {
+      this.http.get(`${default_api_url}/coins/${id}`).subscribe((data)=>{
+        resolve(data);
+        }, (e) => {
+          reject(e);
+        })
+    })
+  }
+
 
 }

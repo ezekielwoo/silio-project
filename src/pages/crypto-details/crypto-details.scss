@@ -5,8 +5,18 @@ page-crypto-details {
   .crypto-price{
     font-size: 45px;
   }
+  .coin-green{
+    color:#58e858;
+  }
+  .coin-red{
+    color:#f54747;
+  }
   .crypto-info span{
     display: block;
+  }
+  .coin-info-detail {
+    font-size: 14px;
+    color: #aca9bb;
   }
   .coin-info-card  {
     padding: 15px 0;

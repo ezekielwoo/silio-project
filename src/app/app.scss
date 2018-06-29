@@ -14,3 +14,12 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.nbr-positive {
+  color: #58e858;
+  font-weight: bold;
+}
+.nbr-negative {
+  color: #f54747;
+  font-weight: bold;
+}
