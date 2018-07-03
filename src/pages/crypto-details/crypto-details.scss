@@ -36,4 +36,28 @@ page-crypto-details {
     }
   }
 
+
+  .coin_community_data{
+    ion-icon{
+      font-size: 2em;
+    }
+    .coin_data_name{
+      display: block;
+      font-size: 14px;
+      color: #bd8aa8;
+    }
+  }
+
+  .mat-button-toggle-group {
+    *{
+      color: white;
+      font-size: 12px;
+    }
+    border: solid 2px #ac607a;
+    .mat-button-toggle-checked {
+      background-color: #ac607a;
+      color:white;
+    }
+  }
+
 }

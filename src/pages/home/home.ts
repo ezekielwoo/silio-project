@@ -22,9 +22,10 @@ export class HomePage {
   displayedColumns = [ 'rank', 'name' , 'current_price', 'price_change_24' , 'price_change_7d' , 'price_change_14d', 'price_change_30d'];
   dataSource =  new MatTableDataSource(this.COIN_DATA);
 
-  //current Page pagination
-  currentPage = 1;
+
+  currentPage = 1;//current Page pagination
   maxPageNumber = 40 // maximum page pagination, currently, they are 500 coins on the market
+  loading = true; // display loading when fetching data from API
 
   constructor(public navCtrl: NavController, public api : ApiProvider) {
 
@@ -50,6 +51,7 @@ export class HomePage {
         }
       };
       this.dataSource.sort = this.sort;
+      this.loading = false;
     })
   }
   openCrypto(data) {
@@ -65,29 +67,3 @@ export class HomePage {
 
   }
 }
-
-export interface Element {
-  name: string;
-  rank: number;
-  image : string;
-  price: number;
-  hour: number;
-}
-
-const ELEMENT_DATA: Element[] = [
-  {rank: 1, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Hydrogen', price: 1.0079, hour: 20},
-  {rank: 2, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Helium', price: 4.0026, hour: 50},
-  {rank: 3, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Lithium', price: 6.941, hour: -20},
-  {rank: 4, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Beryllium', price: 9.0122, hour: -10},
-  {rank: 5, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Boron', price: 10.811, hour: 100},
-  {rank: 6, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Carbon', price: 12.0107, hour: 30},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-  {rank: 7, image : 'assets/imgs/Bitcoin-icon.png' ,name: 'Nitrogen', price: 14.0067, hour: -1},
-
-];
