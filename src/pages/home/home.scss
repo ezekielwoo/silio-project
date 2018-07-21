@@ -4,6 +4,12 @@ page-home {
     font-size: 10px !important;
   }
 
+  .cp-search {
+    position: fixed;
+    top: 110px;
+    padding-bottom: 20px;
+  }
+
   .mat-header-row{
     position: fixed;
     margin-bottom: 50px;
@@ -54,33 +60,4 @@ page-home {
     from {left: 0px;}
     to {right: 0;}
 }
-  .loading_bar{
-    padding: 0 20px;
-    *{
-      height: 12px;
-      opacity: 0.5;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(to right, #ac5d70, #ab689b);
-      .load-bar {
-        background: white;
-        content: '';
-        position: absolute;
-        width: 30px;
-        opacity: 0.2;
-        height: 100%;
-        left: 100%;
-        animation: mymove 5s infinite;
-      }
-    }
-    h2 {
-      width: 100%;
-    }
-    h3 {
-      width: 60%;
-    }
-    h4{
-      width: 25%;
-    }
-  }
 }

@@ -34,7 +34,15 @@
     <mat-button-toggle value="365">1 year</mat-button-toggle>
     <mat-button-toggle value="max">max</mat-button-toggle>
   </mat-button-toggle-group>
-  <div id="chart-container" style="display: block;"></div>
+<!-- if chart API is loading display loading_bars -->
+ <ng-container *ngIf="loadingChart">
+    <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+      <h2><div class="load-bar"></div> </h2>
+      <h3><div class="load-bar"></div></h3>
+      <h4><div class="load-bar"></div></h4>
+    </div>
+</ng-container>
+  <div [hidden]="loadingChart" id="chart-container" style="display: block;"></div>
   <div class="coin-info">
     <h1 class="coin-info-title">
       Coin info

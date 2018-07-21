@@ -15,6 +15,10 @@
 
 <ion-content>
   <ng-container *ngIf="!loading">
+     <ion-item class="cp-search">
+       <ion-label stacked>Search</ion-label>
+       <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" ></ion-input>
+     </ion-item>
       <mat-table  #table [dataSource]="dataSource" matSort>
         <!-- Rank Column -->
       <ng-container matColumnDef="rank">

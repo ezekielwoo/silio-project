@@ -52,8 +52,16 @@ export class HomePage {
       };
       this.dataSource.sort = this.sort;
       this.loading = false;
-    })
+    });
   }
+
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+
   openCrypto(data) {
     this.navCtrl.push(CryptoDetailsPage,{coin : data});
   }

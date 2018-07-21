@@ -18,7 +18,8 @@ export class CryptoDetailsPage {
     coin : any = {};
    //Chart filter
    chart_filter: any = 24 // Days
-
+   //Loading Chart
+   loadingChart = true;
 
   constructor(public navCtrl: NavController,
              public navParams: NavParams,
@@ -37,6 +38,7 @@ export class CryptoDetailsPage {
 
   fetchCoinChartData(){
       this.api.getCoinChart(this.coin.id , 'usd' , this.chart_filter).then((data)=>{
+        this.loadingChart = false;
         this.initChart(data);
     })
   }

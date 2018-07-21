@@ -7,7 +7,16 @@
 
   ion-content {
     background-color: $primary;
-    color: #fff;
+    color: #ffffff;
+  }
+
+  .cp-search{
+    background: #201f27;
+    color:white;
+    border-bottom: solid 2px #ad6076;
+    .label {
+      color :#ad6076
+    }
   }
 
   .ion-page {
