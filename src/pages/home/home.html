@@ -7,7 +7,7 @@
     </ion-buttons>
     <ion-title text-center>All coins</ion-title>
     <ion-buttons right>
-      <button ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
+      <button (click)="search = !search" ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
       <button ion-button icon-only><ion-icon name="ios-bookmark-outline"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
@@ -15,11 +15,11 @@
 
 <ion-content>
   <ng-container *ngIf="!loading">
-     <ion-item class="cp-search">
+     <ion-item class="cp-search" *ngIf="search">
        <ion-label stacked>Search</ion-label>
        <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" ></ion-input>
      </ion-item>
-      <mat-table  #table [dataSource]="dataSource" matSort>
+      <mat-table  #table [dataSource]="dataSource" matSort [class.marginTop]="search">
         <!-- Rank Column -->
       <ng-container matColumnDef="rank">
           <mat-header-cell fxFlex="20px" *matHeaderCellDef mat-sort-header> # </mat-header-cell>
@@ -93,9 +93,11 @@
             <div *ngIf="element.market_data.price_change_percentage_30d >= 0 then positive else negative" ></div>
             <ng-template #positive>
               <span class="nbr-positive">+ {{element.market_data.price_change_percentage_30d | number : '1.2-2' }} %</span>
+              <ion-icon *ngIf="element.is_favorite" name="ios-bookmark"></ion-icon>
             </ng-template>
             <ng-template #negative>
                 <span class="nbr-negative">{{element.market_data.price_change_percentage_30d | number : '1.2-2' }} %</span>
+                <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-bookmark"></ion-icon>
             </ng-template>
         </mat-cell>
       </ng-container>

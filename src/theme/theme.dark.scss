@@ -19,6 +19,14 @@
     }
   }
 
+  .btn-favorite {
+    background: #ac607a;
+  }
+  .coin-favorite{
+    color: $secondary;
+  }
+
+
   .ion-page {
     .header::after, .tabbar::before {
       background: linear-gradient(to right, #ac5d70, #ab689b);

@@ -5,7 +5,8 @@ import * as HighCharts from 'HighCharts';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import {darkChartTheme} from '../../theme/chart.dark';
-
+import { Storage } from '@ionic/storage';
+import { Events } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -20,13 +21,18 @@ export class CryptoDetailsPage {
    chart_filter: any = 24 // Days
    //Loading Chart
    loadingChart = true;
+   is_favorite; // is a favorite coin
 
   constructor(public navCtrl: NavController,
              public navParams: NavParams,
              public api:ApiProvider,
-             public http: Http) {
+             public http: Http,
+             private storage: Storage,
+             public events: Events) {
       //retreive coin ID
       this.coin = this.navParams.get('coin');
+      this.is_favorite = this.coin.is_favorite;
+
       //GET THE CURRENT COIN DATA
       this.api.getCoinInfo(this.coin.id).then((data)=>{
         this.coin = data;
@@ -46,6 +52,37 @@ export class CryptoDetailsPage {
   onFilterChange(value){
    this.chart_filter = value;
    this.fetchCoinChartData();
+  }
+
+  toggleFavorite(){
+      this.storage.get('favorites').then((val)=>{
+         let favorites = [];
+         //check if the coin is not favorite
+         //if it's not a favorite coin, add to localstorage
+         if(!this.is_favorite) {
+              //check if favorites exist
+              if(val) {
+                favorites = val;
+                if(favorites.indexOf(this.coin.id) == -1) {
+                    favorites.push(this.coin.id);
+                }
+              } else {
+                favorites.push(this.coin.id);
+              }
+              this.is_favorite = true;
+              this.storage.set('favorites',favorites);
+         } else {
+             favorites = val.filter((f)=>{
+               return f !== this.coin.id;
+             });
+             this.is_favorite = false;
+             this.storage.set('favorites',favorites);
+         }
+      })
+  }
+
+  ionViewDidLeave(){
+    this.events.publish('toggle_favorite',this.coin.id,this.is_favorite);
   }
 
   initChart(Data) {

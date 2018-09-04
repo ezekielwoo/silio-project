@@ -1,8 +1,10 @@
+import { Storage } from '@ionic/storage';
 import { ApiProvider } from './../../providers/api/api';
 import { CryptoDetailsPage } from './../crypto-details/crypto-details';
 import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import {MatTableDataSource, MatSort} from '@angular/material';
+import { Events } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -22,36 +24,58 @@ export class HomePage {
   displayedColumns = [ 'rank', 'name' , 'current_price', 'price_change_24' , 'price_change_7d' , 'price_change_14d', 'price_change_30d'];
   dataSource =  new MatTableDataSource(this.COIN_DATA);
 
+  search = false; //Search bar
 
   currentPage = 1;//current Page pagination
   maxPageNumber = 40 // maximum page pagination, currently, they are 500 coins on the market
   loading = true; // display loading when fetching data from API
 
-  constructor(public navCtrl: NavController, public api : ApiProvider) {
+
+  constructor(public navCtrl: NavController,
+              public api : ApiProvider,
+              private storage: Storage,
+              public events: Events) {
 
   }
+
 
   ngAfterViewInit() {
-    this.fetch_coins();
+    //fetch coins
+    this.fetch_coins().then(()=>{
+      this.checkFavorite();
+    });
   }
 
+  ionViewDidEnter(){
+    //subscribe to event when add new coin to favorite
+    this.events.subscribe('toggle_favorite',(coin_id,is_favorite)=>{
+      this.COIN_DATA.forEach((e)=>{
+           if(e.id == coin_id) {
+            e.is_favorite = is_favorite;
+           }
+        })
+    })
+  }
 
   fetch_coins(infiniteScroll?){
-    this.api.getAllCoins(this.currentPage, infiniteScroll).then((data)=>{
-      this.COIN_DATA = this.COIN_DATA.concat(data);
-      this.dataSource = new MatTableDataSource(this.COIN_DATA);
-      this.dataSource.sortingDataAccessor = (item, property) => {
-        switch(property) {
-          case 'current_price': return item.market_data.current_price.usd;
-          case 'price_change_24': return item.market_data.price_change_percentage_24h;
-          case 'price_change_7d': return item.market_data.price_change_percentage_7d;
-          case 'price_change_14d': return item.market_data.price_change_percentage_14d;
-          case 'price_change_30d': return item.market_data.price_change_percentage_30d;
-          default: return item[property];
-        }
-      };
-      this.dataSource.sort = this.sort;
-      this.loading = false;
+    return new Promise((resolve)=> {
+      this.api.getAllCoins(this.currentPage, infiniteScroll).then((data)=>{
+        this.COIN_DATA = this.COIN_DATA.concat(data);
+        this.dataSource = new MatTableDataSource(this.COIN_DATA);
+        this.dataSource.sortingDataAccessor = (item, property) => {
+          switch(property) {
+            case 'current_price': return item.market_data.current_price.usd;
+            case 'price_change_24': return item.market_data.price_change_percentage_24h;
+            case 'price_change_7d': return item.market_data.price_change_percentage_7d;
+            case 'price_change_14d': return item.market_data.price_change_percentage_14d;
+            case 'price_change_30d': return item.market_data.price_change_percentage_30d;
+            default: return item[property];
+          }
+        };
+        this.dataSource.sort = this.sort;
+        this.loading = false;
+        resolve(true);
+      });
     });
   }
 
@@ -64,6 +88,19 @@ export class HomePage {
 
   openCrypto(data) {
     this.navCtrl.push(CryptoDetailsPage,{coin : data});
+  }
+
+  checkFavorite(){
+    this.storage.get('favorites').then((val)=>{
+      let favorites = val;
+      if(favorites) {
+        this.COIN_DATA.forEach((e)=>{
+           if(favorites.indexOf(e.id) != -1) {
+            e.is_favorite = true;
+           }
+        })
+      }
+    })
   }
 
   loadMoreCoins(infiniteScroll){

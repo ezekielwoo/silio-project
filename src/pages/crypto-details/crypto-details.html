@@ -1,6 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title> {{coin.name}} <span class="crypto_symbol"> {{coin.symbol | uppercase}} </span></ion-title>
+    <button class="btn-favorite" [class.btn-favorite-set]="is_favorite" (click)="toggleFavorite()" ion-button icon-only><ion-icon name="ios-bookmark-outline"></ion-icon></button>
   </ion-navbar>
 </ion-header>
 

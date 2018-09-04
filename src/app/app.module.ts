@@ -9,6 +9,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CdkTableModule} from '@angular/cdk/table';
 import { HttpModule } from '@angular/http'
 import { HttpClientModule } from '@angular/common/http';
+import { IonicStorageModule } from '@ionic/storage';
+
 
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
@@ -36,7 +38,8 @@ import { ApiProvider } from '../providers/api/api';
     CdkTableModule,
     HttpModule,
     HttpClientModule,
-    IonicModule.forRoot(MyApp, { mode: 'md'})
+    IonicModule.forRoot(MyApp, { mode: 'md'}),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [

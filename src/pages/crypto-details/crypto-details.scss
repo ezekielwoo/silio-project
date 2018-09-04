@@ -1,4 +1,13 @@
 page-crypto-details {
+  .btn-favorite{
+    position: absolute;
+    top: 5px;
+    right: 10px;
+  }
+  .btn-favorite-set{
+    background: white !important;
+    color: #2e5433;
+  }
   .content {
     text-align: center;
   }
