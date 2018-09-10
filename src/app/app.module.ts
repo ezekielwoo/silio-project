@@ -22,6 +22,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { ApiProvider } from '../providers/api/api';
 import { FeaturesListPage } from '../pages/features-list/features-list';
 import { SettingProvider } from '../providers/setting/setting';
+import { ComponentsModule } from '../components/components.module';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { SettingProvider } from '../providers/setting/setting';
     HttpModule,
     HttpClientModule,
     IonicModule.forRoot(MyApp, { mode: 'md'}),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    ComponentsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

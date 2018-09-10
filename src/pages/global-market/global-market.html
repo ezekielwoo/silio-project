@@ -10,12 +10,40 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding-top>
+
+  <change-currency></change-currency>
+
   <div class="coin-card-pink" padding>
-    <h1>$246,26,244,255</h1>
+    <h1>{{total_market_cap | currency:currentCurrency}}</h1>
     <span>Total Market Capitalization</span>
+    <h1>{{total_volume | currency:currentCurrency}}</h1>
+      <span>Total Volume</span>
   </div>
-  <div id="chart-capitalization" style="display: block;"></div>
+
+  <div class="coin-card-pink" padding>
+      <h6>Cryptocurrencies</h6>
+      <ion-row justify-content-center>
+        <ion-col>
+            <h1>{{active_cryptocurrencies }}</h1>
+            <span>Active</span>
+        </ion-col>
+        <ion-col>
+            <h1>{{upcoming_icos }}</h1>
+            <span>Upcoming</span>
+        </ion-col>
+        <ion-col>
+            <h1>{{ongoing_icos }}</h1>
+            <span>Ongoing</span>
+        </ion-col>
+        <ion-col>
+            <h1>{{ended_icos }}</h1>
+            <span>Ended</span>
+        </ion-col>
+      </ion-row>
+  </div>
+  
+    <div id="chart-capitalization" style="display: block;"></div>
   <div class="con-card">
     <h1>Market Shares</h1>
     <div id="chart-market-shares" style="display: block;"></div>

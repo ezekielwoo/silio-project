@@ -48,8 +48,8 @@ export class ApiProvider {
 
   getGlobalMarket() {
     return new Promise((resolve, reject)=> {
-      this.http.get(`${default_api_url}/global`).subscribe((data)=>{
-        resolve(data);
+      this.http.get(`${default_api_url}/global`).subscribe((response: any)=>{
+        resolve(response.data);
         }, (e) => {
           reject(e);
         })

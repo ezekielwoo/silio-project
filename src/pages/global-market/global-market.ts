@@ -4,6 +4,9 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import * as HighCharts from 'HighCharts';
 import { ApiProvider } from '../../providers/api/api';
+import { SettingProvider } from '../../providers/setting/setting';
+import { globalChartTheme } from '../../theme/chart.dark';
+
 
 @IonicPage()
 @Component({
@@ -13,543 +16,102 @@ import { ApiProvider } from '../../providers/api/api';
 export class GlobalMarketPage {
 
 
+  currentCurrency = 'usd' //current currency settings, Defualt USD
   active_cryptocurrencies = null;
+  ongoing_icos = null;
+  upcoming_icos = null;
+  ended_icos = null;
+  total_volume = null;
+  total_market_cap = null;
+  market_cap_percentage = null;
   
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public http: Http,
-              public api : ApiProvider) {
+              public api : ApiProvider,
+              public settingsProvider : SettingProvider) {
   }
 
 
 
   fetch_globalMarket() {
-      this.api.getGlobalMarket().then((data)=> {
-          console.log(data);
-      });
+      this.currentCurrency = this.settingsProvider.settings.currency;
+      this.api.getGlobalMarket().then((data: any)=> {
+          this.active_cryptocurrencies = data.active_cryptocurrencies;
+          this.ongoing_icos = data.ongoing_icos;
+          this.upcoming_icos = data.upcoming_icos;
+          this.ended_icos = data.ended_icos;
+          this.total_market_cap = data.total_market_cap[this.currentCurrency.toLowerCase()];
+          this.total_volume = data.total_volume[this.currentCurrency.toLowerCase()];
+          this.market_cap_percentage = data.market_cap_percentage;
+          console.log(this.market_cap_percentage);
+          //initialize charts
+          this.initChart();
+        });
   }
 
 
   ionViewDidLoad() {
-      this.fetch_globalMarket();
-    var url = 'https://cdn.rawgit.com/HighCharts/HighCharts/057b672172ccc6c08fe7dbb27fc17ebca3f5b770/samples/data/usdeur.json';
-
-    this.http.get(url).map(res => res.json()).subscribe(data => {
-      HighCharts.theme = {
-        colors: ['#ac5d70', '#ab689b'],
-        chart: {
-            backgroundColor: {
-                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                stops: [
-                    [0, '#201f27']
-                ]
-            },
-            style: {
-                fontFamily: '\'Unica One\', sans-serif'
-            },
-            plotBorderColor: '#606063'
-        },
-        title: {
-            style: {
-                color: '#E0E0E3',
-                textTransform: 'uppercase',
-                fontSize: '20px'
-            }
-        },
-        subtitle: {
-            style: {
-                color: '#E0E0E3',
-                textTransform: 'uppercase'
-            }
-        },
-        xAxis: {
-            gridLineColor: '#707073',
-            labels: {
-                style: {
-                    color: '#E0E0E3'
-                }
-            },
-            lineColor: '#707073',
-            minorGridLineColor: '#505053',
-            tickColor: '#707073',
-            title: {
-                style: {
-                    color: '#A0A0A3'
-
-                }
-            }
-        },
-        yAxis: {
-            gridLineColor: '#707073',
-            labels: {
-                style: {
-                    color: '#E0E0E3'
-                }
-            },
-            lineColor: '#707073',
-            minorGridLineColor: '#505053',
-            tickColor: '#707073',
-            tickWidth: 1,
-            title: {
-                style: {
-                    color: '#A0A0A3'
-                }
-            }
-        },
-        tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            style: {
-                color: '#F0F0F0'
-            }
-        },
-        plotOptions: {
-            series: {
-                dataLabels: {
-                    color: '#B0B0B3'
-                },
-                marker: {
-                    lineColor: '#333'
-                }
-            },
-            boxplot: {
-                fillColor: '#505053'
-            },
-            candlestick: {
-                lineColor: 'white'
-            },
-            errorbar: {
-                color: 'white'
-            }
-        },
-        legend: {
-            itemStyle: {
-                color: '#E0E0E3'
-            },
-            itemHoverStyle: {
-                color: '#FFF'
-            },
-            itemHiddenStyle: {
-                color: '#606063'
-            }
-        },
-        credits: {
-          enabled: false
-        },
-        labels: {
-            style: {
-                color: '#707073'
-            }
-        },
-
-        drilldown: {
-            activeAxisLabelStyle: {
-                color: '#F0F0F3'
-            },
-            activeDataLabelStyle: {
-                color: '#F0F0F3'
-            }
-        },
-
-        navigation: {
-            buttonOptions: {
-                symbolStroke: '#DDDDDD',
-                theme: {
-                    fill: '#505053'
-                }
-            }
-        },
-
-        // scroll charts
-        rangeSelector: {
-            buttonTheme: {
-                fill: '#505053',
-                stroke: '#000000',
-                style: {
-                    color: '#CCC'
-                },
-                states: {
-                    hover: {
-                        fill: '#707073',
-                        stroke: '#000000',
-                        style: {
-                            color: 'white'
-                        }
-                    },
-                    select: {
-                        fill: '#000003',
-                        stroke: '#000000',
-                        style: {
-                            color: 'white'
-                        }
-                    }
-                }
-            },
-            inputBoxBorderColor: '#505053',
-            inputStyle: {
-                backgroundColor: '#333',
-                color: 'silver'
-            },
-            labelStyle: {
-                color: 'silver'
-            }
-        },
-
-        navigator: {
-            handles: {
-                backgroundColor: '#666',
-                borderColor: '#AAA'
-            },
-            outlineColor: '#CCC',
-            maskFill: 'rgba(255,255,255,0.1)',
-            series: {
-                color: '#7798BF',
-                lineColor: '#A6C7ED'
-            },
-            xAxis: {
-                gridLineColor: '#505053'
-            }
-        },
-
-        scrollbar: {
-            barBackgroundColor: '#808083',
-            barBorderColor: '#808083',
-            buttonArrowColor: '#CCC',
-            buttonBackgroundColor: '#606063',
-            buttonBorderColor: '#606063',
-            rifleColor: '#FFF',
-            trackBackgroundColor: '#404043',
-            trackBorderColor: '#404043'
-        },
-
-        // special colors for some of the
-        legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-        background2: '#505053',
-        dataLabelsColor: '#B0B0B3',
-        textColor: '#C0C0C0',
-        contrastTextColor: '#F0F0F3',
-        maskColor: 'rgba(255,255,255,0.3)'
-    };
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-capitalization', {
-        chart: {
-          zoomType: 'x'
-        },
-        title: {
-          text: 'USD to EUR exchange rate over time'
-        },
-        subtitle: {
-          text: document.ontouchstart === undefined ?
-              'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-        },
-        xAxis: {
-          type: 'datetime'
-        },
-        yAxis: {
-          title: {
-            text: 'Exchange rate'
-          }
-        },
-        legend: {
-          enabled: false
-        },
-        plotOptions: {
-          area: {
-            fillColor: {
-              linearGradient: {
-                x1: 0,
-                y1: 0,
-                x2: 0,
-                y2: 1
-              },
-              stops: [
-                [0, HighCharts.getOptions().colors[0]],
-                [1, HighCharts.Color(HighCharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-              ]
-            },
-            marker: {
-              radius: 2
-            },
-            lineWidth: 1,
-            states: {
-              hover: {
-                lineWidth: 1
-              }
-            },
-            threshold: null
-          }
-        },
-
-        series: [{
-          type: 'area',
-          name: 'USD to EUR',
-          data: data
-        }]
-      });
-    });
-
-
-    //TWO
-    HighCharts.theme = {
-      colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
-          '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
-      chart: {
-          backgroundColor: {
-              linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-              stops: [
-                [0, '#201f27']
-              ]
-          },
-          style: {
-              fontFamily: '\'Unica One\', sans-serif'
-          },
-          plotBorderColor: '#606063'
-      },
-      title: {
-          style: {
-              color: '#E0E0E3',
-              textTransform: 'uppercase',
-              fontSize: '20px'
-          }
-      },
-      subtitle: {
-          style: {
-              color: '#E0E0E3',
-              textTransform: 'uppercase'
-          }
-      },
-      xAxis: {
-          gridLineColor: '#707073',
-          labels: {
-              style: {
-                  color: '#E0E0E3'
-              }
-          },
-          lineColor: '#707073',
-          minorGridLineColor: '#505053',
-          tickColor: '#707073',
-          title: {
-              style: {
-                  color: '#A0A0A3'
-
-              }
-          }
-      },
-      yAxis: {
-          gridLineColor: '#707073',
-          labels: {
-              style: {
-                  color: '#E0E0E3'
-              }
-          },
-          lineColor: '#707073',
-          minorGridLineColor: '#505053',
-          tickColor: '#707073',
-          tickWidth: 1,
-          title: {
-              style: {
-                  color: '#A0A0A3'
-              }
-          }
-      },
-      tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          style: {
-              color: '#F0F0F0'
-          }
-      },
-      plotOptions: {
-          series: {
-              dataLabels: {
-                  color: '#B0B0B3'
-              },
-              marker: {
-                  lineColor: '#333'
-              }
-          },
-          boxplot: {
-              fillColor: '#505053'
-          },
-          candlestick: {
-              lineColor: 'white'
-          },
-          errorbar: {
-              color: 'white'
-          }
-      },
-      legend: {
-          itemStyle: {
-              color: '#E0E0E3'
-          },
-          itemHoverStyle: {
-              color: '#FFF'
-          },
-          itemHiddenStyle: {
-              color: '#606063'
-          }
-      },
-      credits: {
-          style: {
-              color: '#666'
-          }
-      },
-      labels: {
-          style: {
-              color: '#707073'
-          }
-      },
-
-      drilldown: {
-          activeAxisLabelStyle: {
-              color: '#F0F0F3'
-          },
-          activeDataLabelStyle: {
-              color: '#F0F0F3'
-          }
-      },
-
-      navigation: {
-          buttonOptions: {
-              symbolStroke: '#DDDDDD',
-              theme: {
-                  fill: '#505053'
-              }
-          }
-      },
-
-      // scroll charts
-      rangeSelector: {
-          buttonTheme: {
-              fill: '#505053',
-              stroke: '#000000',
-              style: {
-                  color: '#CCC'
-              },
-              states: {
-                  hover: {
-                      fill: '#707073',
-                      stroke: '#000000',
-                      style: {
-                          color: 'white'
-                      }
-                  },
-                  select: {
-                      fill: '#000003',
-                      stroke: '#000000',
-                      style: {
-                          color: 'white'
-                      }
-                  }
-              }
-          },
-          inputBoxBorderColor: '#505053',
-          inputStyle: {
-              backgroundColor: '#333',
-              color: 'silver'
-          },
-          labelStyle: {
-              color: 'silver'
-          }
-      },
-
-      navigator: {
-          handles: {
-              backgroundColor: '#666',
-              borderColor: '#AAA'
-          },
-          outlineColor: '#CCC',
-          maskFill: 'rgba(255,255,255,0.1)',
-          series: {
-              color: '#7798BF',
-              lineColor: '#A6C7ED'
-          },
-          xAxis: {
-              gridLineColor: '#505053'
-          }
-      },
-
-      scrollbar: {
-          barBackgroundColor: '#808083',
-          barBorderColor: '#808083',
-          buttonArrowColor: '#CCC',
-          buttonBackgroundColor: '#606063',
-          buttonBorderColor: '#606063',
-          rifleColor: '#FFF',
-          trackBackgroundColor: '#404043',
-          trackBorderColor: '#404043'
-      },
-
-      // special colors for some of the
-      legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-      background2: '#505053',
-      dataLabelsColor: '#B0B0B3',
-      textColor: '#C0C0C0',
-      contrastTextColor: '#F0F0F3',
-      maskColor: 'rgba(255,255,255,0.3)'
-  };
-
-  // Apply the theme
-  HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-market-shares', {
-      chart: {
-          plotBackgroundColor: null,
-          plotBorderWidth: null,
-          plotShadow: false,
-          type: 'pie'
-      },
-      title: {
-          text: 'Browser market shares in January, 2018'
-      },
-      tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-          pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-                  enabled: true,
-                  format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                  style: {
-                      color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
-                  }
-              }
-          }
-      },
-      series: [{
-          name: 'Brands',
-          colorByPoint: true,
-          data: [{
-              name: 'Chrome',
-              y: 61.41,
-              sliced: true,
-              selected: true
-          }, {
-              name: 'Internet Explorer',
-              y: 11.84
-          }, {
-              name: 'Firefox',
-              y: 10.85
-          }, {
-              name: 'Edge',
-              y: 4.67
-          }, {
-              name: 'Safari',
-              y: 4.18
-          }, {
-              name: 'Sogou Explorer',
-              y: 1.64
-          }, {
-              name: 'Opera',
-              y: 1.6
-          }, {
-              name: 'QQ',
-              y: 1.2
-          }, {
-              name: 'Other',
-              y: 2.61
-          }]
-      }]
-  });
+    this.fetch_globalMarket();
   }
 
+  initChart(){
+     
+    HighCharts.theme = globalChartTheme;
+
+    HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-market-shares', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        title:{
+            text:''
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [{
+                name: 'BTC',
+                y: this.market_cap_percentage.btc,
+                sliced: true,
+                selected: true
+            }, {
+                name: 'ETH',
+                y: this.market_cap_percentage.eth
+            }, {
+                name: 'BCH',
+                y: this.market_cap_percentage.bch
+            }, {
+                name: 'LTC',
+                y: this.market_cap_percentage.ltc
+            },
+            {
+                name: 'OTHERS',
+                y: 100 - Object.values(this.market_cap_percentage).reduce((a, b) => a + b) 
+            }]
+        }]
+    });
+  }
 }

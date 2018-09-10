@@ -5,7 +5,7 @@
           <ion-icon name="ios-stats" ></ion-icon>
         </button>
     </ion-buttons>
-    <ion-title text-center>All coins</ion-title>
+    <ion-title text-center>All coins   </ion-title>
     <ion-buttons right>
       <button (click)="search = !search" ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
       <button [navPush]="'FeaturesListPage'" ion-button icon-only><ion-icon name="ios-bookmark-outline"></ion-icon></button>
@@ -14,6 +14,7 @@
 </ion-header>
 
 <ion-content>
+ 
   <ng-container *ngIf="!loading">
      <ion-item class="cp-search" *ngIf="search">
        <ion-label stacked>Search</ion-label>

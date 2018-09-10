@@ -1,0 +1,20 @@
+change-currency {
+    .row{
+        align-items: center;
+        justify-content: center;
+    }
+    .currency-change {
+        color: aquamarine;
+        font-size: 12px;
+    }
+    span {
+        margin: 0 2px;
+    }
+    .current-currency {
+        font-size: 10px;
+    }
+    img {
+        width: 20px;
+        align-self: center;
+    }
+}

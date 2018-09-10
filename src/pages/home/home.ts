@@ -6,6 +6,7 @@ import { NavController } from 'ionic-angular';
 import {MatTableDataSource, MatSort} from '@angular/material';
 import { Events } from 'ionic-angular';
 import { FeaturesListPage } from '../features-list/features-list';
+import { SettingProvider } from '../../providers/setting/setting';
 
 
 @Component({
@@ -36,7 +37,8 @@ export class HomePage {
   constructor(public navCtrl: NavController,
               public api : ApiProvider,
               private storage: Storage,
-              public events: Events) {
+              public events: Events,
+              public settingsProvider : SettingProvider) {
 
   }
 
