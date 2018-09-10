@@ -64,16 +64,16 @@ export class CryptoDetailsPage {
               if(val) {
                 favorites = val;
                 if(favorites.indexOf(this.coin.id) == -1) {
-                    favorites.push(this.coin.id);
+                    favorites.push(this.coin);
                 }
               } else {
-                favorites.push(this.coin.id);
+                favorites.push(this.coin);
               }
               this.is_favorite = true;
               this.storage.set('favorites',favorites);
          } else {
              favorites = val.filter((f)=>{
-               return f !== this.coin.id;
+               return f.id !== this.coin.id;
              });
              this.is_favorite = false;
              this.storage.set('favorites',favorites);

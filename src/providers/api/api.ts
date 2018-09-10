@@ -46,5 +46,14 @@ export class ApiProvider {
     })
   }
 
+  getGlobalMarket() {
+    return new Promise((resolve, reject)=> {
+      this.http.get(`${default_api_url}/global`).subscribe((data)=>{
+        resolve(data);
+        }, (e) => {
+          reject(e);
+        })
+    })
+  }
 
 }

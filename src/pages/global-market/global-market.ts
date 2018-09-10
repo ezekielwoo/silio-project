@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import * as HighCharts from 'HighCharts';
+import { ApiProvider } from '../../providers/api/api';
 
 @IonicPage()
 @Component({
@@ -11,10 +12,26 @@ import * as HighCharts from 'HighCharts';
 })
 export class GlobalMarketPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public http: Http) {
+
+  active_cryptocurrencies = null;
+  
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              public http: Http,
+              public api : ApiProvider) {
   }
 
+
+
+  fetch_globalMarket() {
+      this.api.getGlobalMarket().then((data)=> {
+          console.log(data);
+      });
+  }
+
+
   ionViewDidLoad() {
+      this.fetch_globalMarket();
     var url = 'https://cdn.rawgit.com/HighCharts/HighCharts/057b672172ccc6c08fe7dbb27fc17ebca3f5b770/samples/data/usdeur.json';
 
     this.http.get(url).map(res => res.json()).subscribe(data => {

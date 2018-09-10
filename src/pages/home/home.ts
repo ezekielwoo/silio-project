@@ -5,6 +5,8 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import {MatTableDataSource, MatSort} from '@angular/material';
 import { Events } from 'ionic-angular';
+import { FeaturesListPage } from '../features-list/features-list';
+
 
 @Component({
   selector: 'page-home',
@@ -43,7 +45,9 @@ export class HomePage {
     //fetch coins
     this.fetch_coins().then(()=>{
       this.checkFavorite();
+      this.dataSource.sort = this.sort;
     });
+
   }
 
   ionViewDidEnter(){
@@ -72,7 +76,6 @@ export class HomePage {
             default: return item[property];
           }
         };
-        this.dataSource.sort = this.sort;
         this.loading = false;
         resolve(true);
       });
@@ -95,7 +98,7 @@ export class HomePage {
       let favorites = val;
       if(favorites) {
         this.COIN_DATA.forEach((e)=>{
-           if(favorites.indexOf(e.id) != -1) {
+           if(favorites.map((e) => e.id).indexOf(e.id) != -1) {
             e.is_favorite = true;
            }
         })
@@ -103,6 +106,9 @@ export class HomePage {
     })
   }
 
+  pushPage() {
+    this.navCtrl.push(FeaturesListPage);
+  }
   loadMoreCoins(infiniteScroll){
     this.currentPage++;
     this.fetch_coins(infiniteScroll);

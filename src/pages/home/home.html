@@ -1,14 +1,14 @@
 <ion-header>
   <ion-navbar color="primary">
     <ion-buttons left>
-        <button ion-button icon-only>
-          <ion-icon name="ios-stats"></ion-icon>
+        <button [navPush]="'GlobalMarketPage'" ion-button icon-only>
+          <ion-icon name="ios-stats" ></ion-icon>
         </button>
     </ion-buttons>
     <ion-title text-center>All coins</ion-title>
     <ion-buttons right>
       <button (click)="search = !search" ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
-      <button ion-button icon-only><ion-icon name="ios-bookmark-outline"></ion-icon></button>
+      <button [navPush]="'FeaturesListPage'" ion-button icon-only><ion-icon name="ios-bookmark-outline"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>

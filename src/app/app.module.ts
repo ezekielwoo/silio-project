@@ -20,6 +20,8 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { ApiProvider } from '../providers/api/api';
+import { FeaturesListPage } from '../pages/features-list/features-list';
+import { SettingProvider } from '../providers/setting/setting';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,6 @@ import { ApiProvider } from '../providers/api/api';
     HomePage,
     TabsPage,
     CryptoDetailsPage,
-    GlobalMarketPage
   ],
   imports: [
     BrowserModule,
@@ -49,13 +50,13 @@ import { ApiProvider } from '../providers/api/api';
     HomePage,
     TabsPage,
     CryptoDetailsPage,
-    GlobalMarketPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    ApiProvider
+    ApiProvider,
+    SettingProvider
   ]
 })
 export class AppModule {}
