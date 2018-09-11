@@ -109,7 +109,7 @@ export class GlobalMarketPage {
             },
             {
                 name: 'OTHERS',
-                y: 100 - Object.values(this.market_cap_percentage).reduce((a, b) => a + b) 
+                y: 100 - (<any>Object).values(this.market_cap_percentage).reduce((a, b) => a + b) 
             }]
         }]
     });

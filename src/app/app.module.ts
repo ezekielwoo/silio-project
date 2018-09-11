@@ -32,6 +32,8 @@ import { ComponentsModule } from '../components/components.module';
     HomePage,
     TabsPage,
     CryptoDetailsPage,
+    GlobalMarketPage
+
   ],
   imports: [
     BrowserModule,
@@ -52,6 +54,7 @@ import { ComponentsModule } from '../components/components.module';
     HomePage,
     TabsPage,
     CryptoDetailsPage,
+    GlobalMarketPage
   ],
   providers: [
     StatusBar,
