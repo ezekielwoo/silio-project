@@ -1,3 +1,22 @@
 page-settings {
+    .credits {
+        color: #959498;
+    }
+    .select-text i{
+        margin: 0px 5px;
+        transform: translateY(-2px);
+    }
+}
 
+.alert-wrapper{
+    background: linear-gradient(to right, #ac5d70, #ab689b);
+    * {
+        color: white !important;
+    }
+    .alert-radio-icon {
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    .alert-radio-inner{
+        background-color: white;;
+    }
 }

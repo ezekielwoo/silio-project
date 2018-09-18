@@ -13,7 +13,6 @@ import { IonicStorageModule } from '@ionic/storage';
 
 
 import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -23,17 +22,19 @@ import { ApiProvider } from '../providers/api/api';
 import { FeaturesListPage } from '../pages/features-list/features-list';
 import { SettingProvider } from '../providers/setting/setting';
 import { ComponentsModule } from '../components/components.module';
+import { SettingsPage } from '../pages/settings/settings';
+import { NetworkProvider } from '../providers/network/network';
+import { Network } from '@ionic-native/network';
 
 @NgModule({
   declarations: [
     MyApp,
     AboutPage,
-    ContactPage,
     HomePage,
     TabsPage,
     CryptoDetailsPage,
-    GlobalMarketPage
-
+    GlobalMarketPage,
+    SettingsPage
   ],
   imports: [
     BrowserModule,
@@ -50,18 +51,21 @@ import { ComponentsModule } from '../components/components.module';
   entryComponents: [
     MyApp,
     AboutPage,
-    ContactPage,
     HomePage,
     TabsPage,
     CryptoDetailsPage,
-    GlobalMarketPage
+    GlobalMarketPage,
+    SettingsPage
   ],
   providers: [
+    Network,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ApiProvider,
-    SettingProvider
+    SettingProvider,
+    NetworkProvider,
+    
   ]
 })
 export class AppModule {}

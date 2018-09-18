@@ -6,6 +6,7 @@ import * as HighCharts from 'HighCharts';
 import { ApiProvider } from '../../providers/api/api';
 import { SettingProvider } from '../../providers/setting/setting';
 import { globalChartTheme } from '../../theme/chart.dark';
+import { Network } from '@ionic-native/network';
 
 
 @IonicPage()
@@ -29,7 +30,15 @@ export class GlobalMarketPage {
               public navParams: NavParams,
               public http: Http,
               public api : ApiProvider,
-              public settingsProvider : SettingProvider) {
+              public settingsProvider : SettingProvider,
+              public network : Network) {
+
+            this.network.onConnect().subscribe(()=> {
+                console.log("connected");
+            })
+            this.network.onDisconnect().subscribe(()=> {
+                console.log("dis");
+            })
   }
 
 
@@ -44,7 +53,6 @@ export class GlobalMarketPage {
           this.total_market_cap = data.total_market_cap[this.currentCurrency.toLowerCase()];
           this.total_volume = data.total_volume[this.currentCurrency.toLowerCase()];
           this.market_cap_percentage = data.market_cap_percentage;
-          console.log(this.market_cap_percentage);
           //initialize charts
           this.initChart();
         });
@@ -109,7 +117,7 @@ export class GlobalMarketPage {
             },
             {
                 name: 'OTHERS',
-                y: 100 - (<any>Object).values(this.market_cap_percentage).reduce((a, b) => a + b) 
+                y: 100 - Object.keys(this.market_cap_percentage).map((key) => this.market_cap_percentage[key] ).reduce((a, b) => a + b) 
             }]
         }]
     });
