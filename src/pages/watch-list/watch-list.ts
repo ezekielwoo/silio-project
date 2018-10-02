@@ -4,7 +4,7 @@ import { Storage } from '@ionic/storage';
 import { CryptoDetailsPage } from '../crypto-details/crypto-details';
 
 /**
- * Generated class for the FeaturesListPage page.
+ * Generated class for the watchListPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -12,10 +12,10 @@ import { CryptoDetailsPage } from '../crypto-details/crypto-details';
 
 @IonicPage()
 @Component({
-  selector: 'page-features-list',
-  templateUrl: 'features-list.html',
+  selector: 'page-watch-list',
+  templateUrl: 'watch-list.html',
 })
-export class FeaturesListPage {
+export class watchListPage {
 
   coins : any = [];
   constructor(public navCtrl: NavController, 

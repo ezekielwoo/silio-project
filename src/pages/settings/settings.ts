@@ -11,6 +11,7 @@ export class SettingsPage {
 
   currencyList = ['usd','aud','eur','cad','aed','gbp','jpy','idr','inr'];
   currentCurrency = null;
+  isDarkTheme  = true;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -19,7 +20,14 @@ export class SettingsPage {
   }
 
   ionViewDidLoad() {
-    this.currentCurrency = this.settingProvider.settings.currency.toLowerCase();
+
+    this.settingProvider.settingSubject.subscribe((data) => {
+      //get the current currency
+      this.currentCurrency = this.settingProvider.currentSetting.currency;
+      this.isDarkTheme =  (this.settingProvider.currentSetting.theme === 'dark');
+    })
+
+    //this.currentCurrency = this.settingProvider.settings.currency.toLowerCase();
     this.addCurrentCurrencyFlag();
   }
 
@@ -49,15 +57,22 @@ export class SettingsPage {
 
   changeCurrentCurrency() {
     this.addCurrentCurrencyFlag();
+    this.settingProvider.currentSetting.currency = this.currentCurrency.toUpperCase();
+    this.settingProvider.setSettings();
   }
 
   showAlertCredit() {
     const alert = this.alertCtrl.create({
       title: 'Credits',
-      subTitle: 'We are using Coingecko API to get charts data and other features.',
+      subTitle: 'We are using Coingecko API to get charts data and other watch.',
       buttons: ['OK']
     });
     alert.present();
+  }
+
+  updateTheme() {
+    this.settingProvider.currentSetting.theme = (this.isDarkTheme) ? 'dark' : 'light';
+    this.settingProvider.setSettings();
   }
   
 }

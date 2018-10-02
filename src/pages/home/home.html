@@ -3,7 +3,7 @@
     <ion-title text-center>   <ion-icon name="trending-up" ></ion-icon> All coins   </ion-title>
     <ion-buttons right>
       <button (click)="search = !search" ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
-      <button [navPush]="'FeaturesListPage'" ion-button icon-only><ion-icon name="ios-bookmark-outline"></ion-icon></button>
+      <button [navPush]="'watchListPage'" ion-button icon-only><ion-icon name="md-eye"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -39,7 +39,7 @@
       <!-- price Column -->
       <ng-container matColumnDef="current_price">
         <mat-header-cell *matHeaderCellDef mat-sort-header> $Price </mat-header-cell>
-        <mat-cell *matCellDef="let element"> ${{element.market_data.current_price.usd | number : '1.2-2' }} </mat-cell>
+        <mat-cell *matCellDef="let element"> {{element.market_data.current_price[currentCurrency.toLowerCase()] | currency:currentCurrency }} </mat-cell>
       </ng-container>
 
       <!-- 24 hour Column -->
@@ -48,10 +48,10 @@
         <mat-cell *matCellDef="let element">
             <div *ngIf="element.market_data.price_change_percentage_24h >= 0 then positive else negative" ></div>
             <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_24h | number : '1.2-2' }} %</span>
+              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_24h | percent }}</span>
             </ng-template>
             <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_24h | number : '1.2-2' }} %</span>
+                <span class="nbr-negative">{{element.market_data.price_change_percentage_24h | percent }}</span>
             </ng-template>
         </mat-cell>
       </ng-container>
@@ -61,10 +61,10 @@
         <mat-cell *matCellDef="let element">
             <div *ngIf="element.market_data.price_change_percentage_7d >= 0 then positive else negative" ></div>
             <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_7d | number : '1.2-2' }} %</span>
+              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_7d | percent }}</span>
             </ng-template>
             <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_7d | number : '1.2-2' }} %</span>
+                <span class="nbr-negative">{{element.market_data.price_change_percentage_7d | percent }}</span>
             </ng-template>
         </mat-cell>
       </ng-container>
@@ -75,10 +75,10 @@
         <mat-cell *matCellDef="let element">
             <div *ngIf="element.market_data.price_change_percentage_14d >= 0 then positive else negative" ></div>
             <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_14d | number : '1.2-2' }} %</span>
+              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_14d | percent }}</span>
             </ng-template>
             <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_14d | number : '1.2-2' }} %</span>
+                <span class="nbr-negative">{{element.market_data.price_change_percentage_14d | percent }}</span>
             </ng-template>
         </mat-cell>
       </ng-container>
@@ -88,12 +88,12 @@
         <mat-cell *matCellDef="let element">
             <div *ngIf="element.market_data.price_change_percentage_30d >= 0 then positive else negative" ></div>
             <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_30d | number : '1.2-2' }} %</span>
-              <ion-icon *ngIf="element.is_favorite" name="ios-bookmark"></ion-icon>
+              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_30d | percent }}</span>
+              <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-eye"></ion-icon>
             </ng-template>
             <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_30d | number : '1.2-2' }} %</span>
-                <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-bookmark"></ion-icon>
+                <span class="nbr-negative">{{element.market_data.price_change_percentage_30d | percent }}</span>
+                <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-eye"></ion-icon>
             </ng-template>
         </mat-cell>
       </ng-container>

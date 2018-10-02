@@ -1,0 +1,34 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title text-center><ion-icon name="browsers"></ion-icon> News</ion-title>
+        <ion-buttons right>
+          <button ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
+        </ion-buttons>
+      </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-card *ngFor="let item of news"  (click)="openBrowser(item.link[0])"  class="coin-info-card">
+        <ion-card-content>
+          <ion-card-title text-left>
+               <img [src]="getElement(item.description[0],'img').src" alt="">
+              {{item.title[0]}}
+           </ion-card-title>
+           <p text-left>
+              {{getElement(item.description[0],'p').innerHTML}}
+           </p>
+        </ion-card-content>
+        <ion-row>
+          <ion-col text-left>
+              <ng-container *ngFor="let cat of item.category.slice(0, 4);">
+                <ion-badge >{{cat}} </ion-badge>
+              </ng-container>
+          </ion-col>
+          <ion-col>
+              <ion-note>
+                 {{item.pubDate[0] | date}}
+              </ion-note>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+</ion-content>

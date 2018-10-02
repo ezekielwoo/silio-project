@@ -1,0 +1,22 @@
+page-news {
+  .content {
+    text-align: center;
+  }
+  .badge{
+    background: #b6629d;
+    border-radius: 27px;
+    margin-bottom: 9px;
+  }
+  .card-title{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    font-size: 18px;
+
+    img {
+      width: 100px;
+      align-self: center;
+      margin-right: 10px;
+    }
+  }
+}

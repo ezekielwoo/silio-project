@@ -5,13 +5,12 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import {MatTableDataSource, MatSort} from '@angular/material';
 import { Events } from 'ionic-angular';
-import { FeaturesListPage } from '../features-list/features-list';
+import { watchListPage } from '../watch-list/watch-list';
 import { SettingProvider } from '../../providers/setting/setting';
-
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
 })
 
 
@@ -33,6 +32,7 @@ export class HomePage {
   maxPageNumber = 40 // maximum page pagination, currently, they are 500 coins on the market
   loading = true; // display loading when fetching data from API
 
+  currentCurrency = "USD" // default currency
 
   constructor(public navCtrl: NavController,
               public api : ApiProvider,
@@ -40,17 +40,21 @@ export class HomePage {
               public events: Events,
               public settingsProvider : SettingProvider) {
 
+                this.api.getnews();
   }
 
 
-  ngAfterViewInit() {
-    //fetch coins
+  ionViewDidLoad() {
+    this.settingsProvider.settingSubject.subscribe((data) => {
+        this.currentCurrency = this.settingsProvider.currentSetting.currency;
+    })
+
     this.fetch_coins().then(()=>{
       this.checkFavorite();
       this.dataSource.sort = this.sort;
     });
-
   }
+
 
   ionViewDidEnter(){
     //subscribe to event when add new coin to favorite
@@ -70,7 +74,7 @@ export class HomePage {
         this.dataSource = new MatTableDataSource(this.COIN_DATA);
         this.dataSource.sortingDataAccessor = (item, property) => {
           switch(property) {
-            case 'current_price': return item.market_data.current_price.usd;
+            case 'current_price': return item.market_data.current_price[this.currentCurrency.toLowerCase()];
             case 'price_change_24': return item.market_data.price_change_percentage_24h;
             case 'price_change_7d': return item.market_data.price_change_percentage_7d;
             case 'price_change_14d': return item.market_data.price_change_percentage_14d;
@@ -109,7 +113,7 @@ export class HomePage {
   }
 
   pushPage() {
-    this.navCtrl.push(FeaturesListPage);
+    this.navCtrl.push(watchListPage);
   }
   loadMoreCoins(infiniteScroll){
     this.currentPage++;

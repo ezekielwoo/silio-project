@@ -12,24 +12,24 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 
 
-import { AboutPage } from '../pages/about/about';
+import { newsPage } from '../pages/news/news';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { ApiProvider } from '../providers/api/api';
-import { FeaturesListPage } from '../pages/features-list/features-list';
+import { watchListPage } from '../pages/watch-list/watch-list';
 import { SettingProvider } from '../providers/setting/setting';
 import { ComponentsModule } from '../components/components.module';
 import { SettingsPage } from '../pages/settings/settings';
-import { NetworkProvider } from '../providers/network/network';
-import { Network } from '@ionic-native/network';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+
 
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
+    newsPage,
     HomePage,
     TabsPage,
     CryptoDetailsPage,
@@ -45,12 +45,13 @@ import { Network } from '@ionic-native/network';
     HttpClientModule,
     IonicModule.forRoot(MyApp, { mode: 'md'}),
     IonicStorageModule.forRoot(),
-    ComponentsModule
+    ComponentsModule,
+    
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
+    newsPage,
     HomePage,
     TabsPage,
     CryptoDetailsPage,
@@ -58,14 +59,12 @@ import { Network } from '@ionic-native/network';
     SettingsPage
   ],
   providers: [
-    Network,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ApiProvider,
     SettingProvider,
-    NetworkProvider,
-    
+    InAppBrowser    
   ]
 })
 export class AppModule {}

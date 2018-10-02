@@ -1,0 +1,55 @@
+.light-theme {
+    $primary : #b6629d;
+
+    .header .toolbar-background {
+        background: linear-gradient(to right, #ac5d70, #ab689b);
+    }
+    page-home .mat-header-row {
+        background: #f8f8f8;
+        &::before {
+            content: "";
+            background: linear-gradient(to right, #ac5d70, #ab689b);;
+            height: 3px !important;
+            width: 100%;
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+        }
+    }
+
+    .ion-page {
+        .header::after, .tabbar::before {
+          background: linear-gradient(to right, #ac5d70, #ab689b);
+          bottom: 0;
+          height: 2px;
+        }
+      }
+
+    .tabbar a[aria-selected=true],
+    .tab-button[aria-selected="true"] .tab-button-icon,
+    .mat-sort-header-arrow {
+        color:$primary !important;
+    }
+
+    .toolbar .back-button {
+        color: white;
+    }
+
+    .toolbar-title-md {
+        color: white !important;
+    }
+
+    ion-content {
+        background: #f8f8f8;
+        color: #6c5580;
+    }
+    page-crypto-details .mat-button-toggle-group * {
+        color: inherit;
+    }
+    .mat-button-toggle-checked *, page-global-market .coin-card-pink {
+        color: white !important;
+    }
+    change-currency .currency-change, page-crypto-details .coin-green {
+        color: #029d69;
+    }
+}

@@ -6,7 +6,7 @@ import * as HighCharts from 'HighCharts';
 import { ApiProvider } from '../../providers/api/api';
 import { SettingProvider } from '../../providers/setting/setting';
 import { globalChartTheme } from '../../theme/chart.dark';
-import { Network } from '@ionic-native/network';
+import { globalLightChartTheme } from '../../theme/chart.light';
 
 
 @IonicPage()
@@ -18,6 +18,7 @@ export class GlobalMarketPage {
 
 
   currentCurrency = 'usd' //current currency settings, Defualt USD
+  marketData ; //retreive market data
   active_cryptocurrencies = null;
   ongoing_icos = null;
   upcoming_icos = null;
@@ -25,47 +26,51 @@ export class GlobalMarketPage {
   total_volume = null;
   total_market_cap = null;
   market_cap_percentage = null;
+  currentChartTheme = "dark" //default dark theme
   
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public http: Http,
               public api : ApiProvider,
-              public settingsProvider : SettingProvider,
-              public network : Network) {
-
-            this.network.onConnect().subscribe(()=> {
-                console.log("connected");
-            })
-            this.network.onDisconnect().subscribe(()=> {
-                console.log("dis");
-            })
+              public settingsProvider : SettingProvider) {
   }
 
 
 
   fetch_globalMarket() {
-      this.currentCurrency = this.settingsProvider.settings.currency;
       this.api.getGlobalMarket().then((data: any)=> {
-          this.active_cryptocurrencies = data.active_cryptocurrencies;
-          this.ongoing_icos = data.ongoing_icos;
-          this.upcoming_icos = data.upcoming_icos;
-          this.ended_icos = data.ended_icos;
-          this.total_market_cap = data.total_market_cap[this.currentCurrency.toLowerCase()];
-          this.total_volume = data.total_volume[this.currentCurrency.toLowerCase()];
-          this.market_cap_percentage = data.market_cap_percentage;
+          this.marketData = data;
+          this.initMarketData();
           //initialize charts
           this.initChart();
         });
   }
 
+  initMarketData() {
+    this.active_cryptocurrencies = this.marketData.active_cryptocurrencies;
+    this.ongoing_icos = this.marketData.ongoing_icos;
+    this.upcoming_icos = this.marketData.upcoming_icos;
+    this.ended_icos = this.marketData.ended_icos;
+    this.total_market_cap = this.marketData.total_market_cap[this.currentCurrency.toLowerCase()];
+    this.total_volume = this.marketData.total_volume[this.currentCurrency.toLowerCase()];
+    this.market_cap_percentage = this.marketData.market_cap_percentage;
+  }
 
   ionViewDidLoad() {
     this.fetch_globalMarket();
+    this.currentCurrency = this.settingsProvider.currentSetting.currency;
+    this.settingsProvider.settingSubject.subscribe((data) => {
+        this.currentCurrency = data.currency;
+        this.currentChartTheme = data.theme;
+        if(this.marketData) {
+            this.initMarketData();
+        }
+    })
   }
 
   initChart(){
      
-    HighCharts.theme = globalChartTheme;
+    HighCharts.theme = (this.currentChartTheme =='dark') ?  globalChartTheme : globalLightChartTheme;
 
     HighCharts.setOptions(HighCharts.theme);
       HighCharts.chart('chart-market-shares', {

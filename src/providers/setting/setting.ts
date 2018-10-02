@@ -1,32 +1,43 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { SettingModel } from './setting-model';
 
-/*
-  Generated class for the SettingProvider provider.
 
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class SettingProvider {
 
-  public settings = null;
+  public settingSubject : BehaviorSubject<SettingModel> ;
+  public currentSetting : SettingModel;
 
   constructor(private storage : Storage) {
     //initial default settings 
-    this.settings = {
+    this.currentSetting = {
       theme : 'dark',
-      currency : 'USD'
-    }
+      currency : 'USD',
+    };
+    this.settingSubject = new BehaviorSubject(this.currentSetting);
+
+    this.loadSetting();
+
+    this.settingSubject.subscribe((newsetting) => {
+      this.currentSetting = newsetting;
+    })
   }
 
-  load(){
+  loadSetting(){
     this.storage.get('settings').then((value)=> {
           if(value) {
-            this.settings = value;
+            this.currentSetting = value;
+            this.settingSubject.next(this.currentSetting);
           }
     });
+  }
+  
+  setSettings() {
+    this.settingSubject.next(this.currentSetting);
+    this.storage.set('settings',this.currentSetting);
   }
 
   

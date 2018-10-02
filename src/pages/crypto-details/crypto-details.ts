@@ -5,8 +5,10 @@ import * as HighCharts from 'HighCharts';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import {darkChartTheme} from '../../theme/chart.dark';
+import {lightChartTheme} from '../../theme/chart.light';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
+import { SettingProvider } from '../../providers/setting/setting';
 
 @IonicPage()
 @Component({
@@ -22,13 +24,18 @@ export class CryptoDetailsPage {
    //Loading Chart
    loadingChart = true;
    is_favorite; // is a favorite coin
+   currentCurrency = 'USD'; //default currency USD
+   currentChartTheme  = "dark";
+
 
   constructor(public navCtrl: NavController,
              public navParams: NavParams,
              public api:ApiProvider,
              public http: Http,
              private storage: Storage,
-             public events: Events) {
+             public events: Events,
+             public settingProvider:SettingProvider ) {
+
       //retreive coin ID
       this.coin = this.navParams.get('coin');
       this.is_favorite = this.coin.is_favorite;
@@ -38,12 +45,21 @@ export class CryptoDetailsPage {
         this.coin = data;
       });
 
-      //GET chart data for  the current coin
-      this.fetchCoinChartData();
+      
+  }
+
+  ionViewDidLoad() {
+    this.settingProvider.settingSubject.subscribe((data) => {
+        this.currentCurrency = this.settingProvider.currentSetting.currency;
+        this.currentChartTheme = this.settingProvider.currentSetting.theme;
+        //GET chart data for  the current crypto
+         this.fetchCoinChartData();
+    })
   }
 
   fetchCoinChartData(){
-      this.api.getCoinChart(this.coin.id , 'usd' , this.chart_filter).then((data)=>{
+      this.loadingChart = true;
+      this.api.getCoinChart(this.coin.id , this.currentCurrency , this.chart_filter).then((data)=>{
         this.loadingChart = false;
         this.initChart(data);
     })
@@ -86,14 +102,14 @@ export class CryptoDetailsPage {
   }
 
   initChart(Data) {
-      HighCharts.theme = darkChartTheme;
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
       HighCharts.setOptions(HighCharts.theme);
       HighCharts.chart('chart-container', {
         chart: {
           zoomType: 'x'
         },
         title: {
-          text: 'Bitcoin Price Chart (USD)'
+          text: this.coin.name + ' Price Chart ('+this.currentCurrency.toUpperCase()+')'
         },
         subtitle: {
           text: document.ontouchstart === undefined ?
@@ -141,7 +157,6 @@ export class CryptoDetailsPage {
           },
         series: [{
           type: 'area',
-          name: 'USD to EUR',
           data: Data.prices
         }]
       });
