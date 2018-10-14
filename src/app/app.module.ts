@@ -10,6 +10,7 @@ import {CdkTableModule} from '@angular/cdk/table';
 import { HttpModule } from '@angular/http'
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
+import { AdMobFree } from '@ionic-native/admob-free';
 
 
 import { newsPage } from '../pages/news/news';
@@ -24,6 +25,7 @@ import { SettingProvider } from '../providers/setting/setting';
 import { ComponentsModule } from '../components/components.module';
 import { SettingsPage } from '../pages/settings/settings';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { AdmobFreeProvider } from '../providers/admob/admob';
 
 
 @NgModule({
@@ -64,7 +66,9 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ApiProvider,
     SettingProvider,
-    InAppBrowser    
+    InAppBrowser,
+    AdMobFree,
+    AdmobFreeProvider 
   ]
 })
 export class AppModule {}

@@ -2,11 +2,12 @@ import { Storage } from '@ionic/storage';
 import { ApiProvider } from './../../providers/api/api';
 import { CryptoDetailsPage } from './../crypto-details/crypto-details';
 import { Component, ViewChild } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import {MatTableDataSource, MatSort} from '@angular/material';
 import { Events } from 'ionic-angular';
 import { watchListPage } from '../watch-list/watch-list';
 import { SettingProvider } from '../../providers/setting/setting';
+import { AdmobFreeProvider } from '../../providers/admob/admob';
 
 @Component({
   selector: 'page-home',
@@ -38,20 +39,28 @@ export class HomePage {
               public api : ApiProvider,
               private storage: Storage,
               public events: Events,
-              public settingsProvider : SettingProvider) {
-
-                this.api.getnews();
+              public settingsProvider : SettingProvider,
+              public admob:AdmobFreeProvider,
+              public platform: Platform) {      
+          // this.api.getnews();
   }
 
 
   ionViewDidLoad() {
+    this.platform.ready().then(()=>{
+      this.admob.prepareBanner();
+    })
+    
     this.settingsProvider.settingSubject.subscribe((data) => {
         this.currentCurrency = this.settingsProvider.currentSetting.currency;
     })
 
+
     this.fetch_coins().then(()=>{
       this.checkFavorite();
       this.dataSource.sort = this.sort;
+ 
+      console.log("dsds");
     });
   }
 

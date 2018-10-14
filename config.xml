@@ -82,7 +82,10 @@
     <plugin name="cordova-plugin-ionic-webview" spec="1.1.19" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="2.0.5" />
     <allow-navigation href="http://192.168.1.12:8100" />
-    <engine name="android" spec="7.1.1" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
+    <plugin name="cordova-plugin-admob-free" spec="^0.21.0">
+        <variable name="ADMOB_APP_ID" value="ca-app-pub-2249157507977141~7014337127" />
+    </plugin>
+    <engine name="android" spec="7.1.1" />
 </widget>
