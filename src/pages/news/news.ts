@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ApiProvider } from '../../providers/api/api';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { AdmobFreeProvider } from '../../providers/admob/admob';
 
 @Component({
   selector: 'page-news',
@@ -10,7 +11,14 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 export class newsPage {
 
   news;
-  constructor(public navCtrl: NavController, public api:ApiProvider,private iab: InAppBrowser ) {
+  constructor(public navCtrl: NavController, 
+              public api:ApiProvider,
+              private iab: InAppBrowser,
+              public admob:AdmobFreeProvider ) {
+  }
+
+  ionViewWillEnter(){
+    this.admob.showRandomAds();
   }
 
   ionViewDidLoad() {

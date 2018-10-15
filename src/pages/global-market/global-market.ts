@@ -7,6 +7,7 @@ import { ApiProvider } from '../../providers/api/api';
 import { SettingProvider } from '../../providers/setting/setting';
 import { globalChartTheme } from '../../theme/chart.dark';
 import { globalLightChartTheme } from '../../theme/chart.light';
+import { AdmobFreeProvider } from '../../providers/admob/admob';
 
 
 @IonicPage()
@@ -32,10 +33,15 @@ export class GlobalMarketPage {
               public navParams: NavParams,
               public http: Http,
               public api : ApiProvider,
-              public settingsProvider : SettingProvider) {
+              public settingsProvider : SettingProvider,
+              public admob:AdmobFreeProvider) {
   }
 
 
+  ionViewWillEnter(){
+    this.admob.showRandomAds();
+  }
+  
 
   fetch_globalMarket() {
       this.api.getGlobalMarket().then((data: any)=> {

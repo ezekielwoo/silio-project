@@ -10,7 +10,7 @@ import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { SettingProvider } from '../../providers/setting/setting';
 
-@IonicPage()
+
 @Component({
   selector: 'page-crypto-details',
   templateUrl: 'crypto-details.html',

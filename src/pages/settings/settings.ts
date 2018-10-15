@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { SettingProvider } from '../../providers/setting/setting';
+import { AdmobFreeProvider } from '../../providers/admob/admob';
 
 @IonicPage()
 @Component({
@@ -16,7 +17,13 @@ export class SettingsPage {
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public settingProvider:SettingProvider,
-              public alertCtrl: AlertController) {
+              public alertCtrl: AlertController,
+              public admob:AdmobFreeProvider) {
+  }
+
+
+  ionViewWillEnter(){
+    this.admob.showRandomAds();
   }
 
   ionViewDidLoad() {

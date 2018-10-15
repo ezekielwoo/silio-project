@@ -10,7 +10,7 @@ export class AdmobFreeProvider {
   private InterstitialId  
   private VideoID; 
 
-  private clickToShowAds = 4; //<-- number of time user click on the app before the ads shown
+  private clickToShowAds = 5; //<-- number of time user click on the app before the ads shown
 
   public bannerConfig: AdMobFreeBannerConfig = {
       id:this.bannerId,
@@ -76,7 +76,7 @@ export class AdmobFreeProvider {
 
     public showRandomAds() {
       if(this.clickToShowAds == 0) {
-        this.clickToShowAds = 4 //<-- number of time user click on the app before the ads shown;
+        this.clickToShowAds = 5 //<-- number of time user click on the app before the ads shown;
         let random = Math.round(Math.random());
         //show random ads, either video or interstitial
         (random == 0) ? this.prepareVideo() : this.prepareInterstitial(); 

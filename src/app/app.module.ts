@@ -26,6 +26,7 @@ import { ComponentsModule } from '../components/components.module';
 import { SettingsPage } from '../pages/settings/settings';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { AdmobFreeProvider } from '../providers/admob/admob';
+import { Network } from '@ionic-native/network';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { AdmobFreeProvider } from '../providers/admob/admob';
     SettingProvider,
     InAppBrowser,
     AdMobFree,
-    AdmobFreeProvider 
+    AdmobFreeProvider ,
+    Network
   ]
 })
 export class AppModule {}

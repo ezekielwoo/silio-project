@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { CryptoDetailsPage } from '../crypto-details/crypto-details';
+import { AdmobFreeProvider } from '../../providers/admob/admob';
 
 /**
  * Generated class for the watchListPage page.
@@ -21,7 +22,12 @@ export class watchListPage {
   constructor(public navCtrl: NavController, 
               private storage: Storage, 
               public navParams: NavParams,
-              public events: Events) {
+              public events: Events,
+              public admob:AdmobFreeProvider) {
+  }
+
+  ionViewWillEnter(){
+    this.admob.showRandomAds();
   }
 
   removeFavorite(coin) {

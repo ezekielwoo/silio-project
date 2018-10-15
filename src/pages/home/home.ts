@@ -41,11 +41,15 @@ export class HomePage {
               public events: Events,
               public settingsProvider : SettingProvider,
               public admob:AdmobFreeProvider,
-              public platform: Platform) {      
-          // this.api.getnews();
+              public platform: Platform) { 
+       this.api.getnews();
   }
 
 
+  ionViewWillEnter(){
+    this.admob.showRandomAds();
+  }
+  
   ionViewDidLoad() {
     this.platform.ready().then(()=>{
       this.admob.prepareBanner();
