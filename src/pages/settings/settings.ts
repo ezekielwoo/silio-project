@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { SettingProvider } from '../../providers/setting/setting';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
 
-@IonicPage()
+
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html',

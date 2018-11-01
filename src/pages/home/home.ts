@@ -125,9 +125,10 @@ export class HomePage {
     })
   }
 
-  pushPage() {
+  openWatchList() {
     this.navCtrl.push(watchListPage);
   }
+  
   loadMoreCoins(infiniteScroll){
     this.currentPage++;
     this.fetch_coins(infiniteScroll);

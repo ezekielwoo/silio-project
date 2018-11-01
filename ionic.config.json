@@ -1,13 +1,7 @@
 {
-  "name": "Crypto",
+  "name": "cryptoz",
   "integrations": {
     "cordova": {}
   },
-  "proxies": [
-    {
-      "path": "/rss",
-      "proxyUrl": "https://cointelegraph.com/rss"
-    }
-  ],
   "type": "ionic-angular"
 }

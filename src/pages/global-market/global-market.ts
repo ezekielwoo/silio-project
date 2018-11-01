@@ -10,7 +10,7 @@ import { globalLightChartTheme } from '../../theme/chart.light';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
 
 
-@IonicPage()
+
 @Component({
   selector: 'page-global-market',
   templateUrl: 'global-market.html',

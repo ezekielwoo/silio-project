@@ -3,7 +3,7 @@
     <ion-title text-center>   <ion-icon name="trending-up" ></ion-icon> All coins   </ion-title>
     <ion-buttons right>
       <button (click)="search = !search" ion-button icon-only><ion-icon name="ios-search-outline"></ion-icon></button>
-      <button [navPush]="'watchListPage'" ion-button icon-only><ion-icon name="md-eye"></ion-icon></button>
+      <button (click)="openWatchList()" ion-button icon-only><ion-icon name="md-eye"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>

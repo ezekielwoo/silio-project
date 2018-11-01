@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 export class AdmobFreeProvider {
 
   private bannerId ;
-  private InterstitialId  
+  private InterstitialId; 
   private VideoID; 
 
   private clickToShowAds = 5; //<-- number of time user click on the app before the ads shown
@@ -15,20 +15,22 @@ export class AdmobFreeProvider {
   public bannerConfig: AdMobFreeBannerConfig = {
       id:this.bannerId,
       autoShow: true,
-      isTesting:true,//<- if you want just to test if admob is working , you can set the value to true
+      isTesting:false,//<- if you want just to test if admob is working , you can set the value to true
    };
 
    public InterstitialConfig : AdMobFreeInterstitialConfig = {
      id:this.InterstitialId,
      autoShow:true,
-     isTesting:true,//<- if you want just to test if admob is working , you can set the value to true
+     isTesting:false,//<- if you want just to test if admob is working , you can set the value to true
    }
 
    public RewardVideoConfig : AdMobFreeRewardVideoConfig = {
      id:this.VideoID,
      autoShow : true,
-     isTesting:true,//<- if you want just to test if admob is working , you can set the value to true
+     isTesting:false,//<- if you want just to test if admob is working , you can set the value to true
    }
+
+   private isBannerShown = false;
 
   constructor(private admob:AdMobFree,public platform: Platform) {
     this.platform.ready().then(()=>{
@@ -50,11 +52,26 @@ export class AdmobFreeProvider {
   }
 
   public prepareBanner() {
-    return this.admob.banner.prepare().then(()=>{
-        console.log('banner success');
-    }).catch((e)=>{
-      console.log(JSON.stringify(e));
-    })
+    // show and hide banner every time
+
+    setInterval(() => {
+       //sho banner if it's not exist
+        if(!this.isBannerShown) {
+
+            return this.admob.banner.prepare().then(()=>{
+                console.log('banner success');
+                this.isBannerShown = true;
+            }).catch((e)=>{
+              console.log(JSON.stringify(e));
+            })
+        } else {
+          this.isBannerShown = false;
+          this.admob.banner.hide();
+          console.log('hide success');
+        }
+    }, 60000);
+
+    
   }
 
   public prepareInterstitial(){

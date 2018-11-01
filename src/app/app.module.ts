@@ -37,7 +37,8 @@ import { Network } from '@ionic-native/network';
     TabsPage,
     CryptoDetailsPage,
     GlobalMarketPage,
-    SettingsPage
+    SettingsPage,
+    watchListPage
   ],
   imports: [
     BrowserModule,
@@ -59,7 +60,8 @@ import { Network } from '@ionic-native/network';
     TabsPage,
     CryptoDetailsPage,
     GlobalMarketPage,
-    SettingsPage
+    SettingsPage,
+    watchListPage
   ],
   providers: [
     StatusBar,
@@ -70,7 +72,7 @@ import { Network } from '@ionic-native/network';
     InAppBrowser,
     AdMobFree,
     AdmobFreeProvider ,
-    Network
+    Network,
   ]
 })
 export class AppModule {}

@@ -11,7 +11,7 @@ import { AdmobFreeProvider } from '../../providers/admob/admob';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
+
 @Component({
   selector: 'page-watch-list',
   templateUrl: 'watch-list.html',
