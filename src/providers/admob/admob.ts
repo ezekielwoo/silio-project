@@ -13,19 +13,20 @@ export class AdmobFreeProvider {
   private clickToShowAds = 5; //<-- number of time user click on the app before the ads shown
 
   public bannerConfig: AdMobFreeBannerConfig = {
-      id:this.bannerId,
+      id : "ca-app-pub-2249157507977141/9983566656",
       autoShow: true,
+      bannerAtTop : false,
       isTesting:false,//<- if you want just to test if admob is working , you can set the value to true
    };
 
    public InterstitialConfig : AdMobFreeInterstitialConfig = {
-     id:this.InterstitialId,
+     id : "ca-app-pub-2249157507977141/3362317982",
      autoShow:true,
      isTesting:false,//<- if you want just to test if admob is working , you can set the value to true
    }
 
    public RewardVideoConfig : AdMobFreeRewardVideoConfig = {
-     id:this.VideoID,
+     id : "ca-app-pub-2249157507977141/9663997250",
      autoShow : true,
      isTesting:false,//<- if you want just to test if admob is working , you can set the value to true
    }
@@ -37,13 +38,21 @@ export class AdmobFreeProvider {
         if(this.platform.is('android')) {
           this.bannerId = 'ca-app-pub-2249157507977141/9983566656';//<-- Past your banner admob id  for android here
           this.InterstitialId = 'ca-app-pub-2249157507977141/3362317982';//<-- Past your Interstitial admob id for android here
-          this.VideoID = "";//<-- Past your video admob id for android here
+          this.VideoID = "ca-app-pub-2249157507977141/9663997250";//<-- Past your video admob id for android here
+          // this.bannerConfig.id = this.bannerId;
+          // this.InterstitialConfig.id = this.InterstitialId;
+          // this.VideoID.id = this.VideoID;
+          console.log("config admob success");
         }
     
         if(this.platform.is('ios')) {
-          this.bannerId = "";//<-- Past your banner admob id  for ios here
-          this.InterstitialId = "";//<-- Past your Interstitial admob id for ios here
-          this.VideoID = "";//<-- Past your video admob id for ios here
+          this.bannerId = "ca-app-pub-2249157507977141/7720360192";//<-- Past your banner admob id  for ios here
+          this.InterstitialId = "ca-app-pub-2249157507977141/6849706620";//<-- Past your Interstitial admob id for ios here
+          this.VideoID = "ca-app-pub-2249157507977141/1510175066";//<-- Past your video admob id for ios here
+          // this.bannerConfig.id = this.bannerId;
+          // this.InterstitialConfig.id = this.InterstitialId;
+          // this.VideoID.id = this.VideoID;
+          console.log("config admob success");
         }
         this.admob.banner.config(this.bannerConfig);
         this.admob.interstitial.config(this.InterstitialConfig);

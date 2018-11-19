@@ -1,5 +1,5 @@
 {
-  "name": "Crypto",
+  "name": "Cryptoz",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "http://ionicframework.com/",
@@ -25,22 +25,25 @@
     "@angular/platform-browser-dynamic": "5.2.10",
     "@ionic-native/admob-free": "^4.15.0",
     "@ionic-native/core": "^4.15.0",
+    "@ionic-native/http": "^4.17.0",
     "@ionic-native/in-app-browser": "^4.15.0",
     "@ionic-native/network": "^4.15.0",
     "@ionic-native/splash-screen": "4.7.0",
     "@ionic-native/status-bar": "^4.7.0",
     "@ionic/storage": "^2.2.0",
-    "cordova-admob-sdk": "^0.20.0",
+    "cordova-admob-sdk": "^0.20.3",
     "cordova-android": "7.0.0",
+    "cordova-browser": "5.0.4",
     "cordova-ios": "4.5.5",
-    "cordova-plugin-admob-free": "^0.21.0",
+    "cordova-plugin-admob-free": "^0.22.0",
+    "cordova-plugin-advanced-http": "^2.0.1",
     "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-file": "^6.0.1",
     "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-ionic-keyboard": "^2.1.3",
-    "cordova-plugin-ionic-webview": "^1.2.1",
     "cordova-plugin-network-information": "^2.0.1",
     "cordova-plugin-splashscreen": "^5.0.2",
-    "cordova-plugin-statusbar": "^2.4.2",
+    "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git",
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-promise-polyfill": "0.0.2",
     "flag-icon-css": "^3.2.0",
@@ -69,15 +72,16 @@
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-network-information": {},
       "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-advanced-http": {},
+      "cordova-plugin-statusbar": {},
       "cordova-plugin-admob-free": {
-        "ADMOB_APP_ID": "ca-app-pub-2249157507977141~7014337127"
-      },
-      "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-statusbar": {}
+        "ADMOB_APP_ID": "Cryptozca-app-pub-2249157507977141~9923426674"
+      }
     },
     "platforms": [
-      "android",
-      "ios"
+      "browser",
+      "ios",
+      "android"
     ]
   }
 }

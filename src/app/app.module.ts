@@ -11,6 +11,7 @@ import { HttpModule } from '@angular/http'
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { AdMobFree } from '@ionic-native/admob-free';
+import { HTTP } from '@ionic-native/http';
 
 
 import { newsPage } from '../pages/news/news';
@@ -73,6 +74,7 @@ import { Network } from '@ionic-native/network';
     AdMobFree,
     AdmobFreeProvider ,
     Network,
+    HTTP,
   ]
 })
 export class AppModule {}

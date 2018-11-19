@@ -4,15 +4,21 @@ page-home {
     font-size: 10px !important;
   }
 
-  .cp-search {
-    position: fixed;
-    top: 46px;
-    padding-bottom: 20px;
+  .scroll-content {
+    margin-top: 0px !important;
   }
 
-  .mat-header-row{
+  .cp-search {
     position: fixed;
-    margin-bottom: 50px;
+    padding-bottom: 20px;
+    top: 80px;
+  }
+
+  .marginTop {
+    margin-top: 100px;
+  }
+  .mat-header-row{
+    // position: fixed;
     z-index: 9;
     background: #201f27;
     top: 0;
@@ -23,9 +29,7 @@ page-home {
     padding-top: 60px;
   }
 
-  .marginTop{
-    margin-top: 100px
-  }
+
 
   .coin-favorite{
     position: absolute;

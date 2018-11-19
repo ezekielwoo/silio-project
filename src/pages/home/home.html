@@ -9,109 +9,108 @@
 </ion-header>
 
 <ion-content>
- 
-  <ng-container *ngIf="!loading">
-     <ion-item class="cp-search" *ngIf="search">
-       <ion-label stacked>Search</ion-label>
-       <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" ></ion-input>
-     </ion-item>
-      <mat-table  #table [dataSource]="dataSource" matSort [class.marginTop]="search">
-        <!-- Rank Column -->
-      <ng-container matColumnDef="rank">
-          <mat-header-cell fxFlex="20px" *matHeaderCellDef mat-sort-header> # </mat-header-cell>
-          <mat-cell  fxFlex="20px" *matCellDef="let element; let i = index ">
-            <span class="crypto-rank ">#  {{i + 1}} </span>
-        </mat-cell>
+      <ng-container *ngIf="!loading">
+          <ion-item class="cp-search" *ngIf="search">
+            <ion-label stacked>Search</ion-label>
+            <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search" ></ion-input>
+          </ion-item>
+          <mat-table  #table [dataSource]="dataSource" matSort [class.marginTop]="search">
+            <!-- Rank Column -->
+          <ng-container matColumnDef="rank">
+              <mat-header-cell fxFlex="20px" *matHeaderCellDef mat-sort-header> # </mat-header-cell>
+              <mat-cell  fxFlex="20px" *matCellDef="let element; let i = index ">
+                <span class="crypto-rank ">#  {{i + 1}} </span>
+            </mat-cell>
+          </ng-container>
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <ion-row align-items-center>
+                        <img [src]="element.image.small" alt="">
+                        <div class="currency-desc">
+                          <h5>{{element.name}}</h5>
+                        <span class="crypto-symbol">{{element.symbol | uppercase }}</span>
+                        </div>
+                  </ion-row>
+            </mat-cell>
+          </ng-container>
+          <!-- price Column -->
+          <ng-container matColumnDef="current_price">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> $Price </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.market_data.current_price[currentCurrency.toLowerCase()] | currency:currentCurrency }} </mat-cell>
+          </ng-container>
+    
+          <!-- 24 hour Column -->
+          <ng-container  matColumnDef="price_change_24">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> 24H </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <div *ngIf="element.market_data.price_change_percentage_24h >= 0 then positive else negative" ></div>
+                <ng-template #positive>
+                  <span class="nbr-positive">+ {{element.market_data.price_change_percentage_24h | percent }}</span>
+                </ng-template>
+                <ng-template #negative>
+                    <span class="nbr-negative">{{element.market_data.price_change_percentage_24h | percent }}</span>
+                </ng-template>
+            </mat-cell>
+          </ng-container>
+          <!-- 7 Day Column -->
+          <ng-container  matColumnDef="price_change_7d">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> 7d </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <div *ngIf="element.market_data.price_change_percentage_7d >= 0 then positive else negative" ></div>
+                <ng-template #positive>
+                  <span class="nbr-positive">+ {{element.market_data.price_change_percentage_7d | percent }}</span>
+                </ng-template>
+                <ng-template #negative>
+                    <span class="nbr-negative">{{element.market_data.price_change_percentage_7d | percent }}</span>
+                </ng-template>
+            </mat-cell>
+          </ng-container>
+    
+          <!-- 14 Day Column -->
+          <ng-container  matColumnDef="price_change_14d">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> 14d </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <div *ngIf="element.market_data.price_change_percentage_14d >= 0 then positive else negative" ></div>
+                <ng-template #positive>
+                  <span class="nbr-positive">+ {{element.market_data.price_change_percentage_14d | percent }}</span>
+                </ng-template>
+                <ng-template #negative>
+                    <span class="nbr-negative">{{element.market_data.price_change_percentage_14d | percent }}</span>
+                </ng-template>
+            </mat-cell>
+          </ng-container>
+          <!-- 30 Day Column -->
+          <ng-container  matColumnDef="price_change_30d">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> 30d </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <div *ngIf="element.market_data.price_change_percentage_30d >= 0 then positive else negative" ></div>
+                <ng-template #positive>
+                  <span class="nbr-positive">+ {{element.market_data.price_change_percentage_30d | percent }}</span>
+                  <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-eye"></ion-icon>
+                </ng-template>
+                <ng-template #negative>
+                    <span class="nbr-negative">{{element.market_data.price_change_percentage_30d | percent }}</span>
+                    <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-eye"></ion-icon>
+                </ng-template>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openCrypto(row)"></mat-row>
+        </mat-table>
+        <ion-infinite-scroll (ionInfinite)="loadMoreCoins($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
       </ng-container>
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            <ion-row align-items-center>
-                    <img [src]="element.image.small" alt="">
-                    <div class="currency-desc">
-                      <h5>{{element.name}}</h5>
-                    <span class="crypto-symbol">{{element.symbol | uppercase }}</span>
-                    </div>
-              </ion-row>
-        </mat-cell>
+      <ng-container *ngIf="loading">
+              <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+                <h2><div class="load-bar"></div> </h2>
+                <h3><div class="load-bar"></div></h3>
+                <h4><div class="load-bar"></div></h4>
+                <h2><div class="load-bar"></div> </h2>
+                <h3><div class="load-bar"></div></h3>
+                <h4><div class="load-bar"></div></h4>
+              </div>
       </ng-container>
-      <!-- price Column -->
-      <ng-container matColumnDef="current_price">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> $Price </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.market_data.current_price[currentCurrency.toLowerCase()] | currency:currentCurrency }} </mat-cell>
-      </ng-container>
-
-      <!-- 24 hour Column -->
-      <ng-container  matColumnDef="price_change_24">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> 24H </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            <div *ngIf="element.market_data.price_change_percentage_24h >= 0 then positive else negative" ></div>
-            <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_24h | percent }}</span>
-            </ng-template>
-            <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_24h | percent }}</span>
-            </ng-template>
-        </mat-cell>
-      </ng-container>
-      <!-- 7 Day Column -->
-      <ng-container  matColumnDef="price_change_7d">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> 7d </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            <div *ngIf="element.market_data.price_change_percentage_7d >= 0 then positive else negative" ></div>
-            <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_7d | percent }}</span>
-            </ng-template>
-            <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_7d | percent }}</span>
-            </ng-template>
-        </mat-cell>
-      </ng-container>
-
-      <!-- 14 Day Column -->
-      <ng-container  matColumnDef="price_change_14d">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> 14d </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            <div *ngIf="element.market_data.price_change_percentage_14d >= 0 then positive else negative" ></div>
-            <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_14d | percent }}</span>
-            </ng-template>
-            <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_14d | percent }}</span>
-            </ng-template>
-        </mat-cell>
-      </ng-container>
-      <!-- 30 Day Column -->
-      <ng-container  matColumnDef="price_change_30d">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> 30d </mat-header-cell>
-        <mat-cell *matCellDef="let element">
-            <div *ngIf="element.market_data.price_change_percentage_30d >= 0 then positive else negative" ></div>
-            <ng-template #positive>
-              <span class="nbr-positive">+ {{element.market_data.price_change_percentage_30d | percent }}</span>
-              <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-eye"></ion-icon>
-            </ng-template>
-            <ng-template #negative>
-                <span class="nbr-negative">{{element.market_data.price_change_percentage_30d | percent }}</span>
-                <ion-icon class="coin-favorite" *ngIf="element.is_favorite" name="ios-eye"></ion-icon>
-            </ng-template>
-        </mat-cell>
-      </ng-container>
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openCrypto(row)"></mat-row>
-    </mat-table>
-    <ion-infinite-scroll (ionInfinite)="loadMoreCoins($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ng-container>
-  <ng-container *ngIf="loading">
-          <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
-            <h2><div class="load-bar"></div> </h2>
-            <h3><div class="load-bar"></div></h3>
-            <h4><div class="load-bar"></div></h4>
-            <h2><div class="load-bar"></div> </h2>
-            <h3><div class="load-bar"></div></h3>
-            <h4><div class="load-bar"></div></h4>
-          </div>
-  </ng-container>
 </ion-content>

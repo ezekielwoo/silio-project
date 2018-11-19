@@ -23,6 +23,7 @@ export class newsPage {
 
   ionViewDidLoad() {
     this.api.getnews().then((data:any)=> {
+      console.log(data);
       this.news = data.rss.channel[0].item;
     });
   }
@@ -34,7 +35,7 @@ export class newsPage {
   }
 
   openBrowser(url) {
-    const browser = this.iab.create(url);
+    const browser = this.iab.create(url, '_blank', 'location=no,shouldPauseOnSuspend=yes');
     browser.show();
   }
 }
