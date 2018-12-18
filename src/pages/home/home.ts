@@ -8,6 +8,7 @@ import { Events } from 'ionic-angular';
 import { watchListPage } from '../watch-list/watch-list';
 import { SettingProvider } from '../../providers/setting/setting';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
+import {BankDetailsPage} from "../bank-details/bank-details";
 
 @Component({
   selector: 'page-home',
@@ -41,7 +42,7 @@ export class HomePage {
               public events: Events,
               public settingsProvider : SettingProvider,
               public admob:AdmobFreeProvider,
-              public platform: Platform) { 
+              public platform: Platform) {
        this.api.getnews();
   }
 
@@ -49,12 +50,12 @@ export class HomePage {
   ionViewWillEnter(){
     this.admob.showRandomAds();
   }
-  
+
   ionViewDidLoad() {
     this.platform.ready().then(()=>{
       this.admob.prepareBanner();
     })
-    
+
     this.settingsProvider.settingSubject.subscribe((data) => {
         this.currentCurrency = this.settingsProvider.currentSetting.currency;
     })
@@ -63,7 +64,7 @@ export class HomePage {
     this.fetch_coins().then(()=>{
       this.checkFavorite();
       this.dataSource.sort = this.sort;
- 
+
       console.log("dsds");
     });
   }
@@ -112,6 +113,10 @@ export class HomePage {
     this.navCtrl.push(CryptoDetailsPage,{coin : data});
   }
 
+  openBankData(){
+    this.navCtrl.push(BankDetailsPage);
+  }
+
   checkFavorite(){
     this.storage.get('favorites').then((val)=>{
       let favorites = val;
@@ -128,7 +133,7 @@ export class HomePage {
   openWatchList() {
     this.navCtrl.push(watchListPage);
   }
-  
+
   loadMoreCoins(infiniteScroll){
     this.currentPage++;
     this.fetch_coins(infiniteScroll);
