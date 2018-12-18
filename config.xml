@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="mandroidy.cryptoz.cryptocurrency.market.rates" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="cryptoz.app" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Cryptoz</name>
-    <description>Cryptoz - cryptocurrency app</description>
+    <description>Cryptoz</description>
     <author email="marouanesouah@gmail.com" href="http://marouane.me/">Cryptoz - cryptocurrency app</author>
     <content src="index.html" />
     <access origin="*" />
@@ -91,9 +91,7 @@
     <plugin name="cordova-plugin-advanced-http" spec="^2.0.1" />
     <plugin name="cordova-plugin-statusbar" spec="https://github.com/apache/cordova-plugin-statusbar.git" />
     <plugin name="cordova-plugin-admob-free" spec="^0.22.0">
-        <variable name="ADMOB_APP_ID" value="ca-app-pub-2249157507977141~7014337127" />
+        <variable name="ADMOB_APP_ID" value="" />
     </plugin>
-    <engine name="browser" spec="5.0.4" />
-    <engine name="ios" spec="4.5.5" />
-    <engine name="android" spec="7.0.0" />
+    <engine name="android" spec="7.1.4" />
 </widget>
