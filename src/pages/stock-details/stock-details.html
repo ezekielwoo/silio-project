@@ -1,0 +1,169 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title style="margin-left: -10px"> {{stockData.companyName}} <span class="crypto_symbol"> {{stockData.symbol | uppercase}} </span>
+    </ion-title>
+    <button class="btn-favorite" [class.btn-favorite-set]="is_favorite" (click)="toggleFavorite()" ion-button icon-only>
+      <ion-icon name="md-add"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding-top>
+  <change-currency></change-currency>
+  <h1 class="crypto-price">{{price}} {{currentCurrency}} </h1>
+  <div class="crypto-info">
+    <ion-row>
+      <ion-col text-right>
+        <span class="coin-red">24h Low </span>
+      </ion-col>
+      <ion-col col-1> /</ion-col>
+      <ion-col text-left>
+        <span class="coin-green">24h High</span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-right>
+        {{dayLow}} {{currentCurrency}}
+      </ion-col>
+      <ion-col col-1> -</ion-col>
+      <ion-col text-left>
+        {{dayHigh}} {{currentCurrency}}
+      </ion-col>
+    </ion-row>
+  </div>
+    <br>
+  <div class="chart">
+    <iframe height="100%" width="100%" [src]='chartURL()' ></iframe>
+  </div>
+
+  <div class="coin-info">
+    <h1 class="coin-info-title">
+      Stock Info
+    </h1>
+    <div class="coin-info-card">
+      <ion-row>
+        <ion-col col-12 text-left>
+          <span class="content">{{description}}</span>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">Market cap</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          {{stockData.marketcap}} {{currentCurrency}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">Total Volume</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          {{volume}}M {{currentCurrency}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">Dividend Yield</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          {{stockData.dividendYield}} %
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">(24h)</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          <div *ngIf="stockData.ytdChangePercent >= 0 then positive24 else negative24"></div>
+          <ng-template #positive24>
+            <span class="nbr-positive">+ {{stockData.ytdChangePercent |  percent}} </span>
+          </ng-template>
+          <ng-template #negative24>
+            <span class="nbr-negative">{{stockData.ytdChangePercent |  percent}} </span>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">(5 days)</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          <div *ngIf="stockData.day5ChangePercent >= 0 then positive7d else negative7d"></div>
+          <ng-template #positive7d>
+            <span class="nbr-positive">+ {{stockData.day5ChangePercent |  percent}} </span>
+          </ng-template>
+          <ng-template #negative7d>
+            <span class="nbr-negative">{{stockData.day5ChangePercent |  percent}} </span>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">(30 days)</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          <div *ngIf="stockData.day30ChangePercent >= 0 then positive30d else negative30d"></div>
+          <ng-template #positive30d>
+            <span class="nbr-positive">+ {{stockData.day30ChangePercent |  percent}} </span>
+          </ng-template>
+          <ng-template #negative30d>
+            <span class="nbr-negative">{{stockData.day30ChangePercent |  percent}} </span>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">(90 Days)</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          <div *ngIf="stockData.month3ChangePercent >= 0 then positive60d else negative60d"></div>
+          <ng-template #positive60d>
+            <span class="nbr-positive">+ {{stockData.month3ChangePercent |  percent}} </span>
+          </ng-template>
+          <ng-template #negative60d>
+            <span class="nbr-negative">{{stockData.month3ChangePercent |  percent}} </span>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-6 text-left>
+          <span class="coin-info-name">(1 year)</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail">
+          <div *ngIf="stockData.year1ChangePercent >= 0 then positive1y else negative1y"></div>
+          <ng-template #positive1y>
+            <span class="nbr-positive">+ {{stockData.year1ChangePercent |  percent }} </span>
+          </ng-template>
+          <ng-template #negative1y>
+            <span class="nbr-negative">{{stockData.year1ChangePercent |  percent }} </span>
+          </ng-template>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <ng-container *ngIf="loading">
+    <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+    </div>
+  </ng-container>
+</ion-content>

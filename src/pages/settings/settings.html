@@ -20,7 +20,7 @@
           <ion-label>Theme : Dark</ion-label>
          <ion-toggle  [(ngModel)]="isDarkTheme" (ionChange)="updateTheme()" checked="false"></ion-toggle>
       </ion-item>
-      <ion-item class="item-currency"> 
+      <ion-item class="item-currency">
           <ion-label>Currency</ion-label>
           <ion-select  [selectOptions]="{cssClass : 'select-currency'}" (ionChange)="changeCurrentCurrency()" (click)="initCurrencyIcon()" [(ngModel)]="currentCurrency">
               <ion-option  class="select-currency" *ngFor="let currency of currencyList" [value]="currency">
@@ -37,7 +37,5 @@
             <ion-label>Credits</ion-label>
         </ion-item>
      </ion-list>
-
-     <h6 ion-text text-center class="credits">Cryptoz V1.0.0</h6>
 
 </ion-content>
