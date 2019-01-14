@@ -1,0 +1,77 @@
+
+page-stock-market {
+  .mat-table * {
+    font-size: 10px !important;
+  }
+
+  .scroll-content {
+    margin-top: 0px !important;
+  }
+
+  .cp-search {
+    position: fixed;
+    padding-bottom: 20px;
+    top: 80px;
+  }
+
+  .marginTop {
+    margin-top: 100px;
+  }
+  .mat-header-row{
+    // position: fixed;
+    z-index: 9;
+    //background: #201f27;
+    top: 0;
+    width: 100%;
+  }
+
+  .mat-table{
+    padding-top: 60px;
+  }
+
+
+
+  .coin-favorite{
+    position: absolute;
+    font-size: 20px !important;
+    right: 2%;
+  }
+
+  .mat-row{
+    padding: 0 10px;
+  }
+
+  .mat-column-rank {
+    flex: 0 0 auto;
+  }
+
+  .mat-column-price, .mat-column-market_cap{
+    flex: 2;
+    font-weight: bold;
+    font-size: 11px !important;
+  }
+
+
+
+  .mat-column-name{
+    flex: 2;
+    .row {
+      flex-wrap:nowrap;
+    }
+    img {
+      width: 24px;
+      margin: 0 5px;
+    }
+    h5 {
+      font-size: 10px;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+
+  @keyframes mymove {
+    from {left: 0px;}
+    to {right: 0;}
+}
+}

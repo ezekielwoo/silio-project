@@ -86,12 +86,16 @@
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="2.0.5" />
     <allow-navigation href="http://192.168.1.12:8100" />
-    <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="cordova-plugin-advanced-http" spec="^2.0.1" />
     <plugin name="cordova-plugin-statusbar" spec="https://github.com/apache/cordova-plugin-statusbar.git" />
     <plugin name="cordova-plugin-admob-free" spec="^0.22.0">
         <variable name="ADMOB_APP_ID" value="" />
     </plugin>
+<<<<<<< HEAD
     <engine name="android" spec="~7.1.4" />
+=======
+    <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
+    <engine name="android" spec="7.1.4" />
+>>>>>>> 27ddfa1eb65fa950fe7ff30987da9c24fcb85c5f
 </widget>
