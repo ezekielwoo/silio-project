@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
 
 /**
  * Generated class for the AddEquityPage page.
@@ -15,11 +15,16 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class AddEquityPage {
 
+  stock: any = {};
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+    this.stock = this.navParams.get('stock');
   }
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AddEquityPage');
+    console.log(this.stock, 'dataaa');
   }
 
 }

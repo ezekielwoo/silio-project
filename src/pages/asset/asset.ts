@@ -3,7 +3,10 @@ import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import {darkChartTheme} from "../../theme/chart.dark";
 import {lightChartTheme} from "../../theme/chart.light";
 import * as HighCharts from 'HighCharts';
-import {MatTableDataSource} from "@angular/material";
+import { Injectable } from '@angular/core';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /**
  * Generated class for the AssetPage page.
@@ -25,17 +28,32 @@ export class AssetPage {
   STOCK_DATA = [];
   //names of columns that will be displayed
   displayedColumns = ['symbol', 'quantity', 'price', 'total', 'change'];
+  stock_data = [];
 
   // dataSource = new MatTableDataSource(this.STOCK_DATA);
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AssetPage');
     this.initChart();
     this.loadingChart = false;
+    this.getItems();
+  }
+
+    getItems(): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    expenseObservable = this.db.list('/equities/stocks').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+    expenseObservable.subscribe(result => {
+      this.stock_data = result;
+      console.log('retrieve data',this.stock_data);
+
+    });
+    return expenseObservable;
   }
 
   initChart() {

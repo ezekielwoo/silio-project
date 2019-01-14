@@ -7,6 +7,8 @@ import {darkChartTheme} from "../../theme/chart.dark";
 import * as HighCharts from 'HighCharts';
 import {Storage} from '@ionic/storage';
 import {DomSanitizer} from '@angular/platform-browser';
+import {AssetPage} from "../asset/asset";
+import {AddEquityPage} from "../add-equity/add-equity";
 
 /**
  * Generated class for the StockDetailsPage page.
@@ -76,31 +78,8 @@ export class StockDetailsPage {
     return this.DomSanitizer.bypassSecurityTrustResourceUrl(this.chart_source)
   }
 
-  toggleFavorite() {
-    this.storage.get('favorites').then((val) => {
-      let favorites = [];
-      //check if the coin is not favorite
-      //if it's not a favorite coin, add to localstorage
-      if (!this.is_favorite) {
-        //check if favorites exist
-        if (val) {
-          favorites = val;
-          if (favorites.indexOf(this.stockData.symbol) == -1) {
-            favorites.push(this.stockData);
-          }
-        } else {
-          favorites.push(this.stockData);
-        }
-        this.is_favorite = true;
-        this.storage.set('favorites', favorites);
-      } else {
-        favorites = val.filter((f) => {
-          return f.id !== this.stockData.symbol;
-        });
-        this.is_favorite = false;
-        this.storage.set('favorites', favorites);
-      }
-    })
+  goToAddEquity(data){
+    this.navCtrl.push(AddEquityPage, {stock: data});
   }
 
   ionViewDidLoad() {

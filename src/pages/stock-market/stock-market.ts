@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, Injectable } from '@angular/core';
 import {IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {Storage} from '@ionic/storage';
 import {ApiProvider} from './../../providers/api/api';
@@ -8,6 +8,7 @@ import {watchListPage} from '../watch-list/watch-list';
 import {SettingProvider} from '../../providers/setting/setting';
 import {AdmobFreeProvider} from '../../providers/admob/admob';
 import {StockDetailsPage} from "../stock-details/stock-details";
+import { AngularFireDatabase } from 'angularfire2/database';
 
 /**
  * Generated class for the StockMarketPage page.
@@ -47,7 +48,9 @@ export class StockMarketPage {
               public events: Events,
               public settingsProvider: SettingProvider,
               public admob: AdmobFreeProvider,
-              public platform: Platform) {
+              public platform: Platform,
+              private db: AngularFireDatabase
+              ) {
 
   }
 
@@ -72,6 +75,8 @@ export class StockMarketPage {
     return new Promise((resolve) => {
       this.api.getAllStock(this.currentPage, infiniteScroll).then((data) => {
         console.log(this.STOCK_DATA, 'stock data');
+
+        this.db.list('/equities/stocks/').push(data);
         this.STOCK_DATA = this.STOCK_DATA.concat(data);
         this.dataSource = new MatTableDataSource(this.STOCK_DATA);
         this.dataSource.sortingDataAccessor = (item, property) => {
@@ -106,6 +111,8 @@ export class StockMarketPage {
     if (this.currentPage === this.maxPageNumber) {
       infiniteScroll.enable(false);
     }
+
+
 
   }
 

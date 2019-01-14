@@ -30,17 +30,18 @@ import {StockMarketPage} from "../pages/stock-market/stock-market";
 import {BankDetailsPage} from "../pages/bank-details/bank-details";
 import {ValuationPage} from "../pages/valuation/valuation";
 import {AssetPage} from "../pages/asset/asset";
-// import {AngularFireModule} from 'angularfire2';
-// import {AngularFireDatabaseModule} from 'angularfire2/database';
+import {AngularFireModule} from 'angularfire2';
+import {AngularFireDatabaseModule} from 'angularfire2/database';
+import {AddEquityPage} from "../pages/add-equity/add-equity";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
-//   authDomain: "silio-4f410.firebaseapp.com",
-//   databaseURL: "https://silio-4f410.firebaseio.com",
-//   projectId: "silio-4f410",
-//   storageBucket: "silio-4f410.appspot.com",
-//   messagingSenderId: "283218915062"
-// };
+const firebaseConfig = {
+  apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
+  authDomain: "silio-4f410.firebaseapp.com",
+  databaseURL: "https://silio-4f410.firebaseio.com",
+  projectId: "silio-4f410",
+  storageBucket: "silio-4f410.appspot.com",
+  messagingSenderId: "283218915062"
+};
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import {AssetPage} from "../pages/asset/asset";
     StockMarketPage,
     BankDetailsPage,
     ValuationPage,
-    AssetPage
+    AssetPage,
+    AddEquityPage
   ],
   imports: [
     BrowserModule,
@@ -68,8 +70,8 @@ import {AssetPage} from "../pages/asset/asset";
     IonicModule.forRoot(MyApp, {mode: 'md'}),
     IonicStorageModule.forRoot(),
     ComponentsModule,
-    // AngularFireDatabaseModule,
-    // AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireDatabaseModule,
+    AngularFireModule.initializeApp(firebaseConfig),
 
   ],
   bootstrap: [IonicApp],
@@ -86,7 +88,8 @@ import {AssetPage} from "../pages/asset/asset";
     StockMarketPage,
     BankDetailsPage,
     ValuationPage,
-    AssetPage
+    AssetPage,
+    AddEquityPage
   ],
   providers: [
     StatusBar,
