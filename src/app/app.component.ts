@@ -14,14 +14,15 @@ export class MyApp {
   rootPage:any = TabsPage;
   theme :any = "dark" //default theme
 
-  constructor(platform: Platform, 
-              statusBar: StatusBar, 
+
+  constructor(platform: Platform,
+              statusBar: StatusBar,
               splashScreen: SplashScreen,
               private network: Network,
               private toastCtrl: ToastController,
               public setting:SettingProvider) {
 
-    platform.ready().then(() => {  
+    platform.ready().then(() => {
         this.setting.settingSubject.subscribe((data) => {
           this.theme = this.setting.currentSetting.theme;
         })
@@ -34,11 +35,11 @@ export class MyApp {
         statusBar.backgroundColorByHexString('#b6629d');
         splashScreen.hide();
     });
-    
+
   }
 
   private listenConnection(): void {
-    
+
     this.network.onDisconnect()
       .subscribe(() => {
         let toast = this.toastCtrl.create({
@@ -46,9 +47,9 @@ export class MyApp {
           duration: 3000,
           position: 'top'
         });
-      
+
         toast.present();
       });
   }
-  
+
 }

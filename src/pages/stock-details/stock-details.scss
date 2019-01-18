@@ -1,0 +1,84 @@
+page-stock-details {
+  .btn-favorite{
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    margin-top: 8px;
+  }
+  .btn-favorite-set{
+    background: white !important;
+    color: #2e5433;
+
+  }
+  .content {
+    text-align: center;
+  }
+
+  .chart {
+    height: 50%;
+    width: 100%;
+  }
+
+  .ticker-detail{
+    text-align:center;
+    padding: 10px 10px 10px 10px;
+  }
+  .crypto-price{
+    font-size: 45px;
+  }
+  .coin-green{
+    color:#58e858;
+  }
+  .coin-red{
+    color:#f54747;
+  }
+  .crypto-info span{
+    display: block;
+  }
+  .coin-info-detail {
+    font-size: 14px;
+    color: #aca9bb;
+  }
+  .coin-info-card  {
+    padding: 15px 0;
+    *{
+      font-size: 17px;
+    }
+    .row {
+      margin : 10px 0;
+    }
+  }
+  .toolbar-title{
+    text-align: center;
+    .crypto_symbol{
+      display: block;
+      font-size: 11px;
+      font-weight: normal;
+    }
+  }
+
+
+  .coin_community_data{
+    ion-icon{
+      font-size: 2em;
+    }
+    .coin_data_name{
+      display: block;
+      font-size: 14px;
+      color: #bd8aa8;
+    }
+  }
+
+  .mat-button-toggle-group {
+    *{
+      color: white;
+      font-size: 12px;
+    }
+    border: solid 2px #ac607a;
+    .mat-button-toggle-checked {
+      background-color: #ac607a;
+      color:white;
+    }
+  }
+
+}
