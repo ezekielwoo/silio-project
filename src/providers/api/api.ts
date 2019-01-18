@@ -57,6 +57,20 @@ export class ApiProvider {
     })
   }
 
+  getAllCurrency(pageNumber, infiniteScroll?) {
+    return new Promise((resolve, reject) => {
+      this.http.get(`https://eservices.mas.gov.sg/api/action/datastore/search.json?resource_id=95932927-c8bc-4e7a-b484-68a66a24edfe&limit=1`).subscribe((data) => {
+        if (infiniteScroll) {
+          infiniteScroll.complete();
+        }
+        console.log(data,'currency data');
+        resolve(data);
+      }, (e) => {
+        reject(e);
+      })
+    })
+  }
+
 
   getStockPrice(symbol) {
     return new Promise((resolve, reject) => {

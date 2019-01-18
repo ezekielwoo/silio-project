@@ -33,6 +33,8 @@ import {AssetPage} from "../pages/asset/asset";
 import {AngularFireModule} from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AddEquityPage} from "../pages/add-equity/add-equity";
+import {CurrencyMarketPage} from "../pages/currency-market/currency-market";
+import {ViewEquityPage} from "../pages/view-equity/view-equity";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
@@ -58,7 +60,10 @@ const firebaseConfig = {
     BankDetailsPage,
     ValuationPage,
     AssetPage,
-    AddEquityPage
+    AddEquityPage,
+    CurrencyMarketPage,
+    AddEquityPage,
+    ViewEquityPage
   ],
   imports: [
     BrowserModule,
@@ -89,7 +94,10 @@ const firebaseConfig = {
     BankDetailsPage,
     ValuationPage,
     AssetPage,
-    AddEquityPage
+    AddEquityPage,
+    CurrencyMarketPage,
+    AddEquityPage,
+    ViewEquityPage
   ],
   providers: [
     StatusBar,

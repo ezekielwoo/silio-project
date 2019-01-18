@@ -2,7 +2,8 @@
   <ion-navbar>
     <ion-title style="margin-left: -25px"> {{stockData.companyName}} <span class="crypto_symbol"> {{stockData.symbol | uppercase}} </span>
     </ion-title>
-    <button class="btn-favorite" [class.btn-favorite-set]="is_favorite" (click)="goToAddEquity(stockData)" ion-button icon-only>
+    <button class="btn-favorite" [class.btn-favorite-set]="is_favorite" (click)="goToAddEquity(stockData)" ion-button
+            icon-only>
       <ion-icon name="md-add"></ion-icon>
     </button>
   </ion-navbar>
@@ -32,9 +33,25 @@
       </ion-col>
     </ion-row>
   </div>
-    <br>
+  <br>
   <div class="chart">
-    <iframe height="100%" width="100%" [src]='chartURL()' ></iframe>
+    <iframe height="100%" width="100%" [src]='chartURL()'></iframe>
+  </div>
+
+  <div class="button-group" padding>
+    <ion-row>
+      <ion-col col-6>
+        <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToAddEquity(stockData)">
+          Add Equity
+        </button>
+      </ion-col>
+
+      <ion-col col-6>
+        <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px" (click)="goToViewEquity()">
+          View Equity
+        </button>
+      </ion-col>
+    </ion-row>
   </div>
 
   <div class="coin-info">

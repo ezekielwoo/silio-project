@@ -1,17 +1,14 @@
-import {Component, ViewChild, Injectable } from '@angular/core';
-import {IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
-import {Storage} from '@ionic/storage';
-import {ApiProvider} from './../../providers/api/api';
-import {MatTableDataSource, MatSort} from '@angular/material';
-import {Events} from 'ionic-angular';
-import {watchListPage} from '../watch-list/watch-list';
-import {SettingProvider} from '../../providers/setting/setting';
-import {AdmobFreeProvider} from '../../providers/admob/admob';
-import {StockDetailsPage} from "../stock-details/stock-details";
-import { AngularFireDatabase } from 'angularfire2/database';
+import {Component, ViewChild} from '@angular/core';
+import {Events, IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
+import {MatSort, MatTableDataSource} from "@angular/material";
+import {SettingProvider} from "../../providers/setting/setting";
+import {ApiProvider} from "../../providers/api/api";
+import {AdmobFreeProvider} from "../../providers/admob/admob";
+import {Storage} from "@ionic/storage";
+import {AngularFireDatabase} from "angularfire2/database";
 
 /**
- * Generated class for the StockMarketPage page.
+ * Generated class for the CurrencyMarketPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -19,27 +16,25 @@ import { AngularFireDatabase } from 'angularfire2/database';
 
 @IonicPage()
 @Component({
-  selector: 'page-stock-market',
-  templateUrl: 'stock-market.html',
+  selector: 'page-currency-market',
+  templateUrl: 'currency-market.html',
 })
-export class StockMarketPage {
+export class CurrencyMarketPage {
 
   @ViewChild(MatSort) sort: MatSort;
 
   //store stock data
-  STOCK_DATA = [];
+  CURRENCY_DATA = [];
   //names of columns that will be displayed
   displayedColumns = ['name', 'current_price'];
-  dataSource = new MatTableDataSource(this.STOCK_DATA);
+  dataSource = new MatTableDataSource(this.CURRENCY_DATA);
 
   search = false; //Search bar
 
   currentPage = 1;//current Page pagination
   maxPageNumber = 25;
   loading = true; // display loading when fetching data from API
-
-
-  currentCurrency = "USD" // default currency
+  currentCurrency = "SGD" // default currency
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -49,18 +44,15 @@ export class StockMarketPage {
               public settingsProvider: SettingProvider,
               public admob: AdmobFreeProvider,
               public platform: Platform,
-              private db: AngularFireDatabase
-              ) {
-
+              private db: AngularFireDatabase) {
   }
-
 
   ionViewDidLoad() {
     this.settingsProvider.settingSubject.subscribe((data) => {
       this.currentCurrency = this.settingsProvider.currentSetting.currency;
     });
 
-    this.fetch_stocks().then(() => {
+    this.fetch_currency().then(() => {
       this.dataSource.sort = this.sort;
       console.log('dsds', this.dataSource);
     });
@@ -68,16 +60,12 @@ export class StockMarketPage {
     console.log('ionViewDidLoad StockMarketPage');
   }
 
-  ionViewDidEnter() {
-  }
-
-  fetch_stocks(infiniteScroll?) {
+  fetch_currency(infiniteScroll?) {
     return new Promise((resolve) => {
-      this.api.getAllStock(this.currentPage, infiniteScroll).then((data) => {
-        console.log(this.STOCK_DATA, 'stock data');
-
-        this.STOCK_DATA = this.STOCK_DATA.concat(data);
-        this.dataSource = new MatTableDataSource(this.STOCK_DATA);
+      this.api.getAllCurrency(this.currentPage, infiniteScroll).then((data) => {
+        this.CURRENCY_DATA = this.CURRENCY_DATA.concat(data);
+        this.dataSource = new MatTableDataSource(this.CURRENCY_DATA[0]);
+        console.log(this.dataSource,'dsds');
         this.dataSource.sortingDataAccessor = (item, property) => {
           switch (property) {
             default:
@@ -96,17 +84,9 @@ export class StockMarketPage {
     this.dataSource.filter = filterValue;
   }
 
-  openStock(data) {
-    this.navCtrl.push(StockDetailsPage, {stock: data});
-  }
-
-  openWatchList() {
-    this.navCtrl.push(watchListPage);
-  }
-
-  loadMoreStock(infiniteScroll) {
+  loadMoreCurrency(infiniteScroll) {
     this.currentPage++;
-    this.fetch_stocks(infiniteScroll);
+    this.fetch_currency(infiniteScroll);
     if (this.currentPage === this.maxPageNumber) {
       infiniteScroll.enable(false);
     }
