@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="trending-up"></ion-icon>
+      All Currencies
+    </ion-title>
+    <ion-buttons right>
+      <button (click)="search = !search" ion-button icon-only>
+        <ion-icon name="ios-search-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="!loading">
+    <ion-item class="cp-search" *ngIf="search">
+      <ion-label stacked>Search</ion-label>
+      <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search"></ion-input>
+    </ion-item>
+    <mat-table #table [dataSource]="dataSource" matSort [class.marginTop]="search">
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <ion-row align-items-center>
+            <div class="currency-desc">
+              <h5>{{element.name}}</h5>
+            </div>
+          </ion-row>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="current_price">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Symbol</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span class="crypto-symbol">{{element.symbol | uppercase }}</span>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openStock(row)"></mat-row>
+    </mat-table>
+    <ion-infinite-scroll (ionInfinite)="loadMoreCurrency($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-container>
+  <ng-container *ngIf="loading">
+    <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+    </div>
+  </ng-container>
+</ion-content>

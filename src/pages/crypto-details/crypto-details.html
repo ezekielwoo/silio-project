@@ -8,7 +8,7 @@
 
 <ion-content padding-top>
    <change-currency></change-currency>
-  <h1 class="crypto-price">{{coin.market_data.current_price[currentCurrency.toLowerCase()] | currency:currentCurrency}} </h1>
+  <h1 class="crypto-price">{{coin.market_data.current_price[currentCurrency.toLowerCase()]}} </h1>
   <div class="crypto-info">
     <ion-row>
        <ion-col text-right>
@@ -146,34 +146,35 @@
         </ion-row>
     </div>
   </div>
+
   <div class="coin-info">
     <h1 class="coin-info-title">
       Community info
     </h1>
     <div class="coin-info-card">
-      <ion-row class="coin_community_data">
-        <ion-col>
-           <div class="coin_data_icon">
-            <ion-icon name="logo-facebook"></ion-icon>
-           </div>
-           <span>{{coin.community_data.facebook_likes}} </span>
-           <span class="coin_data_name">Likes</span>
-        </ion-col>
-        <ion-col>
-          <div class="coin_data_icon">
-             <ion-icon name="logo-twitter"></ion-icon>
-          </div>
-          <span>{{coin.community_data.twitter_followers}} </span>
-          <span class="coin_data_name">Followers</span>
-        </ion-col>
-        <ion-col>
-          <div class="coin_data_icon">
-             <ion-icon name="logo-reddit"></ion-icon>
-          </div>
-          <span>{{coin.community_data.reddit_subscribers}} </span>
-          <span class="coin_data_name">Subscribers</span>
-        </ion-col>
-      </ion-row>
+      <!--<ion-row class="coin_community_data">-->
+        <!--<ion-col>-->
+           <!--<div class="coin_data_icon">-->
+            <!--<ion-icon name="logo-facebook"></ion-icon>-->
+           <!--</div>-->
+           <!--<span>{{coin.community_data.facebook_likes}} </span>-->
+           <!--<span class="coin_data_name">Likes</span>-->
+        <!--</ion-col>-->
+        <!--<ion-col>-->
+          <!--<div class="coin_data_icon">-->
+             <!--<ion-icon name="logo-twitter"></ion-icon>-->
+          <!--</div>-->
+          <!--<span>{{coin.community_data.twitter_followers}} </span>-->
+          <!--<span class="coin_data_name">Followers</span>-->
+        <!--</ion-col>-->
+        <!--<ion-col>-->
+          <!--<div class="coin_data_icon">-->
+             <!--<ion-icon name="logo-reddit"></ion-icon>-->
+          <!--</div>-->
+          <!--<span>{{coin.community_data.reddit_subscribers}} </span>-->
+          <!--<span class="coin_data_name">Subscribers</span>-->
+        <!--</ion-col>-->
+      <!--</ion-row>-->
     </div>
   </div>
 </ion-content>
