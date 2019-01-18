@@ -1,13 +1,18 @@
 import { Storage } from '@ionic/storage';
 import { ApiProvider } from './../../providers/api/api';
 import { CryptoDetailsPage } from './../crypto-details/crypto-details';
-import { Component, ViewChild } from '@angular/core';
-import { NavController, Platform } from 'ionic-angular';
+import { Component, ViewChild, OnInit  } from '@angular/core';
+import { NavController, Platform, NavParams } from 'ionic-angular';
 import {MatTableDataSource, MatSort} from '@angular/material';
 import { Events } from 'ionic-angular';
 import { watchListPage } from '../watch-list/watch-list';
 import { SettingProvider } from '../../providers/setting/setting';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
+import { Account } from '../../models/account';
+import { newsPage } from '../news/news';
+import { SettingsPage } from '../settings/settings';
+import { AccountdetailsPage } from '../accountdetails/accountdetails';
+import { AccountFbProvider } from '../../providers/account-firebase';
 
 @Component({
   selector: 'page-home',
@@ -15,7 +20,9 @@ import { AdmobFreeProvider } from '../../providers/admob/admob';
 })
 
 
-export class HomePage {
+export class HomePage implements OnInit {
+  accounts: Account[];
+  
 
   //Sorting Data
   @ViewChild(MatSort) sort: MatSort;
@@ -41,9 +48,32 @@ export class HomePage {
               public events: Events,
               public settingsProvider : SettingProvider,
               public admob:AdmobFreeProvider,
+              private accountService: AccountFbProvider,
               public platform: Platform) { 
        this.api.getnews();
   }
+  ngOnInit() {
+
+    this.accountService.getItems().subscribe(accounts => { this.accounts=accounts ; } );
+
+  }
+    /* this.accounts = [
+  
+      new Account("DBS SAVINGS BANK", 1250.00, "XXX-XXXXXX-888"),
+  
+      new Account("OCBC SAVINGS BANK", 1150.00, "XXX-XXXXXX-999"),
+  
+      new Account("POSB SAVINGS BANK", 150.00, "XXX-XXXXXX-878") */
+  
+    
+  
+  
+  deleteItem(item:Account){
+
+    this.accounts.splice(this.accounts.indexOf(item),1);
+  
+  }
+
 
 
   ionViewWillEnter(){
@@ -64,7 +94,7 @@ export class HomePage {
       this.checkFavorite();
       this.dataSource.sort = this.sort;
  
-      console.log("dsds");
+      console.log("dsds",this.accounts);
     });
   }
 
@@ -107,10 +137,32 @@ export class HomePage {
     this.dataSource.filter = filterValue;
   }
 
-
-  openCrypto(data) {
+// click the selected slot to view the cryptodetails 
+ /*  openCrypto(data) {
     this.navCtrl.push(CryptoDetailsPage,{coin : data});
-  }
+  } */
+
+ /*  goToCryptoDetails(params){
+
+    if (!params) params = {};
+
+this.navCtrl.push(CryptoDetailsPage, params);
+
+
+} */
+
+openCrypto(accountItem){
+
+  this.navCtrl.push(AccountdetailsPage);
+
+}
+
+goToAccountDetail(params){
+  if (!params) params = {};
+this.navCtrl.push(AccountdetailsPage, params);
+}
+
+
 
   checkFavorite(){
     this.storage.get('favorites').then((val)=>{
@@ -137,4 +189,8 @@ export class HomePage {
     }
 
   }
+ 
+  
+
+  
 }

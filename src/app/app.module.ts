@@ -12,12 +12,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { AdMobFree } from '@ionic-native/admob-free';
 import { HTTP } from '@ionic-native/http';
-
-
 import { newsPage } from '../pages/news/news';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
-
+import{AccountdetailsPage} from '../pages/accountdetails/accountdetails'
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { ApiProvider } from '../providers/api/api';
@@ -28,7 +26,21 @@ import { SettingsPage } from '../pages/settings/settings';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { AdmobFreeProvider } from '../providers/admob/admob';
 import { Network } from '@ionic-native/network';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AccountFbProvider } from '../providers/account-firebase';
 
+ 
+
+
+const firebaseConfig = {
+apiKey: "AIzaSyCIA9zGv8JQ9r_4Tt25tMj3LoF-cQ-sAY4",
+authDomain: "heyhey-ed705.firebaseapp.com",
+databaseURL: "https://heyhey-ed705.firebaseio.com",
+projectId: "heyhey-ed705",
+storageBucket: "heyhey-ed705.appspot.com",
+messagingSenderId: "152257642053"
+};
 
 @NgModule({
   declarations: [
@@ -39,7 +51,8 @@ import { Network } from '@ionic-native/network';
     CryptoDetailsPage,
     GlobalMarketPage,
     SettingsPage,
-    watchListPage
+    watchListPage,
+    AccountdetailsPage
   ],
   imports: [
     BrowserModule,
@@ -47,6 +60,8 @@ import { Network } from '@ionic-native/network';
     AngularMaterialModule,
     CdkTableModule,
     HttpModule,
+    AngularFireDatabaseModule,
+    AngularFireModule.initializeApp(firebaseConfig),
     HttpClientModule,
     IonicModule.forRoot(MyApp, { mode: 'md'}),
     IonicStorageModule.forRoot(),
@@ -62,7 +77,8 @@ import { Network } from '@ionic-native/network';
     CryptoDetailsPage,
     GlobalMarketPage,
     SettingsPage,
-    watchListPage
+    watchListPage,
+    AccountdetailsPage
   ],
   providers: [
     StatusBar,
@@ -72,7 +88,8 @@ import { Network } from '@ionic-native/network';
     SettingProvider,
     InAppBrowser,
     AdMobFree,
-    AdmobFreeProvider ,
+    AdmobFreeProvider,
+    AccountFbProvider,
     Network,
     HTTP,
   ]

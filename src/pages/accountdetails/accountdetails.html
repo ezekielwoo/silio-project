@@ -1,0 +1,82 @@
+<!--
+  Generated template for the AccountdetailsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Account Details</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list>
+
+  <!-- <ion-item>
+      <ion-label>Name of Savings</ion-label>
+      {{account.name}}
+  </ion-item> -->
+  <ion-item>
+      Name of Savings: {{account.name}}
+  </ion-item>
+
+  <!-- <ion-item>
+      <ion-label>Amount</ion-label>
+      ${{account.amount}}
+  </ion-item> -->
+  <ion-item>
+      SGD${{account.amount}} 
+  </ion-item>
+
+ <!--  <ion-item>
+      <ion-label>Account Number</ion-label>
+      {{account.bankaccnum}}
+  </ion-item> -->
+  <ion-item>
+      Account Number: {{account.bankaccnum}}
+  </ion-item>
+
+</ion-list>
+
+
+
+  <div id="chart-market-shares" style="display: block;"></div>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<ion-row>
+    <ion-col col-6 text-left>
+      <span>
+          <h1>Transactions made </h1>
+          
+          (24h): {{coin.market_data.price_change_24h }}  
+          <br>
+          (7 Days): {{coin.market_data.price_change_percentage_7d}}
+          <br>
+          (14 Days): {{coin.market_data.price_change_percentage_14d}}
+          
+
+      </span>
+      
+      
+    </ion-col>
+    <ion-col col-6 class="coin-info-detail">
+        <!-- <div *ngIf="coin.market_data.price_change_percentage_24h >= 0 then positive24 else negative24" ></div> -->
+        <ng-template #positive24>
+          <!-- <span class="nbr-positive">+ {{coin.market_data.price_change_percentage_24h |  percent}} </span> -->
+        </ng-template>
+        <ng-template #negative24>
+            <!-- <span class="nbr-negative">{{coin.market_data.price_change_percentage_24h |  percent}} </span> -->
+        </ng-template>
+    </ion-col>
+</ion-row>
+
+    
+
+</ion-content>
