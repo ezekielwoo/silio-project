@@ -28,17 +28,38 @@ import { SettingsPage } from '../pages/settings/settings';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { AdmobFreeProvider } from '../providers/admob/admob';
 import { Network } from '@ionic-native/network';
+import { LoginPage } from '../pages/Login/Login';
+import { ViewCreditPage } from '../pages/ViewCredit/ViewCredit';
+import { FormsModule }   from '@angular/forms';
+import { AngularFireModule } from 'angularfire2';
+import { TransactionFbProvider } from '../providers/transaction-firebase';
+import { ExpenseFbProvider } from '../providers/expense-firebase';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { TransactionPage } from '../pages/CcTrans/Transaction';
+import { bankAccPage } from '../pages/bankAcc/bankAcc';
+import{TransactionFormPage}from '../pages/TransForm/TransactionForm';
 
+const firebaseConfig = {apiKey: "AIzaSyCLFiAjdL55U6jtBBxWbj8M0_RytzK5svo",
+authDomain: "silio-p.firebaseapp.com",
+databaseURL: "https://silio-p.firebaseio.com",
+projectId: "silio-p",
+storageBucket: "silio-p.appspot.com",
+messagingSenderId: "523875014456"};
 
 @NgModule({
   declarations: [
     MyApp,
     newsPage,
     HomePage,
+    bankAccPage,
+    TransactionPage,
     TabsPage,
+    ViewCreditPage,
+    TransactionFormPage,
     CryptoDetailsPage,
     GlobalMarketPage,
     SettingsPage,
+    LoginPage,
     watchListPage
   ],
   imports: [
@@ -51,6 +72,10 @@ import { Network } from '@ionic-native/network';
     IonicModule.forRoot(MyApp, { mode: 'md'}),
     IonicStorageModule.forRoot(),
     ComponentsModule,
+    FormsModule,
+    AngularFireDatabaseModule,
+
+    AngularFireModule.initializeApp(firebaseConfig),
     
   ],
   bootstrap: [IonicApp],
@@ -59,9 +84,14 @@ import { Network } from '@ionic-native/network';
     newsPage,
     HomePage,
     TabsPage,
+    TransactionPage,
+    bankAccPage,
     CryptoDetailsPage,
+    TransactionFormPage,
+    ViewCreditPage,
     GlobalMarketPage,
     SettingsPage,
+    LoginPage,
     watchListPage
   ],
   providers: [
@@ -74,6 +104,8 @@ import { Network } from '@ionic-native/network';
     AdMobFree,
     AdmobFreeProvider ,
     Network,
+    TransactionFbProvider,
+    ExpenseFbProvider,
     HTTP,
   ]
 })

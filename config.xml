@@ -93,5 +93,6 @@
     <plugin name="cordova-plugin-admob-free" spec="^0.22.0">
         <variable name="ADMOB_APP_ID" value="" />
     </plugin>
-    <engine name="android" spec="7.1.4" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
+    <engine name="android" spec="^7.1.4" />
 </widget>

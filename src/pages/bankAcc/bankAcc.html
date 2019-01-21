@@ -1,0 +1,54 @@
+
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="ios-cog-outline"></ion-icon>
+      Add Credit Card
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <form #submitExpenseForm="ngForm">
+    <ion-list class="list-setting">
+        <ion-item class="item">
+            <ion-label>Account Name:</ion-label>
+           <ion-input type="text" [(ngModel)]="log.bank" name="bank" text-right> </ion-input>
+          </ion-item>
+          <p ion-text *ngIf="log.bank =='' && submitted == true" padding-left color=danger>
+
+              Bank is required
+      
+          </p>
+      <ion-item>
+          <ion-label>Amount:</ion-label>
+        <ion-input type="text" [(ngModel)]="log.CardNumber" name="CardNumber" #CardNumber="ngModel" required text-right></ion-input>
+      </ion-item>
+      <p ion-text *ngIf="CardNumber.invalid && submitted == true" color="danger" padding-left>
+
+        Card Number is required
+  </p>
+  <ion-item>
+    <ion-label>Bank Account Number:</ion-label>
+    <ion-select [(ngModel)]="log.type" name="type" #type="ngModel">
+      <ion-option *ngFor="let typ of typeList" [value]="typ">
+        {{typ}}
+      </ion-option>
+      
+      </ion-select>
+  </ion-item> 
+      <ion-item>
+        <ion-label>Valid Thru</ion-label>
+        <ion-datetime displayFormat="MM/YY" [(ngModel)]="log.validThru" name="validThru"></ion-datetime>
+      </ion-item>
+     </ion-list>
+
+     <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)">Submit</button> 
+     <h6 ion-text text-center class="credits">Cryptoz V1.0.0</h6>
+</form>
+</ion-content>
+
+

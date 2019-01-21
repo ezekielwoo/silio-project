@@ -1,0 +1,33 @@
+
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="ios-cog-outline"></ion-icon>
+      Credit Card Transactions
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form #submitExpenseForm="ngForm">
+    <ion-list class="list-setting">
+        <ion-item class="item">
+            <ion-label>Type</ion-label>
+            <ion-select [(ngModel)]="sac.type" name="type" #currency="ngModel">
+                <ion-option *ngFor="let typ of TypeList" [value]="typ">
+                  {{typ}}
+                </ion-option>
+                
+                </ion-select>
+          </ion-item>
+          <ion-item>
+              <ion-label>Amount:</ion-label>
+            <ion-input type="text" [(ngModel)]="sac.amount" name="amount" #amount="ngModel" required text-right></ion-input>
+          </ion-item>
+    </ion-list>
+    <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)">Submit</button> 
+  </form>
+</ion-content>
