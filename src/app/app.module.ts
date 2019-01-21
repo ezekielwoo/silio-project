@@ -35,8 +35,17 @@ import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AddEquityPage} from "../pages/add-equity/add-equity";
 import {CurrencyMarketPage} from "../pages/currency-market/currency-market";
 import {ViewEquityPage} from "../pages/view-equity/view-equity";
+<<<<<<< HEAD
 import { UserFbProvider } from '../providers/user-firebase';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+=======
+import {EquityDetailsPage} from "../pages/equity-details/equity-details";
+import {AddCryptoPage} from "../pages/add-crypto/add-crypto"
+import {ViewCryptoPage} from "../pages/view-crypto/view-crypto"
+import {OwnCryptoDetailPage} from "../pages/own-crypto-detail/own-crypto-detail"
+import {AddPropertyPage} from "../pages/add-property/add-property";
+import {PropertymarketPage} from "../pages/propertymarket/propertymarket";
+>>>>>>> 87c28d2f652e1dd31cda8907d4dfa4edcd46d49b
 
 const firebaseConfig = {
   apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
@@ -65,7 +74,13 @@ const firebaseConfig = {
     AddEquityPage,
     CurrencyMarketPage,
     AddEquityPage,
-    ViewEquityPage
+    ViewEquityPage,
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
+    AddPropertyPage,
+    PropertymarketPage
   ],
   imports: [
     BrowserModule,
@@ -99,7 +114,13 @@ const firebaseConfig = {
     AddEquityPage,
     CurrencyMarketPage,
     AddEquityPage,
-    ViewEquityPage
+    ViewEquityPage,
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
+    AddPropertyPage,
+    PropertymarketPage,
   ],
   providers: [
     StatusBar,

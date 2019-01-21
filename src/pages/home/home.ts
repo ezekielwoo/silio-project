@@ -41,7 +41,7 @@ export class HomePage {
               public events: Events,
               public settingsProvider: SettingProvider,
               public platform: Platform) {
-    this.api.getnews();
+    // this.api.getnews();
   }
 
   

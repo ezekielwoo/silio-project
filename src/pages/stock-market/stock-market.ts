@@ -99,10 +99,6 @@ export class StockMarketPage {
     this.navCtrl.push(StockDetailsPage, {stock: data});
   }
 
-  openWatchList() {
-    this.navCtrl.push(watchListPage);
-  }
-
   loadMoreStock(infiniteScroll) {
     this.currentPage++;
     this.fetch_stocks(infiniteScroll);
