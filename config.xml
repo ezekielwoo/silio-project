@@ -94,4 +94,5 @@
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
     <engine name="android" spec="7.1.4" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
 </widget>

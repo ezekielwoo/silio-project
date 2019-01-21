@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar color="primary" hideBackButton="true">
+    <ion-buttons left>
+      <button ion-button icon-only (click)="onGoBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title text-center style="margin-right: 20px;">Select Currency</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content class="background-currency">
+  <ion-searchbar placeholer="Search Currency" showCancelButton="true" (ionInput)="onSearchCurrency($event)">
+  </ion-searchbar>
+
+  <ion-list radio-group no-lines>
+    <ion-item class="currency-item" *ngFor="let currency of currencies | sort">
+      <ion-thumbnail item-start>
+        <img [src]="currency.flag" [alt]="currency.name" />
+      </ion-thumbnail>
+      <ion-label>
+        <h2>{{ currency.name }}</h2>
+        <h3>{{ currency.code }} - {{ currency.symbol }}</h3>
+      </ion-label>
+      <ion-radio color="light" [value]="currency.name" [checked]="currency.name == checkSelectedCurrency()" (ionSelect)="onSelectCurrency(currency)"
+        item-end></ion-radio>
+    </ion-item>
+  </ion-list>
+</ion-content>

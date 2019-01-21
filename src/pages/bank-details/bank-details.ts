@@ -55,10 +55,10 @@ export class BankDetailsPage {
               public settingsProvider: SettingProvider) {
 
 
-    if (location.href != 'http://localhost:8100/') {
-      this.code = location.href.split('?')[1].split('code=')[1].split('&')[0] || null;
-      console.log(this.code, 'code');
-    }
+    // if (location.href != 'http://localhost:8100/') {
+    //   this.code = location.href.split('?')[1].split('code=')[1].split('&')[0] || null;
+    //   console.log(this.code, 'code');
+    // }
 
     this.api.getOCBCData().then((data: any) => {
       this.ocbcData = data;

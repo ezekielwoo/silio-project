@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-navbar color="primary" hideBackButton="true">
+    <ion-buttons left>
+      <button ion-button icon-only *ngIf="!isSearchbarOpened" (click)="onGoBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title text-center style="margin-right: 20px;" *ngIf="!isSearchbarOpened">
+      Select Category
+    </ion-title>
+    <ion-searchbar placeholder="Search Category" showCancelButton="true" *ngIf="isSearchbarOpened" (ionInput)="onSearchItems($event, selectedCategory)"
+      (ionCancel)="shouldShowSearchbar(false)">
+    </ion-searchbar>
+    <ion-buttons right>
+      <button ion-button icon-only *ngIf="!isSearchbarOpened" (click)="shouldShowSearchbar(true)">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="background-category">
+
+  <div padding>
+    <ion-segment color="secondary" [(ngModel)]="selectedCategory">
+      <ion-segment-button value="expenses">Expenses</ion-segment-button>
+      <ion-segment-button value="income">Income</ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <ion-list inset>
+    <div *ngIf="!isCategoryFiltered">
+      <ion-item-divider class="category-header">
+        Quick Access ({{ getFavouriteCategoryItems().length }})
+      </ion-item-divider>
+
+      <div *ngIf="getFavouriteCategoryItems().length > 0">
+        <ion-item color="light" *ngFor="let favItem of getFavouriteCategoryItems() | sort" (click)="onSelectCategoryItem(favItem)">
+          <ion-thumbnail item-start>
+            <img style="width: 50px; height: 50px;" [src]="favItem.icon" [alt]="favItem.name" />
+          </ion-thumbnail>
+          {{ favItem.name }}
+          <button ion-button icon-only item-right clear (click)="$event.stopPropagation();onRemoveFromFavourites(favItem)">
+            <ion-icon name="star"></ion-icon>
+          </button>
+        </ion-item>
+      </div>
+    </div>
+
+    <ion-item-divider class="category-header">
+      All Categories
+    </ion-item-divider>
+
+    <ion-item color="light" *ngFor="let catItem of getCategoryItems(selectedCategory) | sort" (click)="onSelectCategoryItem(catItem)">
+      <ion-thumbnail item-start>
+        <img style="width: 50px; height: 50px;" [src]="catItem.icon" [alt]="catItem.name" />
+      </ion-thumbnail>
+      {{ catItem.name }}
+      <button ion-button icon-only item-right clear *ngIf="!isFavourite(catItem)" (click)="$event.stopPropagation();onAddToFavourites(catItem)">
+        <ion-icon name="star-outline"></ion-icon>
+      </button>
+
+      <button ion-button icon-only item-right clear *ngIf="isFavourite(catItem)" (click)="$event.stopPropagation();onRemoveFromFavourites(catItem)">
+        <ion-icon name="star"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
