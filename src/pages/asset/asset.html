@@ -1,0 +1,282 @@
+<!--
+  Generated template for the AssetPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title text-center style="margin-left:-52px">Your Assets</ion-title>
+  </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="type" color="secondary">
+      <ion-segment-button value="all" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        All
+      </ion-segment-button>
+      <ion-segment-button value="equity" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Equity
+      </ion-segment-button>
+      <ion-segment-button value="currency" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Currency
+      </ion-segment-button>
+      <ion-segment-button value="deposit" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Deposits
+      </ion-segment-button>
+      <ion-segment-button value="personal" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Personal
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding-top>
+
+  <div [ngSwitch]="type">
+
+    <div [hidden]="type != 'all'">
+      <!-- if chart API is loading display loading_bars -->
+      <ng-container *ngIf="loadingChart">
+        <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+          <h2>
+            <div class="load-bar"></div>
+          </h2>
+          <h3>
+            <div class="load-bar"></div>
+          </h3>
+          <h4>
+            <div class="load-bar"></div>
+          </h4>
+        </div>
+      </ng-container>
+
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;"> {{totalValueForCurrency.value + totalValueForEquities.value | number : 0}} SGD</h1>
+        <h6 text-center>Total Assets Held</h6>
+      </div>
+
+      <h3 text-center>Portfolio</h3>
+      <div [hidden]="loadingChart" id="chart-container" style="display: block;"></div>
+
+      <div class="coin-info" style="margin-top: 20px">
+        <div class="coin-info-card">
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Equities Held</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{totalValueForEquities.value | number : 0}} SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Deposits Held</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Equities Held</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Currency Held</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{totalValueForCurrency.value | number : 0}} SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Personal Assets</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </div>
+
+    <div [hidden]="type != 'equity'">
+      <!-- if chart API is loading display loading_bars -->
+      <ng-container *ngIf="loadingChart">
+        <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+          <h2>
+            <div class="load-bar"></div>
+          </h2>
+          <h3>
+            <div class="load-bar"></div>
+          </h3>
+          <h4>
+            <div class="load-bar"></div>
+          </h4>
+        </div>
+      </ng-container>
+
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;"> {{totalValueForEquities.value | number: 0}} SGD</h1>
+        <h6 text-center>Total Equities Held</h6>
+      </div>
+
+      <h3 text-center>Equities</h3>
+      <div class="con-card">
+        <ion-slides pager="true" spaceBetween="5px">
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-equity-value" style="display: block;"></div>
+          </ion-slide>
+
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-equity" style="display: block;"></div>
+          </ion-slide>
+        </ion-slides>
+      </div>
+
+      <div class="button-group" padding style="margin-top: -18px">
+        <ion-row>
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToStockMarketPage()">
+              Add Equity
+            </button>
+          </ion-col>
+
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px"
+                    (click)="goToViewEquityPage()">
+              View Equity
+            </button>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <div class="coin-info" style="margin-top: 10px">
+        <div class="coin-info-card">
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Shares</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{shareTotalValue}} SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">ETFs</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{etfTotalValue}} SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Unit Trusts</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{unittrustTotalValue}} SGD
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+
+    </div>
+
+    <div [hidden]="type != 'currency'">
+      <!-- if chart API is loading display loading_bars -->
+      <ng-container *ngIf="loadingChart">
+        <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+          <h2>
+            <div class="load-bar"></div>
+          </h2>
+          <h3>
+            <div class="load-bar"></div>
+          </h3>
+          <h4>
+            <div class="load-bar"></div>
+          </h4>
+        </div>
+      </ng-container>
+
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;">{{totalValueForCurrency.value | number : 0}} SGD</h1>
+        <h6 text-center>Total Currency Held</h6>
+      </div>
+
+      <h3 text-center>Currency</h3>
+      <div class="con-card">
+        <ion-slides pager="true" spaceBetween="5px">
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-currency-value" style="display: block;"></div>
+          </ion-slide>
+
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-currency" style="display: block;"></div>
+          </ion-slide>
+        </ion-slides>
+      </div>
+
+      <div class="button-group" padding style="margin-top: -18px">
+        <ion-row>
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToCryptoMarketPage()">
+              Add Currency
+            </button>
+          </ion-col>
+
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px"
+                    (click)="goToCryptoViewPage()">
+              View Currency
+            </button>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <div class="coin-info" style="margin-top: 20px">
+        <div class="coin-info-card">
+
+           <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Crypto</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{cryptoTotalValue | number : 0}} SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Currency</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{forexTotalValue | number : 0}} SGD
+            </ion-col>
+          </ion-row>
+
+        </div>
+      </div>
+    </div>
+
+    <div [hidden]="type != 'deposit'">
+    </div>
+
+    <div [hidden]="type != 'personal'">
+
+    </div>
+
+  </div>
+
+</ion-content>

@@ -1,23 +1,23 @@
-import { GlobalMarketPage } from './../pages/global-market/global-market';
-import { CryptoDetailsPage } from './../pages/crypto-details/crypto-details';
-import { AngularMaterialModule } from './angular-material.module';
-import { NgModule, ErrorHandler } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { MyApp } from './app.component';
+import {GlobalMarketPage} from './../pages/global-market/global-market';
+import {CryptoDetailsPage} from './../pages/crypto-details/crypto-details';
+import {StockDetailsPage} from '../pages/stock-details/stock-details';
+import {AngularMaterialModule} from './angular-material.module';
+import {NgModule, ErrorHandler} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {IonicApp, IonicModule, IonicErrorHandler} from 'ionic-angular';
+import {MyApp} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CdkTableModule} from '@angular/cdk/table';
+import {AddPropertyPage} from "../pages/add-property/add-property";
+import {PropertymarketPage} from "../pages/propertymarket/propertymarket";
 import { HttpModule } from '@angular/http'
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { AdMobFree } from '@ionic-native/admob-free';
 import { HTTP } from '@ionic-native/http';
-
-
 import { newsPage } from '../pages/news/news';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { ApiProvider } from '../providers/api/api';
@@ -39,12 +39,15 @@ import { TransactionPage } from '../pages/CcTrans/Transaction';
 import { bankAccPage } from '../pages/bankAcc/bankAcc';
 import{TransactionFormPage}from '../pages/TransForm/TransactionForm';
 
-const firebaseConfig = {apiKey: "AIzaSyCLFiAjdL55U6jtBBxWbj8M0_RytzK5svo",
-authDomain: "silio-p.firebaseapp.com",
-databaseURL: "https://silio-p.firebaseio.com",
-projectId: "silio-p",
-storageBucket: "silio-p.appspot.com",
-messagingSenderId: "523875014456"};
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
+  authDomain: "silio-4f410.firebaseapp.com",
+  databaseURL: "https://silio-4f410.firebaseio.com",
+  projectId: "silio-4f410",
+  storageBucket: "silio-4f410.appspot.com",
+  messagingSenderId: "283218915062"
+};
 
 @NgModule({
   declarations: [
@@ -60,7 +63,21 @@ messagingSenderId: "523875014456"};
     GlobalMarketPage,
     SettingsPage,
     LoginPage,
-    watchListPage
+    watchListPage,
+    StockDetailsPage,
+    // StockMarketPage,
+    // BankDetailsPage,
+    // ValuationPage,
+    // AssetPage,
+    // AddEquityPage,
+    // CurrencyMarketPage,
+    // AddEquityPage,
+    // ViewEquityPage,
+    // EquityDetailsPage,
+    // AddCryptoPage,
+    // ViewCryptoPage,
+    // OwnCryptoDetailPage,
+    PropertymarketPage
   ],
   imports: [
     BrowserModule,
@@ -69,14 +86,12 @@ messagingSenderId: "523875014456"};
     CdkTableModule,
     HttpModule,
     HttpClientModule,
-    IonicModule.forRoot(MyApp, { mode: 'md'}),
+    IonicModule.forRoot(MyApp, {mode: 'md'}),
     IonicStorageModule.forRoot(),
     ComponentsModule,
-    FormsModule,
     AngularFireDatabaseModule,
-
     AngularFireModule.initializeApp(firebaseConfig),
-    
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -92,7 +107,22 @@ messagingSenderId: "523875014456"};
     GlobalMarketPage,
     SettingsPage,
     LoginPage,
-    watchListPage
+    watchListPage,
+    StockDetailsPage,
+    // StockMarketPage,
+    // BankDetailsPage,
+    // ValuationPage,
+    // AssetPage,
+    // AddEquityPage,
+    // CurrencyMarketPage,
+    // AddEquityPage,
+    // ViewEquityPage,
+    // EquityDetailsPage,
+    // AddCryptoPage,
+    // ViewCryptoPage,
+    // OwnCryptoDetailPage,
+    AddPropertyPage,
+    PropertymarketPage,
   ],
   providers: [
     StatusBar,
@@ -102,11 +132,12 @@ messagingSenderId: "523875014456"};
     SettingProvider,
     InAppBrowser,
     AdMobFree,
-    AdmobFreeProvider ,
+    AdmobFreeProvider,
     Network,
     TransactionFbProvider,
     ExpenseFbProvider,
     HTTP,
   ]
 })
-export class AppModule {}
+export class AppModule {
+}

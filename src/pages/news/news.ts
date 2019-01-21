@@ -11,7 +11,7 @@ import { AdmobFreeProvider } from '../../providers/admob/admob';
 export class newsPage {
 
   news;
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
               public api:ApiProvider,
               private iab: InAppBrowser,
               public admob:AdmobFreeProvider ) {
@@ -22,10 +22,10 @@ export class newsPage {
   }
 
   ionViewDidLoad() {
-    this.api.getnews().then((data:any)=> {
-      console.log(data);
-      this.news = data.rss.channel[0].item;
-    });
+    // this.api.getnews().then((data:any)=> {
+    //   console.log(data);
+    //   this.news = data.rss.channel[0].item;
+    // });
   }
 
   getElement(item, htmlElement) {

@@ -1,0 +1,132 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title text-center style="margin-left: -33px">
+      <ion-icon name="trending-up"></ion-icon>
+      Your Currency
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <!-- if chart API is loading display loading_bars -->
+  <ng-container *ngIf="loadingChart">
+    <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+    </div>
+  </ng-container>
+
+  <div class="coin-card-pink" padding>
+
+    <ion-row>
+      <ion-col col-6 text-left>
+        <h2 text-center style="font-size: 34px;">{{cryptoPrice + totalValueForex | number : 0}}</h2>
+        <h2 text-center>SGD</h2>
+        <h6 text-center>Your Market Value</h6>
+      </ion-col>
+
+      <ion-col col-6 text-right>
+        <h2 text-center style="font-size: 34px;">{{totalValue | number : 0}}</h2>
+        <h2 text-center>SGD</h2>
+        <h6 text-center>Your Purchase Value</h6>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <div class="con-card">
+    <ion-slides pager="true" spaceBetween="5px">
+      <ion-slide>
+        <h3 text-center>Forex</h3>
+        <div [hidden]="loadingChart" id="chart-currencies" style="display: block;"></div>
+      </ion-slide>
+
+      <ion-slide>
+        <h3 text-center>Crypto</h3>
+        <div [hidden]="loadingChart" id="chart-crypto" style="display: block;"></div>
+      </ion-slide>
+    </ion-slides>
+  </div>
+
+  <ion-title text-center margin-top padding>
+    <h1>What You Hold</h1>
+  </ion-title>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="type" color="secondary">
+      <ion-segment-button value="crypto" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Crypto
+      </ion-segment-button>
+      <ion-segment-button value="forex" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Forex
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+
+  <div [ngSwitch]="type">
+
+    <div [hidden]="type != 'crypto'">
+      <ion-list>
+
+        <ion-item-sliding *ngFor="let coinItem of coin">
+
+          <ion-item color="none" style="background-color: #ac5d70; color: white">
+            <ion-row>
+              <ion-col col-6 text-left (click)="goToCoinDetail(coinItem)">
+                <h1 style="font-size: 22px;margin-top: -8px;"><b>{{coinItem.name}}</b></h1>
+                <h2 style="margin-top: 12px">{{coinItem.symbol}}</h2>
+              </ion-col>
+
+              <ion-col col-6 text-right>
+                <h2><b>{{coinItem.amount}} Lots</b></h2>
+                <h2 style="margin-top: 12px">{{coinItem.value | number : 0}} SGD</h2>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+
+          <ion-item-options side="right">
+            <button ion-button color="danger" (click)="deleteCryptoItem(coinItem)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+
+    <div [hidden]="type != 'forex'">
+      <ion-list>
+
+        <ion-item-sliding *ngFor="let coinItem of coin_data">
+
+          <ion-item color="none" style="background-color: #ac5d70; color: white">
+            <ion-row>
+              <ion-col col-6 text-left (click)="goToCoinDetail(coinItem)">
+                <h1 style="font-size: 22px;margin-top: -8px;"><b>{{coinItem.name}}</b></h1>
+                <h2 style="margin-top: 12px">{{coinItem.symbol}}</h2>
+              </ion-col>
+
+              <ion-col col-6 text-right>
+                <h2><b>{{coinItem.amount}} Lots</b></h2>
+                <h2 style="margin-top: 12px">{{coinItem.value | number : 0}} SGD</h2>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+
+          <ion-item-options side="right">
+            <button ion-button color="danger" (click)="deleteForexItem(coinItem)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+
+  </div>
+
+</ion-content>

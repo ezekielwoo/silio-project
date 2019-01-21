@@ -1,13 +1,13 @@
-import { Storage } from '@ionic/storage';
-import { ApiProvider } from './../../providers/api/api';
-import { CryptoDetailsPage } from './../crypto-details/crypto-details';
-import { Component, ViewChild } from '@angular/core';
-import { NavController, Platform } from 'ionic-angular';
+import {Storage} from '@ionic/storage';
+import {ApiProvider} from './../../providers/api/api';
+import {CryptoDetailsPage} from './../crypto-details/crypto-details';
+import {Component, ViewChild} from '@angular/core';
+import {NavController, Platform} from 'ionic-angular';
 import {MatTableDataSource, MatSort} from '@angular/material';
-import { Events } from 'ionic-angular';
-import { watchListPage } from '../watch-list/watch-list';
-import { SettingProvider } from '../../providers/setting/setting';
-import { AdmobFreeProvider } from '../../providers/admob/admob';
+import {Events} from 'ionic-angular';
+import {watchListPage} from '../watch-list/watch-list';
+import {SettingProvider} from '../../providers/setting/setting';
+import {StockDetailsPage} from "../stock-details/stock-details";
 
 @Component({
   selector: 'page-home',
@@ -24,8 +24,8 @@ export class HomePage {
   COIN_DATA = [];
 
   //names of columns that will be displayed
-  displayedColumns = [ 'rank', 'name' , 'current_price', 'price_change_24' , 'price_change_7d' , 'price_change_14d', 'price_change_30d'];
-  dataSource =  new MatTableDataSource(this.COIN_DATA);
+  displayedColumns = ['rank', 'name', 'current_price', 'price_change_24', 'price_change_7d', 'price_change_14d', 'price_change_30d'];
+  dataSource = new MatTableDataSource(this.COIN_DATA);
 
   search = false; //Search bar
 
@@ -36,63 +36,59 @@ export class HomePage {
   currentCurrency = "USD" // default currency
 
   constructor(public navCtrl: NavController,
-              public api : ApiProvider,
+              public api: ApiProvider,
               private storage: Storage,
               public events: Events,
-              public settingsProvider : SettingProvider,
-              public admob:AdmobFreeProvider,
-              public platform: Platform) { 
-       this.api.getnews();
+              public settingsProvider: SettingProvider,
+              public platform: Platform) {
+    // this.api.getnews();
   }
 
 
-  ionViewWillEnter(){
-    this.admob.showRandomAds();
-  }
-  
   ionViewDidLoad() {
-    this.platform.ready().then(()=>{
-      this.admob.prepareBanner();
-    })
-    
     this.settingsProvider.settingSubject.subscribe((data) => {
-        this.currentCurrency = this.settingsProvider.currentSetting.currency;
+      this.currentCurrency = this.settingsProvider.currentSetting.currency;
     })
 
 
-    this.fetch_coins().then(()=>{
+    this.fetch_coins().then(() => {
       this.checkFavorite();
       this.dataSource.sort = this.sort;
- 
-      console.log("dsds");
+      console.log("dsds", this.dataSource);
     });
   }
 
 
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     //subscribe to event when add new coin to favorite
-    this.events.subscribe('toggle_favorite',(coin_id,is_favorite)=>{
-      this.COIN_DATA.forEach((e)=>{
-           if(e.id == coin_id) {
-            e.is_favorite = is_favorite;
-           }
-        })
+    this.events.subscribe('toggle_favorite', (coin_id, is_favorite) => {
+      this.COIN_DATA.forEach((e) => {
+        if (e.id == coin_id) {
+          e.is_favorite = is_favorite;
+        }
+      })
     })
   }
 
-  fetch_coins(infiniteScroll?){
-    return new Promise((resolve)=> {
-      this.api.getAllCoins(this.currentPage, infiniteScroll).then((data)=>{
+  fetch_coins(infiniteScroll?) {
+    return new Promise((resolve) => {
+      this.api.getAllCoins(this.currentPage, infiniteScroll).then((data) => {
         this.COIN_DATA = this.COIN_DATA.concat(data);
         this.dataSource = new MatTableDataSource(this.COIN_DATA);
         this.dataSource.sortingDataAccessor = (item, property) => {
-          switch(property) {
-            case 'current_price': return item.market_data.current_price[this.currentCurrency.toLowerCase()];
-            case 'price_change_24': return item.market_data.price_change_percentage_24h;
-            case 'price_change_7d': return item.market_data.price_change_percentage_7d;
-            case 'price_change_14d': return item.market_data.price_change_percentage_14d;
-            case 'price_change_30d': return item.market_data.price_change_percentage_30d;
-            default: return item[property];
+          switch (property) {
+            case 'current_price':
+              return item.market_data.current_price[this.currentCurrency.toLowerCase()];
+            case 'price_change_24':
+              return item.market_data.price_change_percentage_24h;
+            case 'price_change_7d':
+              return item.market_data.price_change_percentage_7d;
+            case 'price_change_14d':
+              return item.market_data.price_change_percentage_14d;
+            case 'price_change_30d':
+              return item.market_data.price_change_percentage_30d;
+            default:
+              return item[property];
           }
         };
         this.loading = false;
@@ -109,17 +105,21 @@ export class HomePage {
 
 
   openCrypto(data) {
-    this.navCtrl.push(CryptoDetailsPage,{coin : data});
+    this.navCtrl.push(CryptoDetailsPage, {coin: data});
   }
 
-  checkFavorite(){
-    this.storage.get('favorites').then((val)=>{
+  openStock() {
+    this.navCtrl.push(StockDetailsPage);
+  }
+
+  checkFavorite() {
+    this.storage.get('favorites').then((val) => {
       let favorites = val;
-      if(favorites) {
-        this.COIN_DATA.forEach((e)=>{
-           if(favorites.map((e) => e.id).indexOf(e.id) != -1) {
+      if (favorites) {
+        this.COIN_DATA.forEach((e) => {
+          if (favorites.map((e) => e.id).indexOf(e.id) != -1) {
             e.is_favorite = true;
-           }
+          }
         })
       }
     })
@@ -128,8 +128,8 @@ export class HomePage {
   openWatchList() {
     this.navCtrl.push(watchListPage);
   }
-  
-  loadMoreCoins(infiniteScroll){
+
+  loadMoreCoins(infiniteScroll) {
     this.currentPage++;
     this.fetch_coins(infiniteScroll);
     if (this.currentPage === this.maxPageNumber) {
