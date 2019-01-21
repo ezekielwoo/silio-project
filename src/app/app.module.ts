@@ -35,6 +35,8 @@ import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AddEquityPage} from "../pages/add-equity/add-equity";
 import {CurrencyMarketPage} from "../pages/currency-market/currency-market";
 import {ViewEquityPage} from "../pages/view-equity/view-equity";
+import { ViewaccountsPage } from '../pages/viewaccounts/viewaccounts';
+import { CommonModule} from '@angular/common';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
@@ -63,12 +65,15 @@ const firebaseConfig = {
     AddEquityPage,
     CurrencyMarketPage,
     AddEquityPage,
-    ViewEquityPage
+    ViewEquityPage,
+    ViewaccountsPage
   ],
+  
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
+    CommonModule,
     CdkTableModule,
     HttpModule,
     AngularFireDatabaseModule,
@@ -99,7 +104,8 @@ const firebaseConfig = {
     AddEquityPage,
     CurrencyMarketPage,
     AddEquityPage,
-    ViewEquityPage
+    ViewEquityPage,
+    ViewaccountsPage
   ],
   providers: [
     StatusBar,

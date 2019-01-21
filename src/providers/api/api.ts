@@ -146,17 +146,12 @@ export class ApiProvider {
 
       this.http.get(ocbc_bank_api_savings, {responseType: 'json', headers: headers})
         .subscribe((data) => {
-          x2js.parseString(data, {trim: true}, function (err, result) {
-            console.log('ocbc resolved', data);
-            resolve(result);
-
-          });
+          resolve(data);
         }, (e) => {
-          console.log('rejected');
           reject(e);
         })
-    })
-  }
+      })
+    }
 
   getnews() {
     return new Promise((resolve, reject) => {

@@ -9,6 +9,13 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {StockMarketPage} from "../stock-market/stock-market";
 import {ViewEquityPage} from "../view-equity/view-equity";
+import { ViewaccountsPage } from '../viewaccounts/viewaccounts';
+import { ApiProvider } from '../../providers/api/api';
+import { SettingProvider } from '../../providers/setting/setting';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+
+
 
 /**
  * Generated class for the AssetPage page.
@@ -21,9 +28,20 @@ import {ViewEquityPage} from "../view-equity/view-equity";
 @Component({
   selector: 'page-asset',
   templateUrl: 'asset.html',
+    styles: [`
+      chart-accountdetails {
+          display: block;
+          width: auto !important;
+      }
+  `]
+  
 })
 export class AssetPage {
-
+  accounts: Account[];
+  tokens: any = {};
+  accessToken = null;
+  code = "";
+  ocbcData: any = {};
   currentChartTheme = "dark";
   loadingChart = true;
   type: string = "all";  //store stock data
@@ -31,19 +49,53 @@ export class AssetPage {
   //names of columns that will be displayed
   displayedColumns = ['symbol', 'quantity', 'price', 'total', 'change'];
   stock_data = [];
-
+  //ocbcData : any = {'CASAAccountLists':''};
   // dataSource = new MatTableDataSource(this.STOCK_DATA);
+  //ocbcData: any[];
+  
 
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              private iab: InAppBrowser,
+              public splashScreen: SplashScreen,
+              private db: AngularFireDatabase,
+              public api: ApiProvider,
+              public settingsProvider: SettingProvider) {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase) {
+                this.api.getOCBCData().then((data: any) =>{
+                  if(data){
+                    this.ocbcData = data.CASAAccountsList["0"].categoryName;
+                    console.log(data.CASAAccountsList["0"].categoryName,'ocbc')
+                  }
+                
+                });
+                
   }
+  
+  // ngOnInit() {
+
+  // this.accounts = [
+  
+  //   new Account("DBS SAVINGS BANK", 1250.00, "XXX-XXXXXX-888"),
+
+  //   new Account("OCBC SAVINGS BANK", 1150.00, "XXX-XXXXXX-999"),
+
+  //   new Account("POSB SAVINGS BANK", 150.00, "XXX-XXXXXX-878") 
+  // ];
+  // }
 
   ionViewDidLoad() {
+    this.settingsProvider.settingSubject.subscribe((data) => {
+      this.currentChartTheme = data.theme;
+      this.initChart();
+    })
     console.log('ionViewDidLoad AssetPage');
     this.initChart();
     this.loadingChart = false;
     this.getItems();
   }
+
+  
 
   getItems(): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
@@ -69,6 +121,12 @@ export class AssetPage {
   goToViewEquityPage(){
     this.navCtrl.push(ViewEquityPage);
   }
+  goToViewAccountsPage(){
+
+    this.navCtrl.push(ViewaccountsPage);
+
+  }
+
 
   initChart() {
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
@@ -384,6 +442,31 @@ export class AssetPage {
           y: 29.7
         }]
       }]
+    });
+    HighCharts.chart('chart-accountdetails', {
+      chart: {
+        type: 'column',
+        height:301,
+        width:400
+      },
+      title: {
+        text: 'Balance'
+      },
+      xAxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May']
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'In-Flows',
+        data: [500, 300, 400, 700, 200]
+      } , {
+        name: 'Out-Flows',
+        data: [-200, -200, -300, -200, -100]
+       }, 
+       
+    ]
     });
   }
 

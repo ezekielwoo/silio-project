@@ -8,11 +8,15 @@ export class Account {
         public amount: number,
   
         public bankaccnum: string,
-  
+
+
+
+        
+
+        
       ) {}
-  
   
        
   
     }
-  
+

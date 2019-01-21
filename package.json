@@ -45,20 +45,13 @@
     "cordova-plugin-statusbar": "git+https://github.com/apache/cordova-plugin-statusbar.git",
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-promise-polyfill": "0.0.2",
-<<<<<<< HEAD
-    "firebase": "^5.7.3",
-=======
     "firebase": "^5.7.2",
->>>>>>> 90713c2c2af7cb8db54a23990842cfb7c092422e
     "flag-icon-css": "^3.2.0",
     "highcharts": "^6.2.0",
     "ionic-angular": "3.9.2",
     "ionic-plugin-deeplinks": "^1.0.17",
     "ionicons": "3.0.0",
-<<<<<<< HEAD
-=======
     "react-tradingview-widget": "^1.3.0",
->>>>>>> 90713c2c2af7cb8db54a23990842cfb7c092422e
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
     "sw-toolbox": "3.6.0",

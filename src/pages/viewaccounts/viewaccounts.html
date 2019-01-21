@@ -1,0 +1,46 @@
+
+<ion-header>
+    <ion-navbar color="primary">
+      <ion-title text-center="">   <ion-icon name="trending-up"></ion-icon> Accounts Page  </ion-title>
+      <ion-buttons right="">
+        <button (click)="search = !search" ion-button="" icon-only=""><ion-icon name="ios-search-outline"></ion-icon></button>
+        <!--<button (click)="openWatchList()" ion-button icon-only><ion-icon name="md-eye"></ion-icon></button>-->
+      </ion-buttons>
+    </ion-navbar>
+  </ion-header>
+  
+  <ion-content padding="">
+    
+    <ion-list>
+       
+        <!-- <ion-item-sliding > -->
+
+            <ion-item  class="coin-card-pink"  *ngFor = "let detailsaccount of accounts">
+      
+              <h1 class="fontcolor"> {{detailsaccount.name}} </h1>
+      
+              <h2 class="fontcolor !important" text-center style="font-size: 34px;" > ${{detailsaccount.amount}} </h2>
+      
+              <h6 class="fontcolor !important" text-center> {{detailsaccount.bankaccnum}} </h6>
+      
+       
+      
+              <ion-icon item-end color="primary" name="{{detailsaccount.favIcon}}" (click)="toggleFav(expenseItem)"></ion-icon>
+      
+            </ion-item>
+      
+       
+      
+           <!--   <ion-item-options side="right">
+     
+              <button ion-button color="danger" (click)="deleteItem(detailsaccount)"> 
+      
+                 <ion-icon name="trash"></ion-icon>
+      
+              <!-- </button> -->
+      
+             <!-- </ion-item-options>          -->
+      
+           <!-- </ion-item-sliding>     -->
+           </ion-list>
+  </ion-content>

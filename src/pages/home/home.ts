@@ -9,10 +9,14 @@ import {watchListPage} from '../watch-list/watch-list';
 import {SettingProvider} from '../../providers/setting/setting';
 import {StockDetailsPage} from "../stock-details/stock-details";
 
+
+
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
 })
+
 
 
 export class HomePage {
@@ -21,6 +25,8 @@ export class HomePage {
 
   //Sorting Data
   @ViewChild(MatSort) sort: MatSort;
+
+  
 
   //store coins data
   COIN_DATA = [];
