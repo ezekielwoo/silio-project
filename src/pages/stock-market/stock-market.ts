@@ -8,7 +8,7 @@ import {watchListPage} from '../watch-list/watch-list';
 import {SettingProvider} from '../../providers/setting/setting';
 import {AdmobFreeProvider} from '../../providers/admob/admob';
 import {StockDetailsPage} from "../stock-details/stock-details";
-import { AngularFireDatabase } from 'angularfire2/database';
+// import { AngularFireDatabase } from 'angularfire2/database';
 
 /**
  * Generated class for the StockMarketPage page.
@@ -49,7 +49,6 @@ export class StockMarketPage {
               public settingsProvider: SettingProvider,
               public admob: AdmobFreeProvider,
               public platform: Platform,
-              private db: AngularFireDatabase
               ) {
 
   }
@@ -76,7 +75,7 @@ export class StockMarketPage {
       this.api.getAllStock(this.currentPage, infiniteScroll).then((data) => {
         console.log(this.STOCK_DATA, 'stock data');
 
-        this.db.list('/equities/stocks/').push(data);
+        // this.db.list('/equities/stocks/').push(data);
         this.STOCK_DATA = this.STOCK_DATA.concat(data);
         this.dataSource = new MatTableDataSource(this.STOCK_DATA);
         this.dataSource.sortingDataAccessor = (item, property) => {

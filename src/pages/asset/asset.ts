@@ -4,7 +4,7 @@ import {darkChartTheme} from "../../theme/chart.dark";
 import {lightChartTheme} from "../../theme/chart.light";
 import * as HighCharts from 'HighCharts';
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from 'angularfire2/database';
+// import { AngularFireDatabase } from 'angularfire2/database';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -33,7 +33,7 @@ export class AssetPage {
   // dataSource = new MatTableDataSource(this.STOCK_DATA);
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase) {
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {

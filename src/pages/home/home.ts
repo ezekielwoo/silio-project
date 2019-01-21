@@ -44,6 +44,8 @@ export class HomePage {
     this.api.getnews();
   }
 
+  
+
 
   ionViewDidLoad() {
     this.settingsProvider.settingSubject.subscribe((data) => {

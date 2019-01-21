@@ -33,6 +33,14 @@ import {AssetPage} from "../pages/asset/asset";
 import {AngularFireModule} from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AddEquityPage} from "../pages/add-equity/add-equity";
+import { MainPage } from '../pages/main/main';
+import { RegisterPage } from '../pages/register/register';
+import { LoginPage } from '../pages/login/login';
+import { OtpPage } from '../pages/otp/otp';
+import { ForgetPassPage } from '../pages/forget-pass/forget-pass';
+import { UserFbProvider } from '../providers/user-firebase';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
@@ -58,7 +66,12 @@ const firebaseConfig = {
     BankDetailsPage,
     ValuationPage,
     AssetPage,
-    AddEquityPage
+    AddEquityPage,
+    MainPage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ForgetPassPage
   ],
   imports: [
     BrowserModule,
@@ -89,7 +102,12 @@ const firebaseConfig = {
     BankDetailsPage,
     ValuationPage,
     AssetPage,
-    AddEquityPage
+    AddEquityPage,
+    MainPage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ForgetPassPage
   ],
   providers: [
     StatusBar,
@@ -102,7 +120,10 @@ const firebaseConfig = {
     AdmobFreeProvider,
     Network,
     HTTP,
+    UserFbProvider,
+    FingerprintAIO
   ]
 })
 export class AppModule {
+
 }

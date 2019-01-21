@@ -1,0 +1,40 @@
+
+
+<ion-content>
+    <div id="bg">
+        <ion-buttons left (click)= "closeModal()" >
+            <button ion-button clear color="chip">
+                <ion-icon id="iconSize" name="close"></ion-icon>
+            </button>
+          </ion-buttons>
+
+<form id='myform' method="POST">
+          <div>
+              <table>
+                <tr>
+                  <td>
+                      <ion-img width="170" height="170" style="background-color: transparent; display:block;margin-left:auto;margin-right:auto;height:100px"src="../../assets/imgs/chatbot icon.jpg"></ion-img>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                      <ion-label color="chip" id="textNo" text-wrap>Forgot your password?</ion-label>
+                      <ion-label id="sub" text-wrap>Do enter your email below to receive your new password.</ion-label>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div id="input">
+            <ion-item>
+                <ion-label color="primary" stacked>Email</ion-label>
+                <ion-input type="email" [(ngModel)] = "email" name="email"></ion-input>
+              </ion-item>
+            </div>
+            <br>
+            <div id="btn">
+            <button ion-button block (click) = "sendEmail()" >Submit</button>
+          </div>
+        </form>
+    </div>
+</ion-content>

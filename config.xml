@@ -92,10 +92,6 @@
     <plugin name="cordova-plugin-admob-free" spec="^0.22.0">
         <variable name="ADMOB_APP_ID" value="" />
     </plugin>
-<<<<<<< HEAD
-    <engine name="android" spec="~7.1.4" />
-=======
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
     <engine name="android" spec="7.1.4" />
->>>>>>> 27ddfa1eb65fa950fe7ff30987da9c24fcb85c5f
 </widget>

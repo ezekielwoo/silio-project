@@ -12,6 +12,7 @@ export const lightChartTheme = {
       },
       plotBorderColor: '#606063'
   },
+  
   title: {
       style: {
           color: '#6c5580',
