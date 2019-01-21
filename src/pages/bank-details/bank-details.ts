@@ -8,13 +8,11 @@ import {globalLightChartTheme} from "../../theme/chart.light";
 import * as HighCharts from 'HighCharts';
 import {SettingProvider} from '../../providers/setting/setting';
 import {AssetPage} from "../asset/asset";
+import {Observable} from "rxjs/index";
+import {map} from "rxjs/operators";
+import {AngularFireDatabase} from 'angularfire2/database';
+import * as moment from 'moment';
 
-/**
- * Generated class for the BankDetailsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -27,7 +25,15 @@ export class BankDetailsPage {
   accessToken = null;
   code = "";
   ocbcData: any = {};
-  currentChartTheme = "dark" //default dark theme
+  currentChartTheme = "dark"; //default dark theme
+  totalValueForEquities : any = [];
+  totalValueForCurrency : any = [];
+  totalValue: any = [];
+  currencyArr: any = [];
+  equityArr: any = [];
+  allArr: any = [];
+  lastUpdated = null;
+  chartValue: any = {};
 
   options: InAppBrowserOptions = {
     location: 'yes',//Or 'no'
@@ -52,29 +58,30 @@ export class BankDetailsPage {
               private iab: InAppBrowser,
               public splashScreen: SplashScreen,
               public api: ApiProvider,
-              public settingsProvider: SettingProvider) {
+              public settingsProvider: SettingProvider,
+              private db: AngularFireDatabase) {
 
+    this.lastUpdated = this.getCurrentTime();
 
-    if (location.href != 'http://localhost:8100/') {
-      this.code = location.href.split('?')[1].split('code=')[1].split('&')[0] || null;
-      console.log(this.code, 'code');
-    }
+    // if (location.href != 'http://localhost:8100/') {
+    //   this.code = location.href.split('?')[1].split('code=')[1].split('&')[0] || null;
+    //   console.log(this.code, 'code');
+    // }
 
     this.api.getOCBCData().then((data: any) => {
       this.ocbcData = data;
       console.log(this.ocbcData, 'ocbc dataaaa');
     });
 
-
-    this.api.getDBSAccessToken(this.code).then((data: any) => {
-      console.log(data.access_token, 'ATATAT');
-      this.api.getDBSData(data.access_token).then((data: any) => {
-        console.log(data, 'DBSDATA');
-      })
-    }).catch((err) => {
-      // Instead, this happens:
-      console.log("oh no", err);
-    });
+    //     this.api.getDBSAccessToken(this.code).then((data: any) => {
+    //   console.log(data.access_token, 'ATATAT');
+    //   this.api.getDBSData(data.access_token).then((data: any) => {
+    //     console.log(data, 'DBSDATA');
+    //   })
+    // }).catch((err) => {
+    //   // Instead, this happens:
+    //   console.log("oh no", err);
+    // });
 
   }
 
@@ -82,8 +89,61 @@ export class BankDetailsPage {
     this.settingsProvider.settingSubject.subscribe((data) => {
       this.currentChartTheme = data.theme;
       this.initChart();
-    })
+      this.getTotalValueForEquities();
+      this.getTotalValue();
+    });
+  }
 
+  getTotalValue(): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list('asset/total-values').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      array = result;
+      this.allArr = array;
+      this.totalValue = array[array.length - 1];
+      console.log('retrieve totalValueForEquities', this.totalValue);
+    });
+    return expenseObservable;
+  }
+
+  getTotalValueForEquities(): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list('asset/equities/total-values').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      array = result;
+      this.equityArr = array;
+      this.totalValueForEquities = array[array.length - 1];
+      console.log('retrieve totalValueForEquities', this.totalValueForEquities);
+      this.getTotalValueForCurrency(this.totalValueForEquities);
+    });
+    return expenseObservable;
+  }
+
+  getTotalValueForCurrency(equity): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list('asset/currency/total-values').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      array = result;
+      this.currencyArr = array;
+      this.totalValueForCurrency = array[array.length - 1];
+      this.chartValue = {
+        "year": this.lastUpdated.split(' ')[0],
+        "month": this.lastUpdated.split(' ')[1],
+        "day": this.lastUpdated.split(' ')[2],
+        "value": equity.value + this.totalValueForCurrency.value
+      };
+      this.db.list('asset/total-values').push(this.chartValue);
+    });
+    return expenseObservable;
   }
 
   accessDBS() {
@@ -91,8 +151,20 @@ export class BankDetailsPage {
     this.iab.create(url, '_self');
   }
 
-  goToAssetPage(){
-    this.navCtrl.push(AssetPage);
+  goToAssetPage(currencyTotalValue, equityTotalValue, totalValue, currencyArr, equityArr, allArr) {
+    this.navCtrl.push(AssetPage, {
+      currencyTotalValue: currencyTotalValue,
+      equityTotalValue: equityTotalValue,
+      totalValue: totalValue,
+      currencyArr: currencyArr,
+      equityArr: equityArr,
+      allArr: allArr
+    });
+  }
+
+  getCurrentTime() {
+    let last30Days = moment().subtract(30, 'days');
+    return last30Days.format('YYYY MM DD');
   }
 
   initChart() {

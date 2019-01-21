@@ -27,47 +27,139 @@
 
     <ion-row>
       <ion-col col-6 text-left>
-        <h2 text-center style="font-size: 34px;">${{price | number : 0}}</h2>
+        <h2 text-center style="font-size: 30px;">{{totalValueUT + price + totalValueETF | number : 0}}</h2>
+        <h2 text-center>SGD</h2>
         <h6 text-center>Your Market Value</h6>
       </ion-col>
 
       <ion-col col-6 text-right>
-        <h2 text-center style="font-size: 34px;">${{totalValue | number : 0}}</h2>
+        <h2 text-center style="font-size: 30px;">{{totalValue | number : 0}}</h2>
+        <h2 text-center>SGD</h2>
         <h6 text-center>Your Purchase Value</h6>
       </ion-col>
     </ion-row>
   </div>
 
-  <h3 text-center>Portfolio</h3>
-  <div [hidden]="loadingChart" id="chart-equities" style="display: block;"></div>
+  <div class="con-card">
+    <ion-slides pager="true" spaceBetween="5px">
+      <ion-slide>
+        <h3 text-center>Stocks</h3>
+        <div [hidden]="loadingChart" id="chart-stocks" style="display: block;"></div>
+      </ion-slide>
+
+      <ion-slide>
+        <h3 text-center>ETF</h3>
+        <div [hidden]="loadingChart" id="chart-etf" style="display: block;"></div>
+      </ion-slide>
+
+      <ion-slide>
+        <h3 text-center>Unit Trust</h3>
+        <div [hidden]="loadingChart" id="chart-ut" style="display: block;"></div>
+      </ion-slide>
+    </ion-slides>
+  </div>
 
   <ion-title text-center margin-top padding>
     <h1>What You Hold</h1>
   </ion-title>
 
-  <ion-list id="viewExpenses-list3">
-    <ion-item-sliding *ngFor="let stockItem of stock">
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="type" color="secondary">
+      <ion-segment-button value="stock" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Stocks
+      </ion-segment-button>
+      <ion-segment-button value="etf" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        ETF
+      </ion-segment-button>
+      <ion-segment-button value="ut" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Unit Trust
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 
-      <ion-item color="none" style="background-color: #ac5d70; color: white">
-        <ion-row>
-          <ion-col col-6 text-left>
-            <h1 style="font-size: 22px;margin-top: -8px;"><b>{{stockItem.name}}</b></h1>
-            <h2 style="margin-top: 12px">{{stockItem.symbol}}</h2>
-          </ion-col>
+  <div [ngSwitch]="type">
 
-          <ion-col col-6 text-right>
-            <h2><b>{{stockItem.amount}} Lots</b></h2>
-            <h2 style="margin-top: 12px">{{stockItem.value | number : 0}} SGD</h2>
-          </ion-col>
-        </ion-row>
-      </ion-item>
+    <div [hidden]="type != 'stock'">
+      <ion-list>
+        <ion-item-sliding *ngFor="let stockItem of stock">
 
-      <ion-item-options side="right">
-        <button ion-button color="danger" (click)="deleteItem(stockItem)">
-          <ion-icon name="trash"></ion-icon>
-        </button>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
+          <ion-item color="none" style="background-color: #ac5d70; color: white">
+            <ion-row>
+              <ion-col col-6 text-left (click)="goToStockDetail(stockItem)">
+                <h1 style="font-size: 22px;margin-top: -8px;"><b>{{stockItem.name}}</b></h1>
+                <h2 style="margin-top: 12px">{{stockItem.symbol}}</h2>
+              </ion-col>
+
+              <ion-col col-6 text-right>
+                <h2><b>{{stockItem.amount}} Lots</b></h2>
+                <h2 style="margin-top: 12px">{{stockItem.value | number : 0}} SGD</h2>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+
+          <ion-item-options side="right">
+            <button ion-button color="danger" (click)="deleteStockItem(stockItem)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+
+    <div [hidden]="type != 'etf'">
+      <ion-list>
+        <ion-item-sliding *ngFor="let stockItem of ETF">
+
+          <ion-item color="none" style="background-color: #ac5d70; color: white">
+            <ion-row>
+              <ion-col col-6 text-left (click)="goToStockDetail(stockItem)">
+                <h1 style="font-size: 22px;margin-top: -8px;"><b>{{stockItem.name}}</b></h1>
+                <h2 style="margin-top: 12px">{{stockItem.symbol}}</h2>
+              </ion-col>
+
+              <ion-col col-6 text-right>
+                <h2><b>{{stockItem.amount}} Lots</b></h2>
+                <h2 style="margin-top: 12px">{{stockItem.value | number : 0}} SGD</h2>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+
+          <ion-item-options side="right">
+            <button ion-button color="danger" (click)="deleteETFItem(stockItem)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+
+    <div [hidden]="type != 'ut'">
+      <ion-list id="viewExpenses-list3">
+        <ion-item-sliding *ngFor="let stockItem of UT">
+
+          <ion-item color="none" style="background-color: #ac5d70; color: white">
+            <ion-row>
+              <ion-col col-6 text-left (click)="goToStockDetail(stockItem)">
+                <h1 style="font-size: 22px;margin-top: -8px;"><b>{{stockItem.name}}</b></h1>
+                <h2 style="margin-top: 12px">{{stockItem.symbol}}</h2>
+              </ion-col>
+
+              <ion-col col-6 text-right>
+                <h2><b>{{stockItem.amount}} Lots</b></h2>
+                <h2 style="margin-top: 12px">{{stockItem.value | number : 0}} SGD</h2>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+
+          <ion-item-options side="right">
+            <button ion-button color="danger" (click)="deleteUTItem(stockItem)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+
+  </div>
 
 </ion-content>

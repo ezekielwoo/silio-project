@@ -3,19 +3,14 @@ import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import {darkChartTheme} from "../../theme/chart.dark";
 import {lightChartTheme} from "../../theme/chart.light";
 import * as HighCharts from 'HighCharts';
-import {Injectable} from '@angular/core';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {StockMarketPage} from "../stock-market/stock-market";
 import {ViewEquityPage} from "../view-equity/view-equity";
-
-/**
- * Generated class for the AssetPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import * as moment from 'moment';
+import {HomePage} from "../home/home";
+import {ViewCryptoPage} from "../view-crypto/view-crypto";
 
 @IonicPage()
 @Component({
@@ -31,29 +26,149 @@ export class AssetPage {
   //names of columns that will be displayed
   displayedColumns = ['symbol', 'quantity', 'price', 'total', 'change'];
   stock_data = [];
-
-  // dataSource = new MatTableDataSource(this.STOCK_DATA);
+  crypto_data = [];
+  forexdata = [];
+  totalEquityValue = null;
+  totalCurrencyValue = null;
+  shareTotalValue = null;
+  etfTotalValue = null;
+  cryptoTotalValue = null;
+  unittrustTotalValue = null;
+  forexTotalValue = null;
+  equityValueChart = {};
+  currencyValueChart = {};
+  lastUpdated: string;
+  TIME_IN_MS = 3000;
+  totalValueForEquities: any = [];
+  totalValueForCurrency: any = [];
+  totalValue: any = [];
+  currencyArr: any = [];
+  equityArr: any = [];
+  allArr: any = [];
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase) {
+    this.lastUpdated = this.getCurrentTime();
+    this.totalValueForEquities = this.navParams.get('equityTotalValue');
+    this.totalValueForCurrency = this.navParams.get('currencyTotalValue');
+    this.totalValue = this.navParams.get('totalValue');
+    this.currencyArr = this.navParams.get('currencyArr');
+    this.equityArr = this.navParams.get('equityArr');
+    this.allArr = this.navParams.get('allArr');
+    console.log(this.lastUpdated.split(' '), 'split data');
+    console.log(this.totalValueForEquities, this.totalValueForCurrency, this.totalValue, this.equityArr, this.currencyArr, this.allArr, 'data from prev page');
+  }
+
+  ionViewDidEnter() {
+    this.loadingChart = false;
+    this.getStockItems();
+    this.getETFItems();
+    this.getUnitTrustItems();
+    this.getCryptoItems();
+    this.getForexItems();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AssetPage');
-    this.initChart();
-    this.loadingChart = false;
-    this.getItems();
+    console.log(this.lastUpdated);
+    setTimeout(() => {
+      this.loadingChart = false;
+      this.totalEquityValue = this.unittrustTotalValue + this.shareTotalValue + this.etfTotalValue;
+      this.totalCurrencyValue = this.forexTotalValue + this.cryptoTotalValue;
+      this.equityValueChart = {
+        "year": this.lastUpdated.split(' ')[0],
+        "month": this.lastUpdated.split(' ')[1],
+        "day": this.lastUpdated.split(' ')[2],
+        "value": this.totalEquityValue
+      };
+      this.currencyValueChart = {
+        "year": this.lastUpdated.split(' ')[0],
+        "month": this.lastUpdated.split(' ')[1],
+        "day": this.lastUpdated.split(' ')[2],
+        "value": this.totalCurrencyValue
+      };
+      this.db.list('asset/equities/total-values').push(this.equityValueChart);
+      this.db.list('asset/currency/total-values').push(this.currencyValueChart);
+      this.initChart();
+    }, this.TIME_IN_MS);
   }
 
-  getItems(): Observable<any[]> {
+  getCurrentTime() {
+    let last30Days = moment().subtract(30, 'days');
+    return last30Days.format('YYYY MM DD');
+  }
+
+  getStockItems(): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     expenseObservable = this.db.list('asset/equities/stock').snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
     expenseObservable.subscribe(result => {
       this.stock_data = result;
-      console.log('retrieve data', this.stock_data);
+      console.log('retrieve stock', this.stock_data);
+      for (let i = 0; i < this.stock_data.length; i++) {
+        this.shareTotalValue += this.stock_data[i].value;
+      }
+    });
+    return expenseObservable;
+  }
 
+  getETFItems(): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    expenseObservable = this.db.list('asset/equities/ETF').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      this.stock_data = result;
+      console.log('retrieve ETF', this.stock_data);
+      for (let i = 0; i < this.stock_data.length; i++) {
+        this.etfTotalValue += this.stock_data[i].value;
+      }
+    });
+    return expenseObservable;
+  }
+
+  getUnitTrustItems(): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    expenseObservable = this.db.list('asset/equities/unit-trust').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      this.stock_data = result;
+      console.log('retrieve UT', this.stock_data);
+      for (let i = 0; i < this.stock_data.length; i++) {
+        this.unittrustTotalValue += this.stock_data[i].value;
+      }
+    });
+    return expenseObservable;
+  }
+
+  getCryptoItems(): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    expenseObservable = this.db.list('asset/currency/crypto').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      this.crypto_data = result;
+      console.log('retrieve crypto data', this.crypto_data);
+      for (let i = 0; i < this.crypto_data.length; i++) {
+        this.cryptoTotalValue += this.crypto_data[i].value;
+      }
+    });
+    return expenseObservable;
+  }
+
+  getForexItems(): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    expenseObservable = this.db.list('asset/currency/forex').snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      this.forexdata = result;
+      console.log('retrieve forex data', this.forexdata);
+      for (let i = 0; i < this.forexdata.length; i++) {
+        this.forexTotalValue += this.forexdata[i].value;
+      }
     });
     return expenseObservable;
   }
@@ -62,15 +177,31 @@ export class AssetPage {
     this.navCtrl.push(StockMarketPage);
   }
 
-  goToAddEquityPage(){
+  goToCryptoMarketPage() {
+    this.navCtrl.push(HomePage);
+  }
+
+  goToCryptoViewPage() {
+    this.navCtrl.push(ViewCryptoPage);
+  }
+
+  goToViewCurrencyPage() {
     this.navCtrl.push(StockMarketPage);
   }
 
-  goToViewEquityPage(){
+  goToAddEquityPage() {
+    this.navCtrl.push(StockMarketPage);
+  }
+
+  goToViewEquityPage() {
     this.navCtrl.push(ViewEquityPage);
   }
 
   initChart() {
+    console.log('totalValueForEquities totalValueForEquities', this.totalValueForEquities);
+    const equityArr = this.equityArr.map(value => value.value);
+    const currencyArr = this.equityArr.map(value => value.value);
+    const allArr = this.allArr.map(value => value.value);
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
     HighCharts.chart('chart-container', {
@@ -132,18 +263,9 @@ export class AssetPage {
       },
       series: [{
         type: 'area',
-        data: [
-          0, 0, 1, 3, 4, 6, 11, 32, 110, 235,
-          369, 640, 1005, 1436, 2063, 3057, 4618, 6444, 9822, 15468,
-          20434, 24126, 27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
-          26662, 26956, 27912, 28999, 28965, 27826, 25579, 25722, 24826, 24605,
-          24304, 23464, 23708, 24099, 24357, 24237, 24401, 24344, 23586, 22380,
-          21004, 17287, 14747, 13076, 12555, 12144, 11009, 10950, 10871, 10824,
-          10577, 10527, 10475, 10421, 10358, 10295, 10104, 9914, 9620, 9326,
-          5113, 5113, 4954, 4804, 4761, 4717, 4368, 4018
-        ],
-        pointStart: Date.UTC(2017, 12, 1),
-        pointInterval: 24 * 3600 * 1000 // one day
+        data: allArr,
+        pointStart: Date.UTC(this.totalValue.year, this.totalValue.month, this.totalValue.day),
+        pointInterval: 24 * 3600 * 100 // one day
       }]
     });
     HighCharts.chart('chart-equity-value', {
@@ -205,17 +327,8 @@ export class AssetPage {
       },
       series: [{
         type: 'area',
-        data: [
-          0, 0, 1, 3, 4, 6, 11, 32, 110, 235,
-          369, 640, 1005, 1436, 2063, 3057, 4618, 6444, 9822, 15468,
-          20434, 24126, 27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
-          26662, 26956, 27912, 28999, 28965, 27826, 25579, 25722, 24826, 24605,
-          24304, 23464, 23708, 24099, 24357, 24237, 24401, 24344, 23586, 22380,
-          21004, 17287, 14747, 13076, 12555, 12144, 11009, 10950, 10871, 10824,
-          10577, 10527, 10475, 10421, 10358, 10295, 10104, 9914, 9620, 9326,
-          5113, 5113, 4954, 4804, 4761, 4717, 4368, 4018
-        ],
-        pointStart: Date.UTC(2017, 12, 1),
+        data: equityArr,
+        pointStart: Date.UTC(this.totalValueForEquities.year, this.totalValueForEquities.month, this.totalValueForEquities.day),
         pointInterval: 24 * 3600 * 1000 // one day
       }]
     });
@@ -255,15 +368,15 @@ export class AssetPage {
         colorByPoint: true,
         data: [{
           name: 'Shares',
-          y: 45.3,
+          y: this.shareTotalValue,
           sliced: true,
           selected: true
         }, {
           name: 'ETFs',
-          y: 33.1
+          y: this.etfTotalValue
         }, {
           name: 'Unit Trusts',
-          y: 21.6
+          y: this.unittrustTotalValue
         }]
       }]
     });
@@ -326,17 +439,8 @@ export class AssetPage {
       },
       series: [{
         type: 'area',
-        data: [
-          0, 0, 1, 3, 4, 6, 11, 32, 110, 235,
-          369, 640, 1005, 1436, 2063, 3057, 4618, 6444, 9822, 15468,
-          20434, 24126, 27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
-          26662, 26956, 27912, 28999, 28965, 27826, 25579, 25722, 24826, 24605,
-          24304, 23464, 23708, 24099, 24357, 24237, 24401, 24344, 23586, 22380,
-          21004, 17287, 14747, 13076, 12555, 12144, 11009, 10950, 10871, 10824,
-          10577, 10527, 10475, 10421, 10358, 10295, 10104, 9914, 9620, 9326,
-          5113, 5113, 4954, 4804, 4761, 4717, 4368, 4018
-        ],
-        pointStart: Date.UTC(2017, 12, 1),
+        data: currencyArr,
+        pointStart: Date.UTC(this.totalValueForCurrency.year, this.totalValueForCurrency.month, this.totalValueForCurrency.day),
         pointInterval: 24 * 3600 * 1000 // one day
       }]
     });
@@ -376,12 +480,12 @@ export class AssetPage {
         colorByPoint: true,
         data: [{
           name: 'Currency',
-          y: 70.3,
+          y: this.forexTotalValue,
           sliced: true,
           selected: true
         }, {
           name: 'Cryptocurrency',
-          y: 29.7
+          y: this.cryptoTotalValue
         }]
       }]
     });

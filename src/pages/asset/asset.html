@@ -51,7 +51,7 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> $1,297,501.81</h1>
+        <h1 text-center style="font-size: 34px;"> {{totalValueForCurrency.value + totalValueForEquities.value | number : 0}} SGD</h1>
         <h6 text-center>Total Assets Held</h6>
       </div>
 
@@ -62,62 +62,47 @@
         <div class="coin-info-card">
 
           <ion-row>
-            <ion-col col-7 text-left>
+            <ion-col col-6 text-center>
               <span class="coin-info-name">Equities Held</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $121,950.53
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: greenyellow"> +5.11%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{totalValueForEquities.value | number : 0}} SGD
             </ion-col>
           </ion-row>
 
           <ion-row>
-            <ion-col col-7 text-left>
+            <ion-col col-6 text-center>
               <span class="coin-info-name">Deposits Held</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $47,981.21
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: greenyellow"> +2.63%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
             </ion-col>
           </ion-row>
 
           <ion-row>
-            <ion-col col-7 text-left>
-              <span class="coin-info-name">Bonds Held</span>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Equities Held</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $87,142.67
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: red"> -5.14%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
             </ion-col>
           </ion-row>
 
           <ion-row>
-            <ion-col col-7 text-left>
+            <ion-col col-6 text-center>
               <span class="coin-info-name">Currency Held</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $17,156.10
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: greenyellow"> +2.43%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{totalValueForCurrency.value | number : 0}} SGD
             </ion-col>
           </ion-row>
 
           <ion-row>
-            <ion-col col-7 text-left>
+            <ion-col col-6 text-center>
               <span class="coin-info-name">Personal Assets</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $843,817.90
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: greenyellow"> +0%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
             </ion-col>
           </ion-row>
         </div>
@@ -141,7 +126,7 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> $121,950.53</h1>
+        <h1 text-center style="font-size: 34px;"> {{totalValueForEquities.value | number: 0}} SGD</h1>
         <h6 text-center>Total Equities Held</h6>
       </div>
 
@@ -149,11 +134,11 @@
       <div class="con-card">
         <ion-slides pager="true" spaceBetween="5px">
           <ion-slide>
-            <div [hidden]="loadingChart" id="chart-equity" style="display: block;"></div>
+            <div [hidden]="loadingChart" id="chart-equity-value" style="display: block;"></div>
           </ion-slide>
 
           <ion-slide>
-            <div [hidden]="loadingChart" id="chart-equity-value" style="display: block;"></div>
+            <div [hidden]="loadingChart" id="chart-equity" style="display: block;"></div>
           </ion-slide>
         </ion-slides>
       </div>
@@ -161,13 +146,14 @@
       <div class="button-group" padding style="margin-top: -18px">
         <ion-row>
           <ion-col col-6>
-            <button ion-button round class="buttons"  style="background-color: #ac5d70" (click)="goToStockMarketPage()">
+            <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToStockMarketPage()">
               Add Equity
             </button>
           </ion-col>
 
           <ion-col col-6>
-            <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px" (click)="goToViewEquityPage()">
+            <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px"
+                    (click)="goToViewEquityPage()">
               View Equity
             </button>
           </ion-col>
@@ -178,38 +164,29 @@
         <div class="coin-info-card">
 
           <ion-row>
-            <ion-col col-7 text-left>
-              <span class="coin-info-name">Shares Held</span>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Shares</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $41,317.85
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: greenyellow"> +5.11%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{shareTotalValue}} SGD
             </ion-col>
           </ion-row>
 
           <ion-row>
-            <ion-col col-7 text-left>
-              <span class="coin-info-name">ETFs Held</span>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">ETFs</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $32,867.19
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: greenyellow"> +2.63%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{etfTotalValue}} SGD
             </ion-col>
           </ion-row>
 
           <ion-row>
-            <ion-col col-7 text-left>
-              <span class="coin-info-name">Unit Trusts Held</span>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Unit Trusts</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $10,000.00
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: red"> -5.14%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{unittrustTotalValue}} SGD
             </ion-col>
           </ion-row>
         </div>
@@ -234,7 +211,7 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;">$17,156.10</h1>
+        <h1 text-center style="font-size: 34px;">{{totalValueForCurrency.value | number : 0}} SGD</h1>
         <h6 text-center>Total Currency Held</h6>
       </div>
 
@@ -242,111 +219,62 @@
       <div class="con-card">
         <ion-slides pager="true" spaceBetween="5px">
           <ion-slide>
-            <div [hidden]="loadingChart" id="chart-currency" style="display: block;"></div>
+            <div [hidden]="loadingChart" id="chart-currency-value" style="display: block;"></div>
           </ion-slide>
 
           <ion-slide>
-            <div [hidden]="loadingChart" id="chart-currency-value" style="display: block;"></div>
+            <div [hidden]="loadingChart" id="chart-currency" style="display: block;"></div>
           </ion-slide>
         </ion-slides>
+      </div>
+
+      <div class="button-group" padding style="margin-top: -18px">
+        <ion-row>
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToCryptoMarketPage()">
+              Add Currency
+            </button>
+          </ion-col>
+
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px"
+                    (click)="goToCryptoViewPage()">
+              View Currency
+            </button>
+          </ion-col>
+        </ion-row>
       </div>
 
       <div class="coin-info" style="margin-top: 20px">
         <div class="coin-info-card">
 
-          <ion-row>
-            <ion-col col-7 text-left>
-              <span class="coin-info-name">Currency Held</span>
+           <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Crypto</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $10,000.10
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: greenyellow"> +3.41%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{cryptoTotalValue | number : 0}} SGD
             </ion-col>
           </ion-row>
 
           <ion-row>
-            <ion-col col-7 text-left>
-              <span class="coin-info-name">Crypto Held</span>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Currency</span>
             </ion-col>
-            <ion-col col-3 class="coin-info-detail">
-              $7156.00
-            </ion-col>
-            <ion-col col-2 class="coin-info-detail">
-              <span style="color: red"> -1.84%</span>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{forexTotalValue | number : 0}} SGD
             </ion-col>
           </ion-row>
 
         </div>
       </div>
-
-      <h1 text-center>What You Bought</h1>
-      <div class="coin-info" style="margin-top: 20px">
-        <ng-container>
-          <ion-item class="cp-search" *ngIf="search">
-            <ion-label stacked>Search</ion-label>
-            <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search"></ion-input>
-          </ion-item>
-          <mat-table #table [dataSource]="dataSource" matSort [class.marginTop]="search">
-
-            <ng-container matColumnDef="symbol">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Symbol</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <ion-row align-items-center>
-                  <div class="currency-desc">
-                    <!--<h5>{{element.name}}</h5>-->
-                    <h5>AAPL</h5>
-                  </div>
-                </ion-row>
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="quantity">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <span class="crypto-symbol">100</span>
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="price">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Price</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-                <span class="crypto-symbol">$150.71</span>
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="total">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Total</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-                <span class="crypto-symbol">$15007.1</span>
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="change">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Change</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-              </mat-cell>
-            </ng-container>
-
-
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openStock(row)"></mat-row>
-          </mat-table>
-        </ng-container>
-      </div>
     </div>
 
     <div [hidden]="type != 'deposit'">
-      Deposits
     </div>
 
     <div [hidden]="type != 'personal'">
-      Personal
+
     </div>
 
   </div>

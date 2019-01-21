@@ -1,0 +1,109 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title text-center margin-left="-48px">Currency Details</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ng-container *ngIf="loadingChart">
+    <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+    </div>
+  </ng-container>
+
+  <div class="coin-card-pink" padding>
+    <h1 text-center style="font-size: 34px;"> {{price || coin.market | number : 0}} SGD</h1>
+    <h3 text-center>Market value</h3>
+    <h3 style="color: greenyellow; font-size: 26px" *ngIf="profit" text-center>
+      ( {{(price /(coin.amount * coin.purchasePrice)*100) - 100 | number: 0 || 0}}% )</h3>
+    <h3 style="color: red; font-size: 26px" *ngIf="!profit" text-center>
+      ( {{(price/(coin.amount * coin.purchasePrice)*100) - 100 | number: 0 || 0}}% )</h3>
+    <h6 text-center>{{coin.name}}</h6>
+  </div>
+
+  <div class="chart">
+    <iframe height="100%" width="100%" [src]='chartURL()'></iframe>
+  </div>
+
+  <div class="button-group" padding style="margin-top: 18px">
+    <ion-row>
+      <ion-col col-6>
+        <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToAddCrypto(coin,(price/coin.amount))">
+          Buy
+        </button>
+      </ion-col>
+
+      <ion-col col-6>
+        <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px">
+          Sell
+        </button>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <div class="coin-info" style="margin-top: 10px">
+    <div class="coin-info-card">
+
+      <ion-row>
+        <ion-col col-6 text-center>
+          <span class="coin-info-name">Symbol</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail" text-center>
+          {{coin.symbol}}
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-6 text-center>
+          <span class="coin-info-name">Quantity</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail" text-center>
+          {{coin.amount}} lots
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-6 text-center>
+          <span class="coin-info-name">Purchase Price</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail" text-center>
+          {{coin.purchasePrice | number : 0}} SGD
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-6 text-center>
+          <span class="coin-info-name">Purchase Value</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail" text-center>
+          {{coin.purchasePrice * coin.amount || coin.quantity | number : 0}} SGD
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-6 text-center>
+          <span class="coin-info-name" *ngIf="profit">Profit</span>
+          <span class="coin-info-name" *ngIf="!profit">Loss</span>
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail" style="color: greenyellow" *ngIf="profit" text-center>
+          {{price - (coin.amount * coin.purchasePrice) | number : 0}} SGD
+        </ion-col>
+        <ion-col col-6 class="coin-info-detail" style="color: red" *ngIf="!profit" text-center>
+          {{price - (coin.amount * coin.purchasePrice) | number : 0}} SGD
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+</ion-content>
