@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import {StockMarketPage} from "../stock-market/stock-market";
 import {HomePage} from "../home/home";
+import {CurrencyMarketPage} from "../currency-market/currency-market";
 
 /**
  * Generated class for the ValuationPage page.
@@ -24,12 +25,16 @@ export class ValuationPage {
     console.log('ionViewDidLoad ValuationPage');
   }
 
-  goToStockMarket(){
+  goToStockMarket() {
     this.navCtrl.push(StockMarketPage);
   }
 
-  goToCryptoMarket(){
+  goToCryptoMarket() {
     this.navCtrl.push(HomePage);
+  }
+
+  goToCurrencyMarket() {
+    this.navCtrl.push(CurrencyMarketPage);
   }
 
 }

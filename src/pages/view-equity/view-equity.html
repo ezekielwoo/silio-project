@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title text-center style="margin-left: -33px">
+      <ion-icon name="trending-up"></ion-icon>
+      Your Equity
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <!-- if chart API is loading display loading_bars -->
+  <ng-container *ngIf="loadingChart">
+    <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+    </div>
+  </ng-container>
+
+  <div class="coin-card-pink" padding>
+
+    <ion-row>
+      <ion-col col-6 text-left>
+        <h2 text-center style="font-size: 34px;">${{price | number : 0}}</h2>
+        <h6 text-center>Your Market Value</h6>
+      </ion-col>
+
+      <ion-col col-6 text-right>
+        <h2 text-center style="font-size: 34px;">${{totalValue | number : 0}}</h2>
+        <h6 text-center>Your Purchase Value</h6>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <h3 text-center>Portfolio</h3>
+  <div [hidden]="loadingChart" id="chart-equities" style="display: block;"></div>
+
+  <ion-title text-center margin-top padding>
+    <h1>What You Hold</h1>
+  </ion-title>
+
+  <ion-list id="viewExpenses-list3">
+    <ion-item-sliding *ngFor="let stockItem of stock">
+
+      <ion-item color="none" style="background-color: #ac5d70; color: white">
+        <ion-row>
+          <ion-col col-6 text-left>
+            <h1 style="font-size: 22px;margin-top: -8px;"><b>{{stockItem.name}}</b></h1>
+            <h2 style="margin-top: 12px">{{stockItem.symbol}}</h2>
+          </ion-col>
+
+          <ion-col col-6 text-right>
+            <h2><b>{{stockItem.amount}} Lots</b></h2>
+            <h2 style="margin-top: 12px">{{stockItem.value | number : 0}} SGD</h2>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+
+      <ion-item-options side="right">
+        <button ion-button color="danger" (click)="deleteItem(stockItem)">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+</ion-content>
