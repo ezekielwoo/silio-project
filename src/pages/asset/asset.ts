@@ -47,9 +47,6 @@ export class AssetPage {
   allArr: any = [];
 
 
-<<<<<<< HEAD
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase ) {
-=======
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase) {
     this.lastUpdated = this.getCurrentTime();
     this.totalValueForEquities = this.navParams.get('equityTotalValue');
@@ -69,7 +66,6 @@ export class AssetPage {
     this.getUnitTrustItems();
     this.getCryptoItems();
     this.getForexItems();
->>>>>>> 87c28d2f652e1dd31cda8907d4dfa4edcd46d49b
   }
 
   ionViewDidLoad() {

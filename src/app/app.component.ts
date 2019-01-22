@@ -6,12 +6,13 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { TabsPage } from '../pages/tabs/tabs';
 import { SettingProvider } from '../providers/setting/setting';
 import { Network } from '@ionic-native/network';
+import { MainPage } from '../pages/main/main';
 
 @Component({
   templateUrl: 'app.html',
 })
 export class MyApp {
-  rootPage:any = TabsPage;
+  rootPage:any = MainPage;
   theme :any = "dark" //default theme
 
 

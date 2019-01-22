@@ -268,69 +268,6 @@
 
         </div>
       </div>
-<<<<<<< HEAD
-
-      
-      <h1 text-center>What You Bought</h1>
-      <div class="coin-info" style="margin-top: 20px">
-        <ng-container>
-          <ion-item class="cp-search" *ngIf="search">
-            <ion-label stacked>Search</ion-label>
-            <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search"></ion-input>
-          </ion-item>
-          <mat-table #table [dataSource]="dataSource" matSort [class.marginTop]="search">
-
-            <ng-container matColumnDef="symbol">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Symbol</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <ion-row align-items-center>
-                  <div class="currency-desc">
-                    <!--<h5>{{element.name}}</h5>-->
-                    <h5>AAPL</h5>
-                  </div>
-                </ion-row>
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="quantity">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <span class="crypto-symbol">100</span>
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="price">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Price</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-                <span class="crypto-symbol">$150.71</span>
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="total">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Total</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-                <span class="crypto-symbol">$15007.1</span>
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="change">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Change</mat-header-cell>
-              <mat-cell *matCellDef="let element">
-                <!--<span class="crypto-symbol">{{element.symbol | uppercase }}</span>-->
-              </mat-cell>
-            </ng-container>
-
-
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openStock(row)"></mat-row>
-          </mat-table>
-        </ng-container>
-      </div>
-=======
->>>>>>> 87c28d2f652e1dd31cda8907d4dfa4edcd46d49b
     </div>
 
     <div [hidden]="type != 'deposit'">

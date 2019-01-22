@@ -5,6 +5,10 @@ import { User } from '../../models/user';
 import { UserFbProvider } from '../../providers/user-firebase';
 import { MainPage } from '../main/main';
 import { LoginPage } from '../login/login';
+import { ProfilePage } from '../profile/profile';
+import { Storage } from '@ionic/storage';
+import { BankDetailsPage } from '../bank-details/bank-details';
+import { TabsPage } from '../tabs/tabs';
 
 /**
  * Generated class for the OtpPage page.
@@ -26,7 +30,9 @@ export class OtpPage {
   email: string;
   userOTP: number;
   oneTP: number;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private userService: UserFbProvider, private alertCtrl: AlertController) {
+  key:string = 'email';
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private userService: UserFbProvider, private alertCtrl: AlertController, private storage: Storage) {
     this.email = this.navParams.get('email');
   }
 
@@ -47,7 +53,10 @@ export class OtpPage {
                   text: 'Confirm',
                   handler: () => {
                     this.userService.deleteOTP(this.email);
-                    this.navCtrl.setRoot(MainPage); 
+                    this.storage.set(this.key, this.email);
+                    console.log(this.key);
+                    this.navCtrl.setRoot(TabsPage);
+                    
                   }
                 }
               ]
@@ -72,7 +81,7 @@ export class OtpPage {
           alert.present();
         }
       }
-
+      
     });
   
   }

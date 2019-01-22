@@ -35,25 +35,32 @@ import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AddEquityPage} from "../pages/add-equity/add-equity";
 import {CurrencyMarketPage} from "../pages/currency-market/currency-market";
 import {ViewEquityPage} from "../pages/view-equity/view-equity";
-<<<<<<< HEAD
-import { UserFbProvider } from '../providers/user-firebase';
-import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
-=======
 import {EquityDetailsPage} from "../pages/equity-details/equity-details";
 import {AddCryptoPage} from "../pages/add-crypto/add-crypto"
 import {ViewCryptoPage} from "../pages/view-crypto/view-crypto"
 import {OwnCryptoDetailPage} from "../pages/own-crypto-detail/own-crypto-detail"
 import {AddPropertyPage} from "../pages/add-property/add-property";
 import {PropertymarketPage} from "../pages/propertymarket/propertymarket";
->>>>>>> 87c28d2f652e1dd31cda8907d4dfa4edcd46d49b
+
+import { UserFbProvider } from '../providers/user-firebase';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+
+import { MainPage } from '../pages/main/main';
+import { RegisterPage } from '../pages/register/register';
+import { LoginPage } from '../pages/login/login';
+import { OtpPage } from '../pages/otp/otp';
+import { ForgetPassPage } from '../pages/forget-pass/forget-pass';
+import { ProfilePage } from '../pages/profile/profile';
+import { EditProfilePage } from '../pages/edit-profile/edit-profile';
+import { EditProfilePageModule } from '../pages/edit-profile/edit-profile.module';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
-  authDomain: "silio-4f410.firebaseapp.com",
-  databaseURL: "https://silio-4f410.firebaseio.com",
-  projectId: "silio-4f410",
-  storageBucket: "silio-4f410.appspot.com",
-  messagingSenderId: "283218915062"
+  apiKey: "AIzaSyBwKnps43TxEz6f9AWxqdtEIfrcnBIlCEY",
+    authDomain: "silio-project-f156e.firebaseapp.com",
+    databaseURL: "https://silio-project-f156e.firebaseio.com",
+    projectId: "silio-project-f156e",
+    storageBucket: "silio-project-f156e.appspot.com",
+    messagingSenderId: "446357654949"
 };
 
 @NgModule({
@@ -80,7 +87,13 @@ const firebaseConfig = {
     ViewCryptoPage,
     OwnCryptoDetailPage,
     AddPropertyPage,
-    PropertymarketPage
+    PropertymarketPage,
+    MainPage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ForgetPassPage,
+    ProfilePage,
   ],
   imports: [
     BrowserModule,
@@ -94,6 +107,8 @@ const firebaseConfig = {
     ComponentsModule,
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(firebaseConfig),
+    EditProfilePageModule,
+   
 
   ],
   bootstrap: [IonicApp],
@@ -121,6 +136,13 @@ const firebaseConfig = {
     OwnCryptoDetailPage,
     AddPropertyPage,
     PropertymarketPage,
+    MainPage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ForgetPassPage,
+    ProfilePage,
+    EditProfilePage
   ],
   providers: [
     StatusBar,

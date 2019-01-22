@@ -88,9 +88,9 @@ export class BankDetailsPage {
   ionViewDidLoad() {
     this.settingsProvider.settingSubject.subscribe((data) => {
       this.currentChartTheme = data.theme;
-      this.initChart();
-      this.getTotalValueForEquities();
-      this.getTotalValue();
+      // this.initChart();
+      // this.getTotalValueForEquities();
+      // this.getTotalValue();
     });
   }
 

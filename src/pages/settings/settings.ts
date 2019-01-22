@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { SettingProvider } from '../../providers/setting/setting';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
+import { ProfilePage } from '../profile/profile';
 
 
 @Component({
@@ -80,6 +81,10 @@ export class SettingsPage {
   updateTheme() {
     this.settingProvider.currentSetting.theme = (this.isDarkTheme) ? 'dark' : 'light';
     this.settingProvider.setSettings();
+  }
+
+  goToProfile(){
+    this.navCtrl.push(ProfilePage);
   }
   
 }

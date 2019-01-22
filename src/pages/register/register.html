@@ -15,30 +15,30 @@
 
 <ion-content padding>
 
-    <ion-label id='logo'> Enter your credentials </ion-label>
+    <ion-label style="color:white; text-align: center"> Enter your credentials </ion-label>
     
-    <ion-item>
-        <ion-label color="primary" stacked>First Name</ion-label>
+    <ion-item style="background-color: #ac5d70">
+        <ion-label style="color:white" stacked>First Name</ion-label>
         <ion-input type="text" clearInput [(ngModel)] = 'user.firstName'></ion-input>
       </ion-item>
     
-      <ion-item>
-        <ion-label color="primary" stacked>Last Name</ion-label>
+      <ion-item style="background-color: #ac5d70">
+        <ion-label style="color:white" stacked>Last Name</ion-label>
         <ion-input type="text" clearInput [(ngModel)] = 'user.lastName'></ion-input>
       </ion-item>
 
-      <ion-item>
-          <ion-label color="primary" stacked>Mobile Number</ion-label>
+      <ion-item style="background-color: #ac5d70">
+          <ion-label style="color:white" stacked>Mobile Number</ion-label>
           <ion-input type="Number" clearInput [(ngModel)] = 'user.mobileNum'></ion-input>
         </ion-item>
       
-        <ion-item>
-          <ion-label color="primary" stacked>Email</ion-label>
+        <ion-item style="background-color: #ac5d70">
+          <ion-label style="color:white" stacked>Email</ion-label>
           <ion-input type="email" clearInput [(ngModel)] = 'user.email'></ion-input>
         </ion-item>
         
-        <ion-item>
-            <ion-label color="primary" stacked>Password</ion-label>
+        <ion-item style="background-color: #ac5d70">
+            <ion-label style="color:white" stacked>Password</ion-label>
             <ion-input type="password" clearInput [(ngModel)] = 'user.password'></ion-input>
         </ion-item>
 
@@ -50,7 +50,7 @@
 
         </ion-col>
         <ion-col>
-            <button ion-button round outline (click) = "createUser(user)" >Confirm</button>
+            <button ion-button style="border-color:white; color: white" round outline (click) = "createUser(user)" >Confirm</button>
           </ion-col>
           <ion-col>
           

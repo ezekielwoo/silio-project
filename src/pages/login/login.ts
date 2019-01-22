@@ -1,11 +1,13 @@
 import { Component} from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 import { UserFbProvider } from '../../providers/user-firebase';
 import { User } from '../../models/user';
 import { MainPage } from '../main/main';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
 import { OtpPage } from '../otp/otp';
 import { ForgetPassPage } from '../forget-pass/forget-pass';
+import { Storage } from '@ionic/storage';
+import { TabsPage } from '../tabs/tabs';
 
 /**
  * Generated class for the LoginPage page.
@@ -23,12 +25,15 @@ declare function require(name: string);
 })
 export class LoginPage{
 
+  key:string = 'email';
   email:string;
   password:string;
   userList: User[];
+  defEmail: string;
 
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, private faio: FingerprintAIO, public userService: UserFbProvider,public modalCtrl: ModalController) {
+  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, private faio: FingerprintAIO, public userService: UserFbProvider,public modalCtrl: ModalController, private storage: Storage) {
+    
+    
   }
 
   Login() {
@@ -39,6 +44,7 @@ export class LoginPage{
       var code = "1234567890";
       var textCode = "";
       var num = 0;
+      var check : boolean;
       for(var i = 0; i < this.userList.length; i++){
         //email password validation
         if(this.userList[i].email == this.email && this.userList[i].password == this.password){
@@ -56,37 +62,60 @@ export class LoginPage{
               textCode += code.charAt(Math.floor(Math.random() * code.length));
             }
             
-            
             const from = 'Sillio';
             const to = "65" + "98956298";
             const text = "Your verification code is: " + textCode;
 
     //        nexmo.message.sendSms(from, to, text);
 
-
+            check = true;
             this.userService.addUserOTP(this.email, textCode);
             this.navCtrl.push(OtpPage,{ email: this.email });
+              
           } 
-
-        else {
-          alert("Invalid Email OR Password");
-        }  
+          else{
+            check = false;
+          }
       }
-        
+
+      if(check == false){
+        alert('Invalid email or password');
+      }
+
+       
       });
     }
 
     FPLogin(){
+      this.storage.get('defaultEmail').then((val) => {
+        this.defEmail = val;
+        console.log(val);
+        const available = this.faio.isAvailable;
+
+        if (available) {
+          if (this.defEmail != null) {
         this.faio.show({
           clientId: 'Silio',
           clientSecret: 'password'
         })
         .then(result => {
-          this.navCtrl.setRoot('MainPage');
+          this.storage.set('email', val);
+          this.navCtrl.setRoot('ProfilePage');
         })
         .catch(err => {
           console.log('Err: ', err);
         })
+          }
+          else{
+            let alert = this.alertCtrl.create({
+              title: 'Error',
+              subTitle: 'No default account found.',
+              buttons: ['Dismiss']
+            });
+            alert.present();
+          }
+        }
+      });
       }
 
       ForgetPassword(){
