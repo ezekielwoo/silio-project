@@ -1,4 +1,3 @@
-
 <ion-header>
 
   <ion-navbar color="primary">
@@ -12,39 +11,40 @@
 
 
 <ion-content padding>
-    <form #submitExpenseForm="ngForm">
+  <form #submitExpenseForm="ngForm">
     <ion-list class="list-setting">
-        <ion-item>
-            <ion-label>Account Name:</ion-label>
-           <ion-input type="text" [(ngModel)]="bank.bankname" name="bankname" #name="ngModel" required text-right> </ion-input>
-          </ion-item>
-         
       <ion-item>
-          <ion-label>Amount:</ion-label>
-        <ion-input type="text" [(ngModel)]="bank.amount" name="amount" #amount="ngModel" required text-right></ion-input>
+        <ion-label>Account Name:</ion-label>
+        <ion-input type="text" [(ngModel)]="log.bankname" name="bankname" #name="ngModel" required
+                   text-right></ion-input>
       </ion-item>
-      
-  <ion-item>
-    <ion-label>Account Number:</ion-label>
-    <ion-input type="text"  [(ngModel)]="bank.bankaccnum" name="bankaccnum" #bankaccnum="ngModel" required text-right>
-  
-      </ion-input>
-  </ion-item> 
-  <ion-item>
-        <ion-label>Bank:</ion-label>
-        <ion-input type="text" [(ngModel)]="bank.bank" name="bank" #bank="ngModel" required text-right>
-      
-          
-        </ion-input>
-         
-      </ion-item> 
-    
-      
-     </ion-list>
 
-     <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)" required text-right>Submit</button> 
-    
-</form>
+      <ion-item>
+        <ion-label>Amount:</ion-label>
+        <ion-input type="text" [(ngModel)]="log.amount" name="amount" #amount="ngModel" required text-right></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Account Number:</ion-label>
+        <ion-input type="text" [(ngModel)]="log.bankaccnum" name="bankaccnum" #bankaccnum="ngModel" required text-right>
+          n
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Bank:</ion-label>
+        <ion-input type="text" [(ngModel)]="log.bank" name="bank" #bank="ngModel" required text-right>
+
+
+        </ion-input>
+
+      </ion-item>
+
+
+    </ion-list>
+
+    <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)" required text-right>Submit</button>
+
+  </form>
 </ion-content>
 
 

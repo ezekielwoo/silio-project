@@ -14,6 +14,7 @@ import {AngularFireDatabase} from 'angularfire2/database';
 import * as moment from 'moment';
 import {Storage} from "@ionic/storage";
 import {AddManualPage} from "../AddManual/AddManual";
+import {AlertController} from "ionic-angular";
 
 @IonicPage()
 @Component({
@@ -46,10 +47,35 @@ export class BankDetailsPage {
               public api: ApiProvider,
               public settingsProvider: SettingProvider,
               private db: AngularFireDatabase,
-              private storage: Storage) {
+              private storage: Storage,
+              public alertCtrl: AlertController) {
 
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
+      this.storage.get('defaultEmail').then((defVal) => {
+        if (defVal != val) {
+          let alertDefault = this.alertCtrl.create({
+            title: 'Default Account',
+            message: 'Do you wish to set this as your default account? (You will be able to login with your fingerprint)',
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                handler: () => {
+                  console.log('Cancel clicked');
+                }
+              },
+              {
+                text: 'Ok',
+                handler: () => {
+                  this.storage.set("defaultEmail", val);
+                }
+              }
+            ]
+          });
+          alertDefault.present();
+        }
+      });
       this.getTotalValueForEquities(val);
       this.getTotalValue(val);
     });
@@ -147,7 +173,7 @@ export class BankDetailsPage {
           "day": this.lastUpdated.split(' ')[2],
           "value": equity.value + this.totalValueForCurrency.value
         };
-        console.log(equity.value, this.totalValueForCurrency.value),'abab';
+        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
         this.initChart(this.totalValueForCurrency.value, equity.value);
         this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
       }

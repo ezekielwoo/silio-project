@@ -13,6 +13,7 @@ import {HomePage} from "../home/home";
 import {ViewCryptoPage} from "../view-crypto/view-crypto";
 import {ApiProvider} from "../../providers/api/api";
 import {Storage} from "@ionic/storage";
+import {ViewaccountsPage} from "../viewaccounts/viewaccounts"
 
 @IonicPage()
 @Component({
@@ -569,6 +570,122 @@ export class AssetPage {
         }]
       }]
     });
+    HighCharts.chart('chart-equity-value1', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        zoomType: 'x',
+        height: 250
+      },
+      title: {
+        text: ""
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          day: '%e of %b'
+        }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        },
+        gridLineWidth: 0,
+        minorGridLineWidth: 0,
+        min: 0
+      },
+      legend: {
+        enabled: false
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1
+            },
+            stops: [
+              [0, HighCharts.getOptions().colors[0]],
+              [1, HighCharts.Color(HighCharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+            ]
+          },
+          marker: {
+            enabled: false
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
+      },
+      tooltip: {
+        pointFormat: "Price : {point.y:.2f}"
+      },
+      series: [{
+        type: 'area',
+        data: equityArr,
+        pointStart: Date.UTC(this.totalValueForEquities.year, this.totalValueForEquities.month - 1, this.totalValueForEquities.day),
+        pointInterval: 24 * 3600 * 1000 // one day
+      }]
+    });
+    HighCharts.chart('chart-equity1', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        height: 250
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      credits: {
+        enabled: false
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          size: 160,
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            style: {
+              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+            }
+          }
+        }
+      },
+      title: {
+        text: ''
+      },
+      series: [{
+        name: 'Equities',
+        colorByPoint: true,
+        data: [{
+          name: 'Shares',
+          y: this.shareTotalValue,
+          sliced: true,
+          selected: true
+        }, {
+          name: 'ETFs',
+          y: this.etfTotalValue
+        }, {
+          name: 'Unit Trusts',
+          y: this.unittrustTotalValue
+        }]
+      }]
+    });
+  }
+
+  goToViewAccountsPage() {
+    this.navCtrl.push(ViewaccountsPage);
   }
 
 }

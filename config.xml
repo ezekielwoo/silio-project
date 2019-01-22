@@ -93,5 +93,5 @@
         <variable name="ADMOB_APP_ID" value="" />
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
-    <engine name="android" spec="7.1.4" />
+    <engine name="android" spec="^7.1.4" />
 </widget>

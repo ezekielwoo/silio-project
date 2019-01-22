@@ -305,7 +305,15 @@
 
       <!-- <h3 text-center>Balance</h3> -->
       <div class="con-card">
-        <div id="chart-accountdetails" style="display: block;"></div>
+        <ion-slides>
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-equity-value1" style="display: block;"></div>
+          </ion-slide>
+
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-equity1" style="display: block;"></div>
+          </ion-slide>
+        </ion-slides>
       </div>
 
       <div class="button-group" padding style="margin-top: -18px">

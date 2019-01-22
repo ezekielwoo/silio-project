@@ -6,6 +6,7 @@
       <ion-icon name="ios-cog-outline"></ion-icon>
       Settings
     </ion-title>
+    <ion-buttons end> <button ion-button style="color: white" (click)="Logout()"><ion-icon name="log-out"></ion-icon></button> </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -30,12 +31,7 @@
       </ion-item>
     </ion-list>
     <ion-list class="list-setting">
-        <ion-list-header>
-          About
-        </ion-list-header>
-        <ion-item (click)="showAlertCredit()">
-            <ion-label>Credits</ion-label>
-        </ion-item>
+      <button ion-button full (click) =  "goToProfile()"> Profile </button>
      </ion-list>
 
 </ion-content>

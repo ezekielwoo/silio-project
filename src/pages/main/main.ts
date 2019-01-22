@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { RegisterPage } from '../register/register';
 import { LoginPage } from '../login/login';
-import { storage } from 'firebase';
- 
+import { TabsPage } from '../tabs/tabs';
+import { Storage } from '@ionic/storage';
 /**
  * Generated class for the MainPage page.
  *
@@ -18,12 +18,21 @@ import { storage } from 'firebase';
 })
 export class MainPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-
+  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MainPage');
+
+    this.storage.get("email").then((val) => {
+      console.log(val);
+       if(val != null){
+         this.navCtrl.setRoot(TabsPage);
+       }
+       else if(val == "" || val == null || val == undefined){
+          console.log(val);
+       }
+    })
   }
 
   goRegister(){
