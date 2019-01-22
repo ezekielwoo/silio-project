@@ -1,0 +1,36 @@
+
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="ios-cog-outline"></ion-icon>
+      Credit Cards
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+<ion-content padding>
+   
+  <ion-list class="list-setting">
+ 
+  <ion-item-sliding *ngFor = "let expenseItem of log">
+    <ion-item (click)="goToExpenseDetail(expenseItem)">
+
+      <h1>{{expenseItem.bank}} </h1>
+      <h2>{{expenseItem.type}}</h2>
+
+      <p>Card Number: {{expenseItem.CardNumber}} </p>
+
+      <p> Valid Thru: {{expenseItem.validThru}} </p>
+
+    </ion-item>
+    <ion-item-options side="right">
+      <button ion-button color="danger" (click)="deleteItem(expenseItem)">
+         Delete
+      </button>
+     </ion-item-options>        
+   </ion-item-sliding> 
+  </ion-list> 
+</ion-content>
+
+

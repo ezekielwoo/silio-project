@@ -1,0 +1,43 @@
+
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="ios-cog-outline"></ion-icon>
+      Credit Card Transactions
+    </ion-title>
+  </ion-navbar>
+  
+    
+</ion-header>
+
+
+<ion-content padding>  
+  
+  <button ion-button (click)="goToExpenseDetailz(ccnum)">Add Transactions</button>
+  <ion-list class="list-setting">
+        
+        <ion-item-sliding *ngFor = "let TransItem of sac">
+    
+          
+   
+            <ion-item *ngIf="TransItem.ccnum == ccnum">
+             
+        
+              <h1> {{TransItem.type}} </h1>
+        
+              <h1> ${{TransItem.amount}} </h1>
+              
+              <p>Date: {{TransItem.date}}</p>
+        
+            </ion-item>
+            <ion-item-options side="right">
+              <button ion-button color="danger" (click)="deleteItem(TransItem)">
+                 Delete
+              </button>
+             </ion-item-options>        
+           </ion-item-sliding> 
+           
+    </ion-list>
+   
+</ion-content>

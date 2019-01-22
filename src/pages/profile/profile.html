@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title style="text-align: center; color:white">Profile</ion-title>
+    <ion-buttons end> <button (click)="goToEditPage()"> Edit </button> </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-item style="background-color: #ac5d70">
+              <ion-label style="color:white" >First Name:</ion-label>
+              <ion-label style="color:white"text-wrap type="text" id='firstName'></ion-label>
+          </ion-item>
+          <ion-item style="background-color: #ac5d70">
+              <ion-label style="color:white" >Last Name: </ion-label>
+              <ion-label style="color:white" text-wrap type="text" id="lastName"></ion-label>
+          </ion-item>
+          <ion-item style="background-color: #ac5d70">
+              <ion-label style="color:white" >Email: </ion-label>
+              <ion-label style="color:white" text-wrap type="text" id="email" ></ion-label>
+          </ion-item>
+</ion-content>

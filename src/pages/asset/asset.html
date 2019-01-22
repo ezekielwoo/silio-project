@@ -32,6 +32,15 @@
 
 <ion-content padding-top>
 
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
   <div [ngSwitch]="type">
 
     <div [hidden]="type != 'all'">
@@ -51,7 +60,8 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> {{totalValueForCurrency.value + totalValueForEquities.value | number : 0}} SGD</h1>
+        <h1 text-center style="font-size: 34px;"> {{totalValueForCurrency.value + totalValueForEquities.value | number :
+          0}} SGD</h1>
         <h6 text-center>Total Assets Held</h6>
       </div>
 
@@ -168,7 +178,7 @@
               <span class="coin-info-name">Shares</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              {{shareTotalValue}} SGD
+              {{shareTotalValue | number: 0}} SGD
             </ion-col>
           </ion-row>
 
@@ -177,7 +187,7 @@
               <span class="coin-info-name">ETFs</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              {{etfTotalValue}} SGD
+              {{etfTotalValue | number: 0}} SGD
             </ion-col>
           </ion-row>
 
@@ -186,7 +196,7 @@
               <span class="coin-info-name">Unit Trusts</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              {{unittrustTotalValue}} SGD
+              {{unittrustTotalValue | number: 0}} SGD
             </ion-col>
           </ion-row>
         </div>
@@ -248,7 +258,7 @@
       <div class="coin-info" style="margin-top: 20px">
         <div class="coin-info-card">
 
-           <ion-row>
+          <ion-row>
             <ion-col col-6 text-center>
               <span class="coin-info-name">Crypto</span>
             </ion-col>
@@ -271,6 +281,64 @@
     </div>
 
     <div [hidden]="type != 'deposit'">
+
+      <!-- if chart API is loading display loading_bars -->
+      <ng-container *ngIf="loadingChart">
+        <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+          <h2>
+            <div class="load-bar"></div>
+          </h2>
+          <h3>
+            <div class="load-bar"></div>
+          </h3>
+          <h4>
+            <div class="load-bar"></div>
+          </h4>
+        </div>
+      </ng-container>
+
+
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;"> {{ocbcTotalValue | number: 0}} SGD</h1>
+        <h6 text-center>Total Balance</h6>
+      </div>
+
+      <!-- <h3 text-center>Balance</h3> -->
+      <div class="con-card">
+        <div id="chart-accountdetails" style="display: block;"></div>
+      </div>
+
+      <div class="button-group" padding style="margin-top: -18px">
+        <ion-row>
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToStockMarketPage()">
+              Add Account
+            </button>
+          </ion-col>
+
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px"
+                    (click)="goToViewAccountsPage()">
+              View Account
+            </button>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <div class="coin-info" style="margin-top: 10px">
+        <div class="coin-info-card" *ngFor="let item of ocbc_arrName;">
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">{{item.name}}</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{item.value}} SGD
+            </ion-col>
+          </ion-row>
+
+        </div>
+      </div>
     </div>
 
     <div [hidden]="type != 'personal'">

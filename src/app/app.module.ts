@@ -41,14 +41,33 @@ import {ViewCryptoPage} from "../pages/view-crypto/view-crypto"
 import {OwnCryptoDetailPage} from "../pages/own-crypto-detail/own-crypto-detail"
 import {AddPropertyPage} from "../pages/add-property/add-property";
 import {PropertymarketPage} from "../pages/propertymarket/propertymarket";
+import {MainPage} from "../pages/main/main";
+import {EditProfilePage} from "../pages/edit-profile/edit-profile";
+import {RegisterPage} from "../pages/register/register";
+import {LoginPage} from "../pages/login/login";
+import {OtpPage} from "../pages/otp/otp";
+import {ProfilePage} from "../pages/profile/profile";
+import {ForgetPassPage} from "../pages/forget-pass/forget-pass";
+import {UserFbProvider} from "../providers/user-firebase";
+import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
+import{TransactionFbProvider} from '../providers/transaction-firebase';
+import{ExpenseFbProvider} from '../providers/expense-firebase';
+import{bankFbProvider} from '../providers/bankform-firebase';
+import { TransactionPage } from '../pages/CcTrans/Transaction';
+import { BankFormPage } from '../pages/BankForm/BankForm';
+import{TransactionFormPage}from '../pages/TransForm/TransactionForm';
+import {AddCreditPage} from '../pages/AddCredit/AddCredit';
+import {ViewCreditPage} from '../pages/ViewCredit/ViewCredit';
+import {AddManualPage} from '../pages/AddManual/AddManual';
+
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
-  authDomain: "silio-4f410.firebaseapp.com",
-  databaseURL: "https://silio-4f410.firebaseio.com",
-  projectId: "silio-4f410",
-  storageBucket: "silio-4f410.appspot.com",
-  messagingSenderId: "283218915062"
+  apiKey: "AIzaSyCogNpV6zOV4zenlKpOtdp9zjyHPw24_nk",
+  authDomain: "silio-project.firebaseapp.com",
+  databaseURL: "https://silio-project.firebaseio.com",
+  projectId: "silio-project",
+  storageBucket: "silio-project.appspot.com",
+  messagingSenderId: "517759624173"
 };
 
 @NgModule({
@@ -75,7 +94,22 @@ const firebaseConfig = {
     ViewCryptoPage,
     OwnCryptoDetailPage,
     AddPropertyPage,
-    PropertymarketPage
+    PropertymarketPage,
+    MainPage,
+    EditProfilePage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ProfilePage,
+    ForgetPassPage,
+    TransactionPage,
+    BankFormPage,
+    ViewCreditPage,
+    TransactionFormPage,
+    AddManualPage,
+    AddCreditPage,
+
+
   ],
   imports: [
     BrowserModule,
@@ -116,6 +150,19 @@ const firebaseConfig = {
     OwnCryptoDetailPage,
     AddPropertyPage,
     PropertymarketPage,
+    MainPage,
+    EditProfilePage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ProfilePage,
+    ForgetPassPage,
+    TransactionPage,
+    BankFormPage,
+    ViewCreditPage,
+    TransactionFormPage,
+    AddManualPage,
+    AddCreditPage,
   ],
   providers: [
     StatusBar,
@@ -128,6 +175,11 @@ const firebaseConfig = {
     AdmobFreeProvider,
     Network,
     HTTP,
+    FingerprintAIO,
+    UserFbProvider,
+    TransactionFbProvider,
+    ExpenseFbProvider,
+    bankFbProvider,
   ]
 })
 export class AppModule {

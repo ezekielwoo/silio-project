@@ -9,6 +9,7 @@ import {BankDetailsPage} from "../bank-details/bank-details";
 import {ValuationPage} from "../valuation/valuation";
 import {AddPropertyPage} from "../add-property/add-property";
 import {PropertymarketPage} from "../propertymarket/propertymarket";
+import {AddManualPage} from "../AddManual/AddManual";
 
 @Component({
   templateUrl: 'tabs.html'
@@ -18,7 +19,7 @@ export class TabsPage {
   tab1Root = ValuationPage;
   tab2Root = BankDetailsPage;
   tab3Root = SettingsPage;
-  tab4Root = GlobalMarketPage;
+  tab4Root = AddManualPage;
   tab5root = PropertymarketPage;
 
   constructor() {

@@ -1,0 +1,49 @@
+
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="ios-cog-outline"></ion-icon>
+      Credit Card Transactions
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form #submitExpenseForm="ngForm">
+    <ion-list class="list-setting">
+        <ion-item class="item">
+            <ion-label>Type</ion-label>
+            <ion-select [(ngModel)]="sac.type" name="type" #currency="ngModel">
+                <ion-option *ngFor="let typ of TypeList" [value]="typ">
+                  {{typ}}
+                </ion-option>
+                
+                </ion-select>
+          </ion-item>
+          <p ion-text *ngIf="sac.type=='' && submitted == true" color="danger" padding-left>
+
+            Type is required
+      </p>
+          <ion-item>
+              <ion-label>Amount:</ion-label>
+            <ion-input type="text" [(ngModel)]="sac.amount" name="amount" #amount="ngModel" required text-right></ion-input>
+          </ion-item>
+          <p ion-text *ngIf="sac.amount=='' && submitted == true" color="danger" padding-left>
+
+            Amount is required
+      </p>
+          <ion-item>
+            <ion-label>Date:</ion-label>
+            <ion-datetime displayFormat="DD/MM/YY" [(ngModel)]="sac.date" name="date"></ion-datetime>
+        </ion-item>
+        <p ion-text *ngIf="sac.date=='' && submitted == true" color="danger" padding-left>
+
+          Date is required
+    </p>
+    </ion-list>
+    <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)">Submit</button> 
+  </form>
+</ion-content>
