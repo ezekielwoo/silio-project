@@ -11,6 +11,7 @@ import * as HighCharts from 'HighCharts';
 import {ApiProvider} from './../../providers/api/api';
 import {AddCrypto} from "../../models/add-crypto";
 import {OwnCryptoDetailPage} from "../own-crypto-detail/own-crypto-detail";
+import {Storage} from "@ionic/storage";
 
 /**
  * Generated class for the ViewCryptoPage page.
@@ -39,8 +40,9 @@ export class ViewCryptoPage {
   cryptoPrice = 0;
   currencyValue = null;
   path = "/asset/currency/crypto/";
+  key: string = 'email';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider,) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider, private storage: Storage) {
   }
 
 
@@ -53,20 +55,20 @@ export class ViewCryptoPage {
     this.loadingChart = false;
   }
 
-  getCryptoItems(): Observable<any[]> {
+  getCryptoItems(userkey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
 
-    expenseObservable = this.db.list('/asset/currency/crypto/').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`/userAsset/${btoa(userkey)}/currency/crypto/`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
 
     return expenseObservable;
   }
 
-  getCurrencyItems(): Observable<any[]> {
+  getCurrencyItems(userkey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
 
-    expenseObservable = this.db.list('/asset/currency/forex/').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`/userAsset/${btoa(userkey)}/currency/forex/`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
 
@@ -98,61 +100,94 @@ export class ViewCryptoPage {
   }
 
   deleteCryptoItem(item) {
-    console.log(this.path, item, 'aaa');
-    this.coin.splice(this.coin.indexOf(item), 1);
-    this.db.list("/asset/currency/crypto/").remove(item.key);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      console.log(item, this.coin.indexOf(item), 'aaa');
+      this.coin.splice(this.coin.indexOf(item), 1);
+      this.db.list(`/userAsset/${btoa(val)}/currency/crypto/`).remove(item.key);
+    })
   }
 
   deleteForexItem(item) {
-    console.log(this.path, item, 'aaa');
-    this.coin.splice(this.coin.indexOf(item), 1);
-    this.db.list("/asset/currency/forex/").remove(item.key);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      console.log(item, this.coin.indexOf(item), 'aaa');
+      this.coin.splice(this.coin.indexOf(item), 1);
+      this.db.list(`/userAsset/${btoa(val)}/currency/forex/`).remove(item.key);
+    })
+  }
+
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      this.getTotalValue();
+      refresher.complete();
+    }, 4000);
   }
 
   getTotalValue() {
-    this.getCryptoItems().subscribe(result => {
-      this.coin = result;
-      console.log(this.coin);
-      this.getCryptoData(this.coin);
-      if (this.coin) {
-        this.initCryptoChart(this.coin);
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        const arrayOfValues = this.coin.map(value => value.value);
-        console.log(arrayOfValues, 'crypto array');
-        if (arrayOfValues.length != 0) {
-          this.totalValueCrypto = arrayOfValues.reduce(reducer);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      this.getCryptoItems(val).subscribe(result => {
+        console.log(result, 'result');
+        if (result.length > 0) {
+          this.coin = result;
+          console.log(this.coin, 'coin');
+          this.getCryptoData(this.coin);
+          if (this.coin) {
+            this.initCryptoChart(this.coin);
+            const reducer = (accumulator, currentValue) => accumulator + currentValue;
+            const arrayOfValues = this.coin.map(value => value.value);
+            console.log(arrayOfValues, 'crypto array');
+            if (arrayOfValues.length != 0) {
+              this.totalValueCrypto = arrayOfValues.reduce(reducer);
+            }
+          }
         }
-      }
-    });
+        else {
+          this.totalValueCrypto = 0;
+          this.cryptoPrice = 0;
+          this.totalValueForex = 0;
+        }
 
-    this.getCurrencyItems().subscribe(result => {
-      this.coin_data = result;
-      console.log(this.coin_data);
-      if (this.coin_data) {
-        this.initForexChart(this.coin_data);
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        const arrayOfValues = this.coin_data.map(value => value.value);
-        console.log(arrayOfValues, 'forex array');
-        if (arrayOfValues.length != 0) {
-          this.totalValueForex = arrayOfValues.reduce(reducer);
-        }
-      }
-      this.totalValue = this.totalValueCrypto + this.totalValueForex;
+        this.getCurrencyItems(val).subscribe(result => {
+          if (result.length > 0) {
+            this.coin_data = result;
+            console.log(this.coin_data);
+            if (this.coin_data) {
+              this.initForexChart(this.coin_data);
+              const reducer = (accumulator, currentValue) => accumulator + currentValue;
+              const arrayOfValues = this.coin_data.map(value => value.value);
+              console.log(arrayOfValues, 'forex array');
+              if (arrayOfValues.length != 0) {
+                this.totalValueForex = arrayOfValues.reduce(reducer);
+              }
+            }
+          }
+          else {
+            this.totalValueForex = 0;
+          }
+          this.totalValue = this.totalValueCrypto + this.totalValueForex;
+          console.log(this.totalValue, this.totalValueCrypto, this.totalValueForex, 'valuessss');
+        });
+      });
     });
   }
 
   initCryptoChart(value) {
-    console.log(value, 'valueeee');
     let chartData = [];
-    const arrayOfValues = value.map(value => value.value);
-    const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
-    console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
-    if (arrayOfValues) {
-      for (let i = 0; i < value.length; i++) {
-        chartData.push({
-          name: arrayOfCompanies[i],
-          y: arrayOfValues[i]
-        });
+    if (value.length > 0) {
+      const arrayOfValues = value.map(value => value.value);
+      const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
+      console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
+      if (arrayOfValues) {
+        for (let i = 0; i < value.length; i++) {
+          chartData.push({
+            name: arrayOfCompanies[i],
+            y: arrayOfValues[i]
+          });
+        }
       }
     }
 

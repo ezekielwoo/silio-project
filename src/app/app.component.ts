@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Platform, ToastController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
+import {MainPage} from "../pages/main/main";
 import { TabsPage } from '../pages/tabs/tabs';
 import { SettingProvider } from '../providers/setting/setting';
 import { Network } from '@ionic-native/network';

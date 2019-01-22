@@ -168,22 +168,23 @@ export class ApiProvider {
     })
   }
 
-  getOCBCData() {
+  getOCBCAccountData() {
     return new Promise((resolve, reject) => {
       var headers = new HttpHeaders();
+      headers = headers.append('sessionToken', 'OAuth2INB')
       headers = headers.append('Authorization', `Bearer ${tokenOCBC}`);
       console.log('ocbc headers', headers);
 
-      this.http.get(ocbc_bank_api_savings, {responseType: 'json', headers: headers})
-        .subscribe((data) => {
-          x2js.parseString(data, {trim: true}, function (err, result) {
-            console.log('ocbc resolved', data);
-            resolve(result);
-
-          });
+      this.http.get('https://api.ocbc.com:8243/transactional/accountbalance/1.0', {
+        responseType: 'json',
+        headers: headers
+      })
+        .subscribe((data: any) => {
+          console.log(data, 'resolved');
+          resolve(data);
         }, (e) => {
-          console.log('rejected');
           reject(e);
+          console.log('rejected');
         })
     })
   }
