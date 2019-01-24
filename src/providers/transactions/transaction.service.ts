@@ -1,12 +1,3 @@
-// Author: Asher Chew Chin Hao
-// Reference: https://stackoverflow.com/questions/45417083/how-can-i-pass-data-back-to-my-root-page-in-ionic-2
-// Reviewer:
-//
-// Modifications
-// Author:
-// Date:
-// Changes Made:
-
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
 import { map, catchError } from 'rxjs/operators';
@@ -47,10 +38,10 @@ export class TransactionService {
     }
 
     // TODO: Fetch transaction by bankAccNo
-    fetchBankTransactions(account: any) {
-        console.log('fetchBankTransactions() ' + account.displayAccountNumber);
+    fetchBankTransactions(accountNo: string): Observable<Array<Transaction>> {
+        console.log('fetchBankTransactions() ' + accountNo);
         return this.db.list<Transaction>('transaction-list',
-            (ref) => ref.orderByChild('bankAccountNo').equalTo(account.displayAccountNumber))
+            (ref) => ref.orderByChild('bankAccountNo').equalTo(accountNo))
             .snapshotChanges()
             .pipe(map((changes) => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     }
@@ -62,7 +53,6 @@ export class TransactionService {
         let end = new Date(currentYear, 11, 31);
         return this.fetchTransactions(start, end);
     }
-    //*///
 
     fetchTransactions(start: Date, end: Date): Observable<Array<Transaction>> {
         // let currentYear = new Date().getFullYear();
@@ -73,4 +63,5 @@ export class TransactionService {
             .snapshotChanges()
             .pipe(map((changes) => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     }
+    //*///
 }

@@ -16,6 +16,9 @@ import { Transaction } from '../../models/transaction-model';
 import { CitibankService } from '../../providers/transactions/citibank.service';
 import { CitibankToken } from '../../models/citibank-token.interface';
 import { SelectBankPage } from '../select-bank/select-bank';
+import { SelectTransactionAccountPage } from '../select-transaction-account/select-transaction-account';
+import { ManualAccountsService } from '../../providers/transactions/manual-accounts.service';
+import { Account } from '../../models/account';
 
 @Component({
   selector: 'page-add-transaction',
@@ -24,6 +27,7 @@ import { SelectBankPage } from '../select-bank/select-bank';
 export class AddTransactionPage implements OnInit, OnDestroy {
   selectCategoryPage: any = SelectCategoryPage;
   selectBankPage: any = SelectBankPage;
+  selectTransactionAccPage: any = SelectTransactionAccountPage;
 
   accessToken: CitibankToken;
   transaction: Transaction;
@@ -33,9 +37,11 @@ export class AddTransactionPage implements OnInit, OnDestroy {
   desc: string;
   category: TransactionCategoryItem;
   currency: Currency;
+  manualAccountNo: string;
 
   private catDataSubscription: Subscription;
   private currencyDataSubscription: Subscription;
+  private accDataSubscription: Subscription;
 
   constructor(
     private navCtrl: NavController,
@@ -46,6 +52,7 @@ export class AddTransactionPage implements OnInit, OnDestroy {
     private transactionService: TransactionService,
     private transCategoriesService: TransactionCategoriesService,
     private currencyService: CurrencyListService,
+    private manualAccountService: ManualAccountsService,
     private citibankService: CitibankService
   ) { }
 
@@ -63,6 +70,10 @@ export class AddTransactionPage implements OnInit, OnDestroy {
     this.currencyDataSubscription = this.currencyService.currencyChanged
       .subscribe((currencyItem: Currency) => {
         this.currency = currencyItem;
+      });
+    this.accDataSubscription = this.manualAccountService.accountChanged
+      .subscribe((accountNo: string) => {
+        this.manualAccountNo = accountNo;
       });
   }
 
@@ -111,11 +122,12 @@ export class AddTransactionPage implements OnInit, OnDestroy {
       this.desc = this.transaction.description;
       this.currentDate = this.transaction.date;
       this.amount = this.transaction.currencyType.code === 'SGD' ? this.transaction.localCurrencyAmt : this.transaction.foreignCurrencyAmt;
+      this.manualAccountNo = this.transaction.bankAccountNo;
     }
   }
 
   private createNewTransaction(foreignCurrencyAmt: number, localCurrencyAmt: number) {
-    const newTransaction = new Transaction(foreignCurrencyAmt, localCurrencyAmt, this.currency, this.category, this.desc, this.currentDate, "", "");
+    const newTransaction = new Transaction(foreignCurrencyAmt, localCurrencyAmt, this.currency, this.category, this.desc, this.currentDate, this.manualAccountNo, "");
     this.transactionService.storeTransaction(newTransaction);
   }
 
@@ -143,7 +155,7 @@ export class AddTransactionPage implements OnInit, OnDestroy {
   }
 
   checkEmptyFields() {
-    return this.amount && this.desc ? false : true;
+    return this.amount && this.desc && this.manualAccountNo ? false : true;
   }
 
   // Runs when the page is about to leave and no longer be the active page.
@@ -157,6 +169,7 @@ export class AddTransactionPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.catDataSubscription.unsubscribe();
     this.currencyDataSubscription.unsubscribe();
+    this.accDataSubscription.unsubscribe();
   }
 
 }

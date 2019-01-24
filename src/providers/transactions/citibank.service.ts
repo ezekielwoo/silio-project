@@ -1,11 +1,4 @@
-// Author: Asher Chew Chin Hao
 // Applicable for Sandbox User 3
-// Reviewer:
-//
-// Modifications
-// Author:
-// Date:
-// Changes Made:
 
 declare const Buffer;
 import { Injectable } from "@angular/core";

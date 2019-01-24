@@ -5,7 +5,9 @@ export class AddEquity {
     public market:number,
     public amount:number,
     public purchasePrice:number,
-    public value: number
+    public value: number,
+    public stockExist: boolean,
+    public type: string
   )
   {}
 }

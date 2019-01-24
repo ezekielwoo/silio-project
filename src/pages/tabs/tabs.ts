@@ -7,8 +7,11 @@ import { SettingsPage } from '../settings/settings';
 import { StockMarketPage } from "../stock-market/stock-market";
 import { BankDetailsPage } from "../bank-details/bank-details";
 import { ValuationPage } from "../valuation/valuation";
+import { AddPropertyPage } from "../add-property/add-property";
+import { PropertymarketPage } from "../propertymarket/propertymarket";
 
 import { OverviewTransactionsPage } from '../overview-transactions/overview-transactions';
+
 
 @Component({
   templateUrl: 'tabs.html'
@@ -18,7 +21,7 @@ export class TabsPage {
   tab2Root = BankDetailsPage;
   tab3Root = OverviewTransactionsPage;
   tab4Root = GlobalMarketPage;
-  tab5Root = SettingsPage;
+  tab5root = PropertymarketPage;
 
   constructor() { }
 }

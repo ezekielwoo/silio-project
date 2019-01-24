@@ -70,6 +70,19 @@ $colors: (
 @import "roboto";
 @import "noto-sans";
 
+  $searchbar-md-input-search-icon-color: #ffffff;
+  $searchbar-md-input-background-color : #ffffff00;
+  $searchbar-md-input-text-color: #ffffff;
+  $searchbar-md-input-box-shadow: #ffffff00;
+  
+  $list-md-header-border-top: #ffffff00;
+  $list-md-header-color: #ffffff;
+
+  $item-md-thumbnail-size: 50px;
+  $item-md-detail-push-show: true;
+
+  $text-input-placeholder-color: white;
+
 
 @import "theme.dark";
 @import "theme.light";

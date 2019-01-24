@@ -22,12 +22,12 @@
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
-        <h1>$297,501.81</h1>
+        <h1>297,501.81 SGD</h1>
       </ion-col>
     </ion-row>
   </div>
 
-  <div class="coin-card-pink" padding tappable (click)="goToAssetPage()">
+  <div class="coin-card-pink" padding tappable (click)="goToAssetPage(totalValueForCurrency,totalValueForEquities,totalValue,currencyArr,equityArr,allArr)">
     <ion-row>
       <ion-col col-4 text-left class="margin-top">
         <h3 style="margin-top:1px"><b>Assets</b></h3>
@@ -35,7 +35,7 @@
 
       <ion-col col-8 text-right class="margin-top">
         <h1>
-          $1,297,501.81
+          <!-- {{totalValueForCurrency.value + totalValueForEquities.value | number: 0}} SGD -->
         </h1>
       </ion-col>
     </ion-row>
@@ -48,7 +48,7 @@
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
-        <h1>$1,000,000.00</h1>
+        <h1>1,000,000.00 SGD</h1>
       </ion-col>
     </ion-row>
   </div>

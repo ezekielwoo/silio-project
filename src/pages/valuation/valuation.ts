@@ -3,6 +3,8 @@ import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import {StockMarketPage} from "../stock-market/stock-market";
 import {HomePage} from "../home/home";
 import {CurrencyMarketPage} from "../currency-market/currency-market";
+import {AddPropertyPage} from "../add-property/add-property";
+import {PropertymarketPage} from "../propertymarket/propertymarket";
 
 /**
  * Generated class for the ValuationPage page.
@@ -35,6 +37,10 @@ export class ValuationPage {
 
   goToCurrencyMarket() {
     this.navCtrl.push(CurrencyMarketPage);
+  }
+
+  goToPropertyMarket(){
+    this.navCtrl.push(PropertymarketPage);
   }
 
 }

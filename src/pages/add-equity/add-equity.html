@@ -21,7 +21,7 @@
         <ion-label class="coin-info-name" fixed>
           Name
         </ion-label>
-        <ion-label class="coin-info-name">{{stock.companyName}}</ion-label>
+        <ion-label class="coin-info-name">{{stock.companyName || stock.name}}</ion-label>
       </ion-item>
 
       <ion-item style="background-color: #ac5d70">
@@ -31,7 +31,7 @@
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>Market</ion-label>
-        <ion-label class="coin-info-name" style="margin-left: -8px;">{{price}} {{currency}}</ion-label>
+        <ion-label class="coin-info-name" style="margin-left: -8px;">{{price | number: 0}} {{currency}}</ion-label>
       </ion-item>
 
       <ion-item style="background-color: #ac5d70">
@@ -46,28 +46,19 @@
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>Price</ion-label>
-        <ion-input type="number" placeholder="100 SGD" [(ngModel)]="addEquity.purchasePrice" name="purchase"
-                   style="color:white"></ion-input>
+        <ion-input type="number" placeholder="100 SGD" [(ngModel)]="addEquity.purchasePrice" name="purchase" style="color:white"></ion-input>
       </ion-item>
 
-      <p *ngIf="!enabled">Not entering a purchase price would automatically set your amount to market value in SGD</p>
-      <p *ngIf="enabled">You already added this ticker, you're only able to update the quantity/price</p>
+      <p>Not entering a purchase price would automatically set your amount to market value in SGD</p>
 
     </ion-list>
 
     <div class="button-group" padding>
       <ion-row>
 
-        <ion-col col-6>
-          <button ion-button round class="buttons" (click)="onSubmit(submitEquityForm)"
-                  style="background-color: #ac5d70" [disabled]="enabled">
+        <ion-col col-12 style="text-align:center;">
+          <button ion-button round class="buttons" (click)="onSubmit(submitEquityForm)" style="background-color: #ac5d70;text-align: center" [disabled]="enabled">
             Add Ticker
-          </button>
-        </ion-col>
-
-        <ion-col col-6>
-          <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="updateItem(addEquity)">
-            Update Ticker
           </button>
         </ion-col>
 

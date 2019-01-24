@@ -1,15 +1,21 @@
 <ion-header no-border>
   <ion-toolbar color="primary">
-    <ion-title text-center margin-top margin-bottom>Overview Transactions</ion-title>
-    <ion-segment color="secondary" [(ngModel)]="selectedRange" (ionChange)="onRangeSelected()">
-      <ion-segment-button value="week">Week</ion-segment-button>
-      <ion-segment-button value="month">Month</ion-segment-button>
-      <ion-segment-button value="year">Year</ion-segment-button>
-    </ion-segment>
+    <ion-title text-center style="margin-right: -50px;">Overview Transactions</ion-title>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="onShowAccountFilter()">
+        <ion-icon name="md-options"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding-top>
+
+  <ion-segment color="secondary" [(ngModel)]="selectedRange" (ionChange)="onRangeSelected()">
+    <ion-segment-button value="week">Week</ion-segment-button>
+    <ion-segment-button value="month">Month</ion-segment-button>
+    <ion-segment-button value="year">Year</ion-segment-button>
+  </ion-segment>
 
   <canvas padding [hidden]="!displayDaily" #barCanvasDaily width="400" height="400"></canvas>
   <canvas padding [hidden]="!displayMonth" #barCanvasMonthly width="400" height="400"></canvas>

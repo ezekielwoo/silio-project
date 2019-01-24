@@ -36,16 +36,24 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AddEquityPage } from "../pages/add-equity/add-equity";
 import { CurrencyMarketPage } from "../pages/currency-market/currency-market";
 import { ViewEquityPage } from "../pages/view-equity/view-equity";
+import { EquityDetailsPage } from "../pages/equity-details/equity-details";
+import { AddCryptoPage } from "../pages/add-crypto/add-crypto"
+import { ViewCryptoPage } from "../pages/view-crypto/view-crypto"
+import { OwnCryptoDetailPage } from "../pages/own-crypto-detail/own-crypto-detail"
+import { AddPropertyPage } from "../pages/add-property/add-property";
+import { PropertymarketPage } from "../pages/propertymarket/propertymarket";
 
 // Transactions
 import { OverviewTransactionsPage } from '../pages/overview-transactions/overview-transactions';
 import { CurrencyPipe } from '@angular/common';
 import { TransactionService } from '../providers/transactions/transaction.service';
+import { ManualAccountsService } from '../providers/transactions/manual-accounts.service';
 import { TransactionCategoriesService } from '../providers/transactions/transaction-categories.service';
 import { CurrencyListService } from '../providers/transactions/currency-list.service';
 import { CitibankService } from '../providers/transactions/citibank.service';
 import { SortPipe } from '../pipes/sort.pipe';
 import { AddTransactionPage } from '../pages/add-transaction/add-transaction';
+import { SelectTransactionAccountPage } from '../pages/select-transaction-account/select-transaction-account';
 import { SelectBankPage } from '../pages/select-bank/select-bank';
 import { SyncBankAccountPage } from '../pages/sync-bank-account/sync-bank-account';
 import { SelectCategoryPage } from '../pages/select-category/select-category';
@@ -81,10 +89,17 @@ const firebaseConfig = {
     CurrencyMarketPage,
     AddEquityPage,
     ViewEquityPage,
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
+    AddPropertyPage,
+    PropertymarketPage,
     // Transactions
     SortPipe,
     OverviewTransactionsPage,
     AddTransactionPage,
+    SelectTransactionAccountPage,
     SelectBankPage,
     SyncBankAccountPage,
     SelectCategoryPage,
@@ -125,9 +140,16 @@ const firebaseConfig = {
     CurrencyMarketPage,
     AddEquityPage,
     ViewEquityPage,
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
+    AddPropertyPage,
+    PropertymarketPage,
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,
+    SelectTransactionAccountPage,
     SelectBankPage,
     SyncBankAccountPage,
     SelectCategoryPage,
@@ -150,6 +172,7 @@ const firebaseConfig = {
     Camera,
     CurrencyPipe,
     TransactionService,
+    ManualAccountsService,
     TransactionCategoriesService,
     CurrencyListService,
     CitibankService,

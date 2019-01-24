@@ -1,11 +1,3 @@
-// Author: Asher Chew Chin Hao
-// Reviewer:
-//
-// Modifications
-// Author:
-// Date:
-// Changes Made:
-
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from 'rxjs';
 import { Http, Response } from "@angular/http";

@@ -42,7 +42,7 @@ export class SyncBankAccountPage implements OnInit {
     loading.present();
     this.citibankService.getCitibankTransactions(account)
       .then((data: any) => {
-        this.transactionSubscription = this.transactionService.fetchBankTransactions(account)
+        this.transactionSubscription = this.transactionService.fetchBankTransactions(account.displayAccountNumber)
           .subscribe(
             (list: Array<Transaction>) => {
               this.transactionSubscription.unsubscribe();

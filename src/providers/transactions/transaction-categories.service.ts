@@ -1,11 +1,3 @@
-// Author: Asher Chew Chin Hao
-// Reviewer:
-//
-// Modifications
-// Author:
-// Date:
-// Changes Made:
-
 import { Subject } from "rxjs";
 
 import { TransactionCategoryItem } from "../../models/transaction-category.interface";
