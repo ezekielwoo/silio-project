@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="cryptoz.app" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Cryptoz</name>
-    <description>Cryptoz</description>
-    <author email="marouanesouah@gmail.com" href="http://marouane.me/">Cryptoz - cryptocurrency app</author>
+<widget id="silio.app" version="1.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Silio</name>
+    <description>Silio</description>
+    <author email="marouanesouah@gmail.com" href="http://marouane.me/">Silio - net worth calculator</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -94,5 +94,6 @@
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
     <plugin name="cordova-plugin-camera" spec="^4.0.3" />
-    <engine name="android" spec="7.1.4" />
+    <plugin name="cordova-plugin-fingerprint-aio" spec="^1.5.0" />
+    <engine name="android" spec="7.0.0" />
 </widget>

@@ -12,7 +12,6 @@ import { HttpModule } from '@angular/http'
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { AdMobFree } from '@ionic-native/admob-free';
-import { Camera } from '@ionic-native/camera';
 import { HTTP } from '@ionic-native/http';
 import { newsPage } from '../pages/news/news';
 import { HomePage } from '../pages/home/home';
@@ -42,32 +41,50 @@ import { ViewCryptoPage } from "../pages/view-crypto/view-crypto"
 import { OwnCryptoDetailPage } from "../pages/own-crypto-detail/own-crypto-detail"
 import { AddPropertyPage } from "../pages/add-property/add-property";
 import { PropertymarketPage } from "../pages/propertymarket/propertymarket";
+import { MainPage } from "../pages/main/main";
+import { EditProfilePage } from "../pages/edit-profile/edit-profile";
+import { RegisterPage } from "../pages/register/register";
+import { LoginPage } from "../pages/login/login";
+import { OtpPage } from "../pages/otp/otp";
+import { ProfilePage } from "../pages/profile/profile";
+import { ForgetPassPage } from "../pages/forget-pass/forget-pass";
+import { UserFbProvider } from "../providers/user-firebase";
+import { Camera } from '@ionic-native/camera';
+import { FingerprintAIO } from "@ionic-native/fingerprint-aio";
+import { TransactionFbProvider } from '../providers/transaction-firebase';
+import { ExpenseFbProvider } from '../providers/expense-firebase';
+import { bankFbProvider } from '../providers/bankform-firebase';
+import { TransactionPage } from '../pages/CcTrans/Transaction';
+import { BankFormPage } from '../pages/BankForm/BankForm';
+import { TransactionFormPage } from '../pages/TransForm/TransactionForm';
+import { AddCreditPage } from '../pages/AddCredit/AddCredit';
+import { ViewCreditPage } from '../pages/ViewCredit/ViewCredit';
+import { AddManualPage } from '../pages/AddManual/AddManual';
 
 // Transactions
 import { OverviewTransactionsPage } from '../pages/overview-transactions/overview-transactions';
 import { CurrencyPipe } from '@angular/common';
 import { TransactionService } from '../providers/transactions/transaction.service';
-import { ManualAccountsService } from '../providers/transactions/manual-accounts.service';
 import { TransactionCategoriesService } from '../providers/transactions/transaction-categories.service';
 import { CurrencyListService } from '../providers/transactions/currency-list.service';
 import { CitibankService } from '../providers/transactions/citibank.service';
 import { SortPipe } from '../pipes/sort.pipe';
 import { AddTransactionPage } from '../pages/add-transaction/add-transaction';
 import { SelectTransactionAccountPage } from '../pages/select-transaction-account/select-transaction-account';
-import { SelectBankPage } from '../pages/select-bank/select-bank';
 import { SyncBankAccountPage } from '../pages/sync-bank-account/sync-bank-account';
 import { SelectCategoryPage } from '../pages/select-category/select-category';
 import { SelectCurrencyPage } from '../pages/select-currency/select-currency';
 import { TransactionCategoryPage } from '../pages/transaction-category/transaction-category';
 import { CategoryFilterOptionsPage } from '../pages/transaction-category/category-filter-options';
 
+
 const firebaseConfig = {
-  apiKey: "AIzaSyANWrwwfhMP8HexddrGM5AYeS9PHVv-nE0",
-  authDomain: "ionic2-cloud-functions.firebaseapp.com",
-  databaseURL: "https://ionic2-cloud-functions.firebaseio.com",
-  projectId: "ionic2-cloud-functions",
-  storageBucket: "ionic2-cloud-functions.appspot.com",
-  messagingSenderId: "83562829635"
+  apiKey: "AIzaSyBwKnps43TxEz6f9AWxqdtEIfrcnBIlCEY",
+  authDomain: "silio-project-f156e.firebaseapp.com",
+  databaseURL: "https://silio-project-f156e.firebaseio.com",
+  projectId: "silio-project-f156e",
+  storageBucket: "silio-project-f156e.appspot.com",
+  messagingSenderId: "446357654949"
 };
 
 @NgModule({
@@ -95,17 +112,31 @@ const firebaseConfig = {
     OwnCryptoDetailPage,
     AddPropertyPage,
     PropertymarketPage,
+    MainPage,
+    EditProfilePage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ProfilePage,
+    ForgetPassPage,
+    TransactionPage,
+    BankFormPage,
+    ViewCreditPage,
+    TransactionFormPage,
+    AddManualPage,
+    AddCreditPage,
     // Transactions
     SortPipe,
     OverviewTransactionsPage,
     AddTransactionPage,
     SelectTransactionAccountPage,
-    SelectBankPage,
     SyncBankAccountPage,
     SelectCategoryPage,
     SelectCurrencyPage,
     TransactionCategoryPage,
     CategoryFilterOptionsPage
+
+
   ],
   imports: [
     BrowserModule,
@@ -146,11 +177,23 @@ const firebaseConfig = {
     OwnCryptoDetailPage,
     AddPropertyPage,
     PropertymarketPage,
+    MainPage,
+    EditProfilePage,
+    RegisterPage,
+    LoginPage,
+    OtpPage,
+    ProfilePage,
+    ForgetPassPage,
+    TransactionPage,
+    BankFormPage,
+    ViewCreditPage,
+    TransactionFormPage,
+    AddManualPage,
+    AddCreditPage,
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,
     SelectTransactionAccountPage,
-    SelectBankPage,
     SyncBankAccountPage,
     SelectCategoryPage,
     SelectCurrencyPage,
@@ -168,15 +211,20 @@ const firebaseConfig = {
     AdmobFreeProvider,
     Network,
     HTTP,
+    FingerprintAIO,
+    UserFbProvider,
+    TransactionFbProvider,
+    ExpenseFbProvider,
+    bankFbProvider,
     //Transactions
     Camera,
     CurrencyPipe,
     TransactionService,
-    ManualAccountsService,
     TransactionCategoriesService,
     CurrencyListService,
     CitibankService,
     { provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true }
+
   ]
 })
 export class AppModule { }

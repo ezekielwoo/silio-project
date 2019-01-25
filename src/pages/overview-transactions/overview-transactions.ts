@@ -11,6 +11,8 @@ import { TransactionService } from '../../providers/transactions/transaction.ser
 import { Transaction } from '../../models/transaction-model';
 import { TransactionCategoryPage } from '../transaction-category/transaction-category';
 import { populateData } from '../../data/transaction-categories';
+import { bankFbProvider } from '../../providers/bankform-firebase';
+import { Account } from '../../models/account';
 
 @Component({
   selector: 'page-overview-transactions',
@@ -34,7 +36,7 @@ export class OverviewTransactionsPage implements OnDestroy {
   expenseSum: number = 0;
   incomeSum: number = 0;
 
-  accounts: Array<string> = [];
+  bankAccounts: Array<Account> = [];
   selectedRange: string = '';
   selectedAccount: string = '';
   selectedAccountPosition: number = 0;
@@ -44,23 +46,29 @@ export class OverviewTransactionsPage implements OnDestroy {
   displayYear: boolean = false;
 
   private transactionSubscription: Subscription;
+  private bankAccountSubscription: Subscription;
 
   constructor(
     private navCtrl: NavController,
     private modalCtrl: ModalController,
-    private transactionService: TransactionService,
     private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private transactionService: TransactionService,
+    private bankAccountService: bankFbProvider
   ) {
     this.selectedRange = 'week';
     this.displayDaily = true;
   }
 
   onShowAccountFilter() {
+    if (!Array.isArray(this.bankAccounts) || !this.bankAccounts.length) {
+      this.handleError('No Accounts Found', 'Please create or sync an account!').present();
+      return;
+    }
     let inputs = [];
     console.log('selectedAccountPosition: ' + this.selectedAccountPosition);
-    for (let account of this.accounts) {
-      inputs.push({ type: 'radio', label: account, value: account, checked: this.flagAccount });
+    for (let account of this.bankAccounts) {
+      inputs.push({ type: 'radio', label: account.bankaccnum, value: account.bankaccnum, checked: this.flagAccount });
     }
     inputs[this.selectedAccountPosition].checked = !this.flagAccount;
     const alert = this.alertCtrl.create({
@@ -79,7 +87,7 @@ export class OverviewTransactionsPage implements OnDestroy {
             console.log('selectedAccountPosition -> ' + this.selectedAccountPosition);
             this.resetData();
             this.selectedAccount = data;
-            this.load();
+            this.initCharts();
           }
         }
       ]
@@ -89,7 +97,7 @@ export class OverviewTransactionsPage implements OnDestroy {
 
   onRangeSelected() {
     this.resetData();
-    this.load();
+    this.initCharts();
   }
 
   ngOnDestroy() {
@@ -100,7 +108,7 @@ export class OverviewTransactionsPage implements OnDestroy {
     this.navCtrl.push(TransactionCategoryPage, { type: transactionType, transactions: this.data });
   }
 
-  private load() {
+  private initCharts() {
     const loading = this.loadingCtrl.create({
       spinner: 'circles',
       content: 'Loading Transactions ...'
@@ -193,7 +201,7 @@ export class OverviewTransactionsPage implements OnDestroy {
         for (let transaction of transactions) {
           let transactionDate = moment(transaction.date).format('YYYY-MM-DD');
           // console.log('transactionDate: %s start: %s end: %s', transactionDate, moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'), moment(transactionDate).isBetween(moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'), null, '[)'));
-          if (moment(transactionDate).isBetween(moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'), null, '[)')) {
+          if (moment(transactionDate).isBetween(moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'), null, '[]')) {
             console.log('transactionDate: %s start: %s end: %s', transactionDate, moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'));
             switch (this.selectedRange) {
               case 'week':
@@ -609,7 +617,7 @@ export class OverviewTransactionsPage implements OnDestroy {
     modal.onDidDismiss(() => {
       console.log('onDidDismiss()');
       this.resetData();
-      this.load();
+      this.initCharts();
     });
   }
 
@@ -627,6 +635,31 @@ export class OverviewTransactionsPage implements OnDestroy {
     this.dailyTypeData = [];
     this.dailyDoughnutData = [];
     this.transactionSubscription.unsubscribe();
+    this.bankAccountSubscription.unsubscribe();
+  }
+
+  private loadbankAccounts() {
+    this.bankAccountSubscription = this.bankAccountService.getBankAccounts()
+      .subscribe(
+        (list: Array<Account>) => {
+          if (list) {
+            this.bankAccounts = list;
+            console.log('bankAccounts: ' + JSON.stringify(list, null, 2));
+            // this.selectedAccount = this.bankAccounts[0].bankaccnum;
+          } else {
+            this.bankAccounts = [];
+          }
+        },
+        (error) => this.handleError('Error', error.json().error).present()
+      );
+  }
+
+  private handleError(errorTitle: string, errorMessage: string) {
+    return this.alertCtrl.create({
+      title: errorTitle,
+      message: errorMessage,
+      buttons: ['OK']
+    });
   }
 
   //Runs when the page has loaded. This event only happens once per page being created. If a page leaves but is cached, then this event will not fire again on a subsequent viewing. The ionViewDidLoad event is good place to put your setup code for the page.
@@ -637,9 +670,10 @@ export class OverviewTransactionsPage implements OnDestroy {
 
   //Runs when the page is about to enter and become the active page.
   ionViewWillEnter() {
-    this.accounts = ['XXXXXXXXXXXX1219', 'XXXXXXXXXXXX1217']; // TODO: Retrieve from Jude's DB
-    this.selectedAccount = this.accounts[0];
-    this.load();
+    // this.accounts = ['000012345', '123455533']//['XXXXXXXXXXXX1219', 'XXXXXXXXXXXX1217']; // TODO: Retrieve from Jude's DB
+    // this.selectedAccount = this.accounts[0];
+    this.loadbankAccounts();
+    this.initCharts();
   }
 
   //Runs when the page is about to leave and no longer be the active page.

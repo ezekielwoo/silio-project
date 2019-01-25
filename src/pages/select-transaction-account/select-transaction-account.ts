@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 import { Account } from '../../models/account';
-import { ManualAccountsService } from '../../providers/transactions/manual-accounts.service';
+// import { ManualAccountsService } from '../../providers/transactions/manual-accounts.service';
+import { bankFbProvider } from '../../providers/bankform-firebase';
 
 @Component({
   selector: 'page-select-transaction-account',
@@ -11,14 +12,20 @@ import { ManualAccountsService } from '../../providers/transactions/manual-accou
 export class SelectTransactionAccountPage implements OnInit {
   accounts: Array<Account> = [];
 
-  constructor(private navCtrl: NavController, private manualAccountService: ManualAccountsService) { }
+  constructor(private navCtrl: NavController, private bankAccountService: bankFbProvider) { }
 
   ngOnInit() {
-    this.accounts = this.manualAccountService.fetchAccounts();
+    this.bankAccountService.getBankAccounts()
+      .subscribe(
+        (list: Array<Account>) => {
+          if (list) {
+            this.accounts = list;
+          }
+        });
   }
 
   onSelectAccount(account: Account) {
-    this.manualAccountService.setAccount(account.bankaccnum);
+    this.bankAccountService.setAccount(account.bankaccnum);
     this.navCtrl.pop();
   }
 

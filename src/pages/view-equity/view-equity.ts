@@ -10,6 +10,7 @@ import {lightChartTheme} from "../../theme/chart.light";
 import * as HighCharts from 'HighCharts';
 import {ApiProvider} from './../../providers/api/api';
 import {EquityDetailsPage} from "../equity-details/equity-details";
+import {Storage} from "@ionic/storage";
 
 /**
  * Generated class for the ViewEquityPage page.
@@ -39,8 +40,9 @@ export class ViewEquityPage {
   loadingChart = true;
   price = null;
   equityValue = null;
+  key: string = 'email';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider,) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider, private storage: Storage) {
 
   }
 
@@ -54,14 +56,25 @@ export class ViewEquityPage {
     this.loadingChart = false;
   }
 
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      this.ionViewWillEnter();
+      this.ionViewDidLoad();
+      refresher.complete();
+    }, 2000);
+  }
+
   getStockPrice(value) {
     const arrayOfSymbols = value.map(value => value.symbol);
     const arrayOfLots = value.map(value => value.amount);
     console.log(arrayOfSymbols, arrayOfLots);
     let priceData = [];
-    if (this.value) {
-      for (let i = 0; i < this.value.length; i++) {
-        console.log(arrayOfSymbols);
+    if (value) {
+      for (let i = 0; i < value.length; i++) {
+        console.log(arrayOfSymbols, 'arrOfSymbols');
         this.api.getStockPrice(arrayOfSymbols[i].toUpperCase()).then((data: any) => {
           priceData.push(data.data[0].price);
           let marketValueOfEquities = 0;
@@ -69,35 +82,35 @@ export class ViewEquityPage {
             marketValueOfEquities += priceData[i] * arrayOfLots[i];
           }
           this.price = marketValueOfEquities * 1.37;
-          console.log(arrayOfLots, priceData, marketValueOfEquities, 'price data');
+          console.log(arrayOfLots, priceData, marketValueOfEquities, 'price dataaa');
         });
       }
     }
   }
 
-  getStockItems(): Observable<any[]> {
+  getStockItems(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
 
-    expenseObservable = this.db.list('/asset/equities/stock/').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`/userAsset/${btoa(userKey)}/equities/stock/`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
 
     return expenseObservable;
   }
 
-  getUnitTrust(): Observable<any[]> {
+  getUnitTrust(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
-    expenseObservable = this.db.list('/asset/equities/unit-trust/').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`/userAsset/${btoa(userKey)}/equities/unit-trust/`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
 
     return expenseObservable;
   }
 
-  getETFItems(): Observable<any[]> {
+  getETFItems(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
 
-    expenseObservable = this.db.list('/asset/equities/ETF/').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`/userAsset/${btoa(userKey)}/equities/ETF/`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
 
@@ -105,81 +118,113 @@ export class ViewEquityPage {
   }
 
   getTotalValue() {
-    this.getStockItems().subscribe(result => {
-      this.stock = result;
-      console.log(this.stock, 'stock');
-      this.getStockPrice(this.stock);
-      if (this.stock) {
-        this.initStockChart(this.stock);
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        const arrayOfValues = this.stock.map(value => value.value);
-        console.log(arrayOfValues, 'arr');
-        if (arrayOfValues.length != 0) {
-          this.totalValueStock = arrayOfValues.reduce(reducer);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      this.getStockItems(val).subscribe(result => {
+        if (result.length > 0) {
+          this.stock = result;
+          console.log(this.stock, 'stock');
+          this.getStockPrice(this.stock);
+          if (this.stock) {
+            console.log('render chart');
+            this.initStockChart(this.stock);
+            const reducer = (accumulator, currentValue) => accumulator + currentValue;
+            const arrayOfValues = this.stock.map(value => value.value);
+            console.log(arrayOfValues, 'arr');
+            if (arrayOfValues.length != 0) {
+              this.totalValueStock = arrayOfValues.reduce(reducer);
+            }
+          }
         }
-      }
-    });
 
-    this.getETFItems().subscribe(result => {
-      this.ETF = result;
-      console.log(this.ETF);
-      if (this.stock) {
-        this.initETFChart(this.ETF);
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        const arrayOfValues = this.ETF.map(value => value.value);
-        console.log(arrayOfValues, 'arr');
-        if (arrayOfValues.length != 0) {
-          this.totalValueUT = arrayOfValues.reduce(reducer);
+        else {
+          this.totalValueStock = 0;
+          this.price = 0;
         }
-      }
-    });
 
-    this.getUnitTrust().subscribe(result => {
-      this.UT = result;
-      console.log(this.UT);
-      if (this.stock) {
-        this.initUTChart(this.UT);
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        const arrayOfValues = this.UT.map(value => value.value);
-        console.log(arrayOfValues, 'arr');
-        if (arrayOfValues.length != 0) {
-          this.totalValueETF = arrayOfValues.reduce(reducer);
-        }
-      }
-      this.totalValue = this.totalValueETF + this.totalValueStock + this.totalValueUT
+        this.getETFItems(val).subscribe(result => {
+          if (result.length > 0) {
+            this.ETF = result;
+            console.log(this.ETF);
+            if (this.stock) {
+              this.initETFChart(this.ETF);
+              const reducer = (accumulator, currentValue) => accumulator + currentValue;
+              const arrayOfValues = this.ETF.map(value => value.value);
+              console.log(arrayOfValues, 'arr');
+              if (arrayOfValues.length != 0) {
+                this.totalValueUT = arrayOfValues.reduce(reducer);
+              }
+            }
+          }
+          else {
+            this.totalValueUT = 0;
+          }
+
+          this.getUnitTrust(val).subscribe(result => {
+            if (result.length > 0) {
+              this.UT = result;
+              console.log(this.UT);
+              if (this.stock) {
+                this.initUTChart(this.UT);
+                const reducer = (accumulator, currentValue) => accumulator + currentValue;
+                const arrayOfValues = this.UT.map(value => value.value);
+                console.log(arrayOfValues, 'arr');
+                if (arrayOfValues.length != 0) {
+                  this.totalValueETF = arrayOfValues.reduce(reducer);
+                }
+              }
+            }
+            else {
+              this.totalValueETF = 0;
+            }
+            this.totalValue = this.totalValueETF + this.totalValueStock + this.totalValueUT;
+            console.log(this.totalValue, this.totalValueETF, this.totalValueStock, this.totalValueUT, 'total valuessss');
+          });
+        });
+      });
     });
   }
 
 
   deleteStockItem(item) {
-    console.log(item, this.stock.indexOf(item), 'aaa');
-    this.stock.splice(this.stock.indexOf(item), 1);
-    this.db.list(`/asset/equities/stock/`).remove(item.key);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      console.log(item, this.stock.indexOf(item), 'aaa');
+      this.stock.splice(this.stock.indexOf(item), 1);
+      this.db.list(`/userAsset/${btoa(val)}/equities/stock/`).remove(item.key);
+    })
   }
 
   deleteETFItem(item) {
-    console.log(item, this.stock.indexOf(item), 'aaa');
-    this.stock.splice(this.stock.indexOf(item), 1);
-    this.db.list(`/asset/equities/stock/`).remove(item.key);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      console.log(item, this.stock.indexOf(item), 'aaa');
+      this.stock.splice(this.stock.indexOf(item), 1);
+      this.db.list(`/userAsset/${btoa(val)}/equities/ETF/`).remove(item.key);
+    })
   }
 
   deleteUTItem(item) {
-    console.log(item, this.stock.indexOf(item), 'aaa');
-    this.stock.splice(this.stock.indexOf(item), 1);
-    this.db.list(`/asset/equities/stock/`).remove(item.key);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      console.log(item, this.stock.indexOf(item), 'aaa');
+      this.stock.splice(this.stock.indexOf(item), 1);
+      this.db.list(`/userAsset/${btoa(val)}/equities/unit-trust/`).remove(item.key);
+    })
   }
 
   initStockChart(value) {
     console.log(value, 'valueeee');
-
-    const arrayOfValues = value.map(value => value.value);
-    const arrayOfCompanies = value.map(value => value.symbol);
     let chartData = [];
-    for (let i = 0; i < value.length; i++) {
-      chartData.push({
-        name: arrayOfCompanies[i],
-        y: arrayOfValues[i]
-      });
+    if (value.length > 0) {
+      const arrayOfValues = value.map(value => value.value);
+      const arrayOfCompanies = value.map(value => value.symbol);
+      for (let i = 0; i < value.length; i++) {
+        chartData.push({
+          name: arrayOfCompanies[i],
+          y: arrayOfValues[i]
+        });
+      }
     }
 
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
@@ -338,7 +383,7 @@ export class ViewEquityPage {
   }
 
   goToStockDetail(data) {
-    this.navCtrl.push(EquityDetailsPage, {stock: data,});
+    this.navCtrl.push(EquityDetailsPage, {stock: data});
   }
 
 }

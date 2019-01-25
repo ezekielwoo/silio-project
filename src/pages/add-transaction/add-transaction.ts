@@ -15,10 +15,9 @@ import { populateData } from '../../data/transaction-categories';
 import { Transaction } from '../../models/transaction-model';
 import { CitibankService } from '../../providers/transactions/citibank.service';
 import { CitibankToken } from '../../models/citibank-token.interface';
-import { SelectBankPage } from '../select-bank/select-bank';
 import { SelectTransactionAccountPage } from '../select-transaction-account/select-transaction-account';
-import { ManualAccountsService } from '../../providers/transactions/manual-accounts.service';
 import { Account } from '../../models/account';
+import { bankFbProvider } from '../../providers/bankform-firebase';
 
 @Component({
   selector: 'page-add-transaction',
@@ -26,7 +25,6 @@ import { Account } from '../../models/account';
 })
 export class AddTransactionPage implements OnInit, OnDestroy {
   selectCategoryPage: any = SelectCategoryPage;
-  selectBankPage: any = SelectBankPage;
   selectTransactionAccPage: any = SelectTransactionAccountPage;
 
   accessToken: CitibankToken;
@@ -37,7 +35,7 @@ export class AddTransactionPage implements OnInit, OnDestroy {
   desc: string;
   category: TransactionCategoryItem;
   currency: Currency;
-  manualAccountNo: string;
+  bankAccountNo: string;
 
   private catDataSubscription: Subscription;
   private currencyDataSubscription: Subscription;
@@ -52,7 +50,7 @@ export class AddTransactionPage implements OnInit, OnDestroy {
     private transactionService: TransactionService,
     private transCategoriesService: TransactionCategoriesService,
     private currencyService: CurrencyListService,
-    private manualAccountService: ManualAccountsService,
+    private bankAccountService: bankFbProvider,
     private citibankService: CitibankService
   ) { }
 
@@ -71,9 +69,9 @@ export class AddTransactionPage implements OnInit, OnDestroy {
       .subscribe((currencyItem: Currency) => {
         this.currency = currencyItem;
       });
-    this.accDataSubscription = this.manualAccountService.accountChanged
+    this.accDataSubscription = this.bankAccountService.accountChanged
       .subscribe((accountNo: string) => {
-        this.manualAccountNo = accountNo;
+        this.bankAccountNo = accountNo;
       });
   }
 
@@ -122,12 +120,12 @@ export class AddTransactionPage implements OnInit, OnDestroy {
       this.desc = this.transaction.description;
       this.currentDate = this.transaction.date;
       this.amount = this.transaction.currencyType.code === 'SGD' ? this.transaction.localCurrencyAmt : this.transaction.foreignCurrencyAmt;
-      this.manualAccountNo = this.transaction.bankAccountNo;
+      this.bankAccountNo = this.transaction.bankAccountNo;
     }
   }
 
   private createNewTransaction(foreignCurrencyAmt: number, localCurrencyAmt: number) {
-    const newTransaction = new Transaction(foreignCurrencyAmt, localCurrencyAmt, this.currency, this.category, this.desc, this.currentDate, this.manualAccountNo, "");
+    const newTransaction = new Transaction(foreignCurrencyAmt, localCurrencyAmt, this.currency, this.category, this.desc, this.currentDate, this.bankAccountNo, "");
     this.transactionService.storeTransaction(newTransaction);
   }
 
@@ -155,7 +153,7 @@ export class AddTransactionPage implements OnInit, OnDestroy {
   }
 
   checkEmptyFields() {
-    return this.amount && this.desc && this.manualAccountNo ? false : true;
+    return this.amount && this.desc && this.bankAccountNo ? false : true;
   }
 
   // Runs when the page is about to leave and no longer be the active page.

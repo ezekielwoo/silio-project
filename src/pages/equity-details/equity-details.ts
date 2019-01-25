@@ -3,7 +3,7 @@ import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import {DomSanitizer} from '@angular/platform-browser';
 import {ApiProvider} from './../../providers/api/api';
 import {AddEquityPage} from "../add-equity/add-equity";
-
+import {SellEquityPage} from "../sell-equity/sell-equity"
 /**
  * Generated class for the EquityDetailsPage page.
  *
@@ -56,6 +56,10 @@ export class EquityDetailsPage {
 
   goToAddEquity(value, price) {
     this.navCtrl.push(AddEquityPage, {stock: value, price: price, currency: "SGD"})
+  }
+
+  goToSellEquity(value,price){
+    this.navCtrl.push(SellEquityPage,{stock: value, price: price, currency: "SGD"});
   }
 
 }
