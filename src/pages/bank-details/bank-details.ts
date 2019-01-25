@@ -76,12 +76,17 @@ export class BankDetailsPage {
           alertDefault.present();
         }
       });
+    });
+  }
+
+  ionViewWillEnter() {
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
       this.getTotalValueForEquities(val);
       this.getTotalValue(val);
     });
 
     this.lastUpdated = this.getCurrentTime();
-
   }
 
   ionViewDidLoad() {
@@ -92,6 +97,12 @@ export class BankDetailsPage {
 
   goToSyncAcc() {
     this.navCtrl.push(AddManualPage);
+  }
+
+  ionViewWillLeave() {
+    console.log('left')
+    this.valueEquity = 0;
+    this.valueCurrency = 0;
   }
 
   getTotalValue(userKey): Observable<any[]> {

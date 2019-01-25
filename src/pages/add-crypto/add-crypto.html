@@ -36,7 +36,7 @@
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>Quantity</ion-label>
-        <ion-input type="number" placeholder="100" [(ngModel)]="addCrypto.amount" name="amount"
+        <ion-input type="number" [(ngModel)]="addCrypto.amount" name="amount"
                    style="color:white"></ion-input>
       </ion-item>
 
@@ -46,7 +46,7 @@
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>Price</ion-label>
-        <ion-input type="number" placeholder="100 SGD" [(ngModel)]="addCrypto.purchasePrice" name="purchase" style="color:white"></ion-input>
+        <ion-input type="number" [(ngModel)]="addCrypto.purchasePrice" name="purchase" style="color:white"></ion-input>
       </ion-item>
 
       <p>Not entering a purchase price would automatically set your amount to market value in SGD</p>

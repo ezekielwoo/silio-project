@@ -11,6 +11,8 @@ import * as HighCharts from 'HighCharts';
 import {ApiProvider} from './../../providers/api/api';
 import {EquityDetailsPage} from "../equity-details/equity-details";
 import {Storage} from "@ionic/storage";
+import * as moment from "moment";
+import {Subscription} from "rxjs/Subscription";
 
 /**
  * Generated class for the ViewEquityPage page.
@@ -42,18 +44,26 @@ export class ViewEquityPage {
   equityValue = null;
   key: string = 'email';
 
+  subscription: Subscription;
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider, private storage: Storage) {
 
   }
 
-  ionViewWillEnter() {
-    this.getTotalValue();
+  ionViewWillLeave(){
+    this.subscription.unsubscribe();
+    this.stock = null;
   }
-
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ViewEquityPage');
     this.loadingChart = false;
+    this.getTotalValue();
+  }
+
+  getCurrentTime() {
+    let last30Days = moment().subtract(1, 'months');
+    return moment().format('YYYY MM DD');
   }
 
   doRefresh(refresher) {
@@ -61,7 +71,6 @@ export class ViewEquityPage {
 
     setTimeout(() => {
       console.log('Async operation has ended');
-      this.ionViewWillEnter();
       this.ionViewDidLoad();
       refresher.complete();
     }, 2000);
@@ -120,14 +129,25 @@ export class ViewEquityPage {
   getTotalValue() {
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
-      this.getStockItems(val).subscribe(result => {
+      this.subscription = this.getStockItems(val).subscribe(result => {
         if (result.length > 0) {
           this.stock = result;
           console.log(this.stock, 'stock');
           this.getStockPrice(this.stock);
           if (this.stock) {
             console.log('render chart');
-            this.initStockChart(this.stock);
+            if (this.stock.length > 0) {
+              let stockChartData = [];
+              const arrayOfValues = this.stock.map(value => value.value);
+              const arrayOfCompanies = this.stock.map(value => value.symbol);
+              for (let i = 0; i < this.stock.length; i++) {
+                stockChartData.push({
+                  name: arrayOfCompanies[i],
+                  y: arrayOfValues[i]
+                });
+              }
+              this.initStockChart(stockChartData);
+            }
             const reducer = (accumulator, currentValue) => accumulator + currentValue;
             const arrayOfValues = this.stock.map(value => value.value);
             console.log(arrayOfValues, 'arr');
@@ -140,6 +160,7 @@ export class ViewEquityPage {
         else {
           this.totalValueStock = 0;
           this.price = 0;
+          this.initStockChart(null);
         }
 
         this.getETFItems(val).subscribe(result => {
@@ -178,13 +199,20 @@ export class ViewEquityPage {
               this.totalValueETF = 0;
             }
             this.totalValue = this.totalValueETF + this.totalValueStock + this.totalValueUT;
-            console.log(this.totalValue, this.totalValueETF, this.totalValueStock, this.totalValueUT, 'total valuessss');
+            this.loadingChart = false;
+            let equityValueChart = {
+              "year": this.getCurrentTime().split(' ')[0],
+              "month": this.getCurrentTime().split(' ')[1],
+              "day": this.getCurrentTime().split(' ')[2],
+              "value": this.totalValue
+            };
+            console.log(btoa(val), 'btoa value');
+            this.db.list(`userAsset/${btoa(val)}/equities/total-values`).push(equityValueChart);
           });
         });
       });
     });
   }
-
 
   deleteStockItem(item) {
     this.storage.get(this.key).then((val) => {
@@ -213,20 +241,8 @@ export class ViewEquityPage {
     })
   }
 
-  initStockChart(value) {
-    console.log(value, 'valueeee');
-    let chartData = [];
-    if (value.length > 0) {
-      const arrayOfValues = value.map(value => value.value);
-      const arrayOfCompanies = value.map(value => value.symbol);
-      for (let i = 0; i < value.length; i++) {
-        chartData.push({
-          name: arrayOfCompanies[i],
-          y: arrayOfValues[i]
-        });
-      }
-    }
-
+  initStockChart(chartdata?) {
+    console.log(chartdata, 'chartdata');
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
     HighCharts.chart('chart-stocks', {
@@ -263,27 +279,26 @@ export class ViewEquityPage {
       series: [{
         name: 'Equities',
         colorByPoint: true,
-        data: chartData
+        data: chartdata
       }]
     });
   }
 
   initETFChart(value) {
     console.log(value, 'valueeee');
-
+    let etfchartData = [];
     const arrayOfValues = value.map(value => value.value);
     const arrayOfCompanies = value.map(value => value.symbol);
-    let chartData = [];
     if (arrayOfValues) {
       for (let i = 0; i < value.length; i++) {
-        chartData.push({
+        etfchartData.push({
           name: arrayOfCompanies[i],
           y: arrayOfValues[i]
         });
       }
     }
 
-    console.log('chartData', chartData);
+    console.log('chartData');
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
     HighCharts.chart('chart-etf', {
@@ -320,27 +335,26 @@ export class ViewEquityPage {
       series: [{
         name: 'Equities',
         colorByPoint: true,
-        data: chartData
+        data: etfchartData
       }]
     });
   }
 
   initUTChart(value) {
     console.log(value, 'valueeee');
-
+    let utchartData = [];
     const arrayOfValues = value.map(value => value.value);
     const arrayOfCompanies = value.map(value => value.symbol);
-    let chartData = [];
     if (arrayOfValues) {
       for (let i = 0; i < value.length; i++) {
-        chartData.push({
+        utchartData.push({
           name: arrayOfCompanies[i],
           y: arrayOfValues[i]
         });
       }
     }
 
-    console.log('chartData', chartData);
+    console.log('chartData');
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
     HighCharts.chart('chart-ut', {
@@ -377,7 +391,7 @@ export class ViewEquityPage {
       series: [{
         name: 'Equities',
         colorByPoint: true,
-        data: chartData
+        data: utchartData
       }]
     });
   }

@@ -78,6 +78,7 @@ import {SelectCategoryPage} from '../pages/select-category/select-category';
 import {SelectCurrencyPage} from '../pages/select-currency/select-currency';
 import {TransactionCategoryPage} from '../pages/transaction-category/transaction-category';
 import {CategoryFilterOptionsPage} from '../pages/transaction-category/category-filter-options';
+import {ViewPropertyPage} from "../pages/view-property/view-property";
 
 
 const firebaseConfig = {
@@ -127,6 +128,7 @@ const firebaseConfig = {
     AddManualPage,
     AddCreditPage,
     ViewaccountsPage,
+    ViewPropertyPage,
     // Transactions
     SortPipe,
     OverviewTransactionsPage,
@@ -195,6 +197,7 @@ const firebaseConfig = {
     AddManualPage,
     AddCreditPage,
     ViewaccountsPage,
+    ViewPropertyPage,
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,

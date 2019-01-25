@@ -14,6 +14,8 @@ import {ViewCryptoPage} from "../view-crypto/view-crypto";
 import {ApiProvider} from "../../providers/api/api";
 import {Storage} from "@ionic/storage";
 import {ViewaccountsPage} from "../viewaccounts/viewaccounts"
+import {PropertymarketPage} from "../propertymarket/propertymarket";
+import {ViewPropertyPage} from "../view-property/view-property";
 
 @IonicPage()
 @Component({
@@ -44,7 +46,7 @@ export class AssetPage {
   equityValueChart = {};
   currencyValueChart = {};
   lastUpdated: string;
-  TIME_IN_MS = 3000;
+  TIME_IN_MS = 1500;
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
   totalValue: any = [];
@@ -67,7 +69,7 @@ export class AssetPage {
     console.log(this.totalValueForEquities, this.totalValueForCurrency, this.totalValue, this.equityArr, this.currencyArr, this.allArr, 'data from prev page');
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.loadingChart = false;
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
@@ -84,16 +86,26 @@ export class AssetPage {
     console.log('Begin async operation', refresher);
 
     setTimeout(() => {
-      this.ionViewDidEnter();
-      this.ionViewDidLoad();
+      location.reload();
       console.log('Async operation has ended');
       refresher.complete();
     }, 2000);
   }
 
+  ionViewWillLeave() {
+    console.log("left");
+    this.shareTotalValue = 0;
+    this.ocbcTotalValue = 0;
+    this.etfTotalValue = 0;
+    this.unittrustTotalValue = 0;
+    this.cryptoTotalValue = 0;
+    this.forexTotalValue = 0;
+  }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad AssetPage');
     console.log(this.lastUpdated);
+    this.loadingChart = true;
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
       setTimeout(() => {
@@ -116,13 +128,14 @@ export class AssetPage {
         this.db.list(`userAsset/${btoa(val)}/equities/total-values`).push(this.equityValueChart);
         this.db.list(`userAsset/${btoa(val)}/currency/total-values`).push(this.currencyValueChart);
         this.initChart();
+        this.loadingChart = false;
       }, this.TIME_IN_MS);
     });
   }
 
   getCurrentTime() {
     let last30Days = moment().subtract(1, 'months');
-    return last30Days.format('YYYY MM DD');
+    return moment().format('YYYY MM DD');
   }
 
   getDepositAccountOCBC(userKey): Observable<any[]> {
@@ -278,10 +291,18 @@ export class AssetPage {
     this.navCtrl.push(ViewEquityPage);
   }
 
+  goToAddProperty() {
+    this.navCtrl.push(PropertymarketPage);
+  }
+
+  goToViewPropertyPage() {
+    this.navCtrl.push(ViewPropertyPage);
+  }
+
   initChart() {
     console.log('date', Date.UTC(this.totalValue.year, this.totalValue.month, this.totalValue.day));
     const equityArr = this.equityArr.map(value => value.value);
-    const currencyArr = this.equityArr.map(value => value.value);
+    const currencyArr = this.currencyArr.map(value => value.value);
     const allArr = this.allArr.map(value => value.value);
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);

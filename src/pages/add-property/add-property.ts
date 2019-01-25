@@ -14,8 +14,10 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'add-property.html',
 })
 export class AddPropertyPage {
+  property: any = {};
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+    this.property = this.navParams.get('property');
   }
 
   ionViewDidLoad() {
