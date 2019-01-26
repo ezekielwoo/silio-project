@@ -65,13 +65,14 @@ import { ProfilePage } from '../pages/profile/profile';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
 import { EditProfilePageModule } from '../pages/edit-profile/edit-profile.module';
 
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCogNpV6zOV4zenlKpOtdp9zjyHPw24_nk",
-  authDomain: "silio-project.firebaseapp.com",
-  databaseURL: "https://silio-project.firebaseio.com",
-  projectId: "silio-project",
-  storageBucket: "silio-project.appspot.com",
-  messagingSenderId: "517759624173"
+  apiKey: "AIzaSyBwKnps43TxEz6f9AWxqdtEIfrcnBIlCEY",
+    authDomain: "silio-project-f156e.firebaseapp.com",
+    databaseURL: "https://silio-project-f156e.firebaseio.com",
+    projectId: "silio-project-f156e",
+    storageBucket: "silio-project-f156e.appspot.com",
+    messagingSenderId: "446357654949"
 };
 
 @NgModule({
@@ -100,7 +101,7 @@ const firebaseConfig = {
     AddPropertyPage,
     PropertymarketPage,
     MainPage,
-    EditProfilePage,
+    //EditProfilePage,
     RegisterPage,
     LoginPage,
     OtpPage,
@@ -111,7 +112,7 @@ const firebaseConfig = {
     ViewCreditPage,
     TransactionFormPage,
     AddManualPage,
-    AddCreditPage,
+    AddCreditPage
 
 
   ],
@@ -127,7 +128,7 @@ const firebaseConfig = {
     ComponentsModule,
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    EditProfilePageModule,
+    EditProfilePageModule
    
 
   ],

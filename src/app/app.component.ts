@@ -6,7 +6,6 @@ import {MainPage} from "../pages/main/main";
 import { TabsPage } from '../pages/tabs/tabs';
 import { SettingProvider } from '../providers/setting/setting';
 import { Network } from '@ionic-native/network';
-import { MainPage } from '../pages/main/main';
 
 @Component({
   templateUrl: 'app.html',
