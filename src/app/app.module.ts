@@ -73,7 +73,7 @@ import {ViewPropertyPage} from "../pages/view-property/view-property";
 
 import { UserFbProvider } from '../providers/user-firebase';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
-import { Facebook, FacebookOriginal } from '@ionic-native/facebook';
+import { Facebook } from '@ionic-native/facebook/ngx'
 
 import { MainPage } from '../pages/main/main';
 import { RegisterPage } from '../pages/register/register';
@@ -230,12 +230,12 @@ const firebaseConfig = {
     ExpenseFbProvider,
     bankFbProvider,
     CurrencyPipe,
-    FacebookOriginal,
     TransactionService,
     ManualAccountsService,
     TransactionCategoriesService,
     CurrencyListService,
     CitibankService,
+    Facebook,
     {provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true}
   ]
 })

@@ -37,7 +37,7 @@
     "angularfire2": "^5.1.1",
     "chart.js": "^2.7.3",
     "cordova-admob-sdk": "^0.20.3",
-    "cordova-android": "^7.1.4",
+    "cordova-android": "7.1.4",
     "cordova-plugin-admob-free": "^0.22.0",
     "cordova-plugin-advanced-http": "^2.0.2",
     "cordova-plugin-device": "^2.0.2",
@@ -102,8 +102,6 @@
         "FACEBOOK_ANDROID_SDK_VERSION": "4.38.1"
       }
     },
-    "platforms": [
-      "android"
-    ]
+    "platforms": []
   }
 }
