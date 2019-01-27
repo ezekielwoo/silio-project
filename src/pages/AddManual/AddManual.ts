@@ -11,6 +11,7 @@ import { Storage } from "@ionic/storage";
 import { AngularFireDatabase } from "angularfire2/database";
 import { CitibankService } from '../../providers/transactions/citibank.service';
 import { SyncBankAccountPage } from '../sync-bank-account/sync-bank-account';
+import * as moment from "moment";
 
 
 @Component({
@@ -63,11 +64,9 @@ export class AddManualPage {
 
   }
 
-
   goToCredit() {
     this.navCtrl.push(ViewCreditPage);
   }
-
 
   goToLogin() {
     this.navCtrl.push(AddCreditPage)
@@ -79,10 +78,18 @@ export class AddManualPage {
 
   syncOCBC() {
     this.storage.get(this.key).then((val) => {
+      let ocbcChart = {
+        "type": 'property',
+        "amount": 150000,
+        "tenor": "25 years",
+        "interest": "3.1%"
+      };
+      console.log('data pushed', ocbcChart);
+      this.db.list(`userLiabilities/${btoa(val)}/current/ocbc`).push(ocbcChart);
       console.log('Logged in as', val);
       this.api.getOCBCAccountData().then((data: any) => {
         console.log(data.results.responseList, 'data');
-        this.db.list(`userAsset/${val}/deposits/bank-account/ocbc`).push(data.results.responseList);
+        this.db.list(`userAsset/${btoa(val)}/deposits/bank-account/ocbc`).push(data.results.responseList);
       });
     });
     let alert = this.alertCtrl.create({
@@ -98,10 +105,26 @@ export class AddManualPage {
   }
 
   syncDBS() {
+    this.storage.get(this.key).then((val) => {
+      let DBSChart = {
+        "type": 'personal',
+        "amount": 40000,
+        "tenor": "2 years",
+        "interest": "2.5%"
+      };
+      let DBSChart2 = {
+        "type": 'car',
+        "amount": 60000,
+        "tenor": "6 years",
+        "interest": "3.5%"
+      };
+      console.log('data pushed', DBSChart);
+      this.db.list(`userLiabilities/${btoa(val)}/current/dbs`).push(DBSChart);
+      this.db.list(`userLiabilities/${btoa(val)}/current/dbs`).push(DBSChart2);
+    });
     this.navCtrl.setRoot(TabsPage);
     const url = 'https://www.dbs.com/sandbox/api/sg/v1/oauth/authorize?client_id=1edf0eab-7b4d-474b-adcf-d5034d08e4de&redirect_uri=http%3A%2F%2Flocalhost%3A8100%2F&scope=Read&response_type=code&state=0399';
     this.iab.create(url, '_self');
-
     this.api.getDBSAccessToken(this.code).then((data: any) => {
       console.log(data.access_token, 'ATATAT');
       this.api.getDBSData(data.access_token).then((data: any) => {

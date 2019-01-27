@@ -7,12 +7,191 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Liabilities</ion-title>
+    <ion-title text-center style="margin-left:-52px">Liabilities</ion-title>
   </ion-navbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="type" color="secondary">
+      <ion-segment-button value="all" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        All
+      </ion-segment-button>
+      <ion-segment-button value="short" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Short Term
+      </ion-segment-button>
+      <ion-segment-button value="long" style="border-bottom-color: #b6629d !important;color: #b6629d !important;">
+        Long Term
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding-top>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div [ngSwitch]="type">
+
+    <div [hidden]="type != 'all'">
+      <!-- if chart API is loading display loading_bars -->
+      <ng-container *ngIf="loadingChart">
+        <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+          <h2>
+            <div class="load-bar"></div>
+          </h2>
+          <h3>
+            <div class="load-bar"></div>
+          </h3>
+          <h4>
+            <div class="load-bar"></div>
+          </h4>
+        </div>
+      </ng-container>
+
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;"> {{OCBCLoan + DBSLoan2 + DBSLoan}} SGD</h1>
+        <h6 text-center>Total Liabilities Held</h6>
+      </div>
+
+      <h3 text-center>Portfolio</h3>
+      <div [hidden]="loadingChart" id="total-liabilities" style="display: block;"></div>
+
+      <div class="coin-info" style="margin-top: 20px">
+        <div class="coin-info-card">
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Long Term</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+             {{OCBCLoan + DBSLoan}} SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Short Term</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{DBSLoan2}} SGD
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </div>
+
+    <div [hidden]="type != 'short'">
+      <!-- if chart API is loading display loading_bars -->
+      <ng-container *ngIf="loadingChart">
+        <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+          <h2>
+            <div class="load-bar"></div>
+          </h2>
+          <h3>
+            <div class="load-bar"></div>
+          </h3>
+          <h4>
+            <div class="load-bar"></div>
+          </h4>
+        </div>
+      </ng-container>
+
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;"> {{DBSLoan2}} SGD</h1>
+        <h6 text-center>Short Term Loans</h6>
+      </div>
+
+      <h3 text-center>Portfolio</h3>
+      <div [hidden]="loadingChart" id="short-term" style="display: block;"></div>
+
+      <div class="coin-info" style="margin-top: 20px">
+        <div class="coin-info-card">
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Credit Card</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Overdraft</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              0 SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Personal</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{DBSLoan2}} SGD
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </div>
+
+    <div [hidden]="type != 'long'">
+      <ng-container *ngIf="loadingChart">
+        <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+          <h2>
+            <div class="load-bar"></div>
+          </h2>
+          <h3>
+            <div class="load-bar"></div>
+          </h3>
+          <h4>
+            <div class="load-bar"></div>
+          </h4>
+        </div>
+      </ng-container>
+
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;"> {{OCBCLoan + DBSLoan}} SGD</h1>
+        <h6 text-center>Long Term Loans</h6>
+      </div>
+
+      <h3 text-center>Portfolio</h3>
+      <div [hidden]="loadingChart" id="long-term" style="display: block;"></div>
+
+      <div class="coin-info" style="margin-top: 20px">
+        <div class="coin-info-card">
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Property</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{OCBCLoan}} SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Car</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              {{DBSLoan}} SGD
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 
 </ion-content>

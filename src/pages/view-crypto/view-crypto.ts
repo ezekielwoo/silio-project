@@ -32,7 +32,6 @@ export class ViewCryptoPage {
   coin_data: any = [];
   coin: AddCrypto[];
   value = [];
-  chartData: any = [];
   totalValueCrypto = 0;
   totalValueForex = 0;
   totalValue = 0;

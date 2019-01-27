@@ -31,13 +31,14 @@
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
-        <h1>{{valueCurrency + valueEquity + valuePersonal | number: 0 || 0}} SGD</h1>
+        <h1>{{valueCurrency + valueEquity + valuePersonal + valueDeposit - liabilityData.value| number: 0 || 0}}
+          SGD</h1>
       </ion-col>
     </ion-row>
   </div>
 
   <div class="coin-card-pink" padding tappable
-       (click)="goToAssetPage(totalValueForCurrency,totalValueForEquities,totalValue,currencyArr,equityArr,allArr)">
+       (click)="goToAssetPage(totalValueForCurrency,totalValueForEquities,totalValue,currencyArr,equityArr,depositArr,allArr)">
     <ion-row>
       <ion-col col-4 text-left class="margin-top">
         <h3 style="margin-top:1px;font-size: 20px"><b>Assets</b></h3>
@@ -45,20 +46,21 @@
 
       <ion-col col-8 text-right class="margin-top">
         <h1>
-          <!-- {{valueCurrency + valueEquity | number: 0 || 0}} SGD -->
+          {{valueCurrency + valueEquity + valuePersonal + valueDeposit | number: 0 || 0}} SGD
         </h1>
       </ion-col>
     </ion-row>
   </div>
 
-  <div class="coin-card-pink" padding>
+  <div class="coin-card-pink" padding tappable
+       (click)="goToLiabilitiesPage()">
     <ion-row>
       <ion-col col-4 text-left class="margin-top">
         <h3 style="margin-top:1px;font-size: 20px;"><b>Liabilities</b></h3>
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
-        <h1>0 SGD</h1>
+        <h1>{{liabilityData.value}} SGD</h1>
       </ion-col>
     </ion-row>
   </div>

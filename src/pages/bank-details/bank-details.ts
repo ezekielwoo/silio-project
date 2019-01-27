@@ -12,8 +12,9 @@ import { Observable } from "rxjs/index";
 import { map } from "rxjs/operators";
 import { AngularFireDatabase } from 'angularfire2/database';
 import * as moment from 'moment';
-import { Storage } from "@ionic/storage";
-import { AddManualPage } from "../AddManual/AddManual";
+import {Storage} from "@ionic/storage";
+import {AddManualPage} from "../AddManual/AddManual";
+import {LiabilitiesPage} from "../liabilities/liabilities";
 
 @IonicPage()
 @Component({
@@ -27,20 +28,29 @@ export class BankDetailsPage {
   accessToken = null;
   code = "";
   ocbcData: any = {};
+  liabilityData: any = {};
   currentChartTheme = "dark"; //default dark theme
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
   totalValueForProeprty: any = [];
+  totalValueForDeposits: any = [];
   totalValue: any = [];
   currencyArr: any = [];
   equityArr: any = [];
   propertyArr: any = [];
+  depositArr: any = [];
   allArr: any = [];
   lastUpdated = null;
   chartValue: any = {};
   valueEquity = 0;
   valueCurrency = 0;
   valuePersonal = 0;
+  valueDeposit = 0;
+  liabilities = 0;
+  OCBCLoan = null;
+  DBSLoan = null;
+  DBSLoan2 = null;
+
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -53,7 +63,6 @@ export class BankDetailsPage {
               public alertCtrl: AlertController) {
 
     this.storage.get(this.key).then((val) => {
-      console.log('Logged in as', val);
       this.storage.get('defaultEmail').then((defVal) => {
         if (defVal != val) {
           let alertDefault = this.alertCtrl.create({
@@ -64,7 +73,6 @@ export class BankDetailsPage {
                 text: 'Cancel',
                 role: 'cancel',
                 handler: () => {
-                  console.log('Cancel clicked');
                 }
               },
               {
@@ -83,9 +91,11 @@ export class BankDetailsPage {
 
   ionViewWillEnter() {
     this.storage.get(this.key).then((val) => {
-      console.log('Logged in as', val);
       this.getTotalValueForEquities(val);
       this.getTotalValue(val);
+      this.getAllLiabilities(val);
+      this.getTotalValueDBS();
+      this.getTotalValueOCBC();
     });
 
     this.lastUpdated = this.getCurrentTime();
@@ -98,6 +108,9 @@ export class BankDetailsPage {
       // this.getTotalValueForEquities();
       // this.getTotalValue();
     });
+    setTimeout(() => {
+      this.initLiabilitiesChart()
+    }, 2500);
   }
 
   goToSyncAcc() {
@@ -105,7 +118,6 @@ export class BankDetailsPage {
   }
 
   ionViewWillLeave() {
-    console.log('left')
     this.valueEquity = 0;
     this.valueCurrency = 0;
     this.valuePersonal = 0;
@@ -132,16 +144,13 @@ export class BankDetailsPage {
   }
 
   doRefresh(refresher) {
-    console.log('Begin async operation', refresher);
 
     setTimeout(() => {
       this.ionViewDidLoad();
       this.storage.get(this.key).then((val) => {
-        console.log('Logged in as', val);
         this.getTotalValueForEquities(val);
         this.getTotalValue(val);
       });
-      console.log('Async operation has ended');
       refresher.complete();
     }, 2000);
   }
@@ -153,7 +162,6 @@ export class BankDetailsPage {
       map(changes =>
         changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     expenseObservable.subscribe(result => {
-      console.log(result);
       if (result.length == 0) {
         this.valueEquity = 0;
       }
@@ -162,8 +170,7 @@ export class BankDetailsPage {
         this.equityArr = array;
         this.totalValueForEquities = array[array.length - 1];
         this.valueEquity = array[array.length - 1].value;
-        console.log('retrieve totalValueForEquities', this.totalValueForEquities, userKey);
-        this.getTotalValueForCurrency(this.totalValueForEquities, userKey);
+        //this.getTotalValueForCurrency(this.totalValueForEquities, userKey);
       }
     });
     return expenseObservable;
@@ -182,37 +189,6 @@ export class BankDetailsPage {
       }
       else if (result.length > 0) {
         array = result;
-        this.propertyArr = array;
-        this.totalValueForProeprty = array[array.length - 1];
-        this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
-        console.log('retrieve totalValueForEquities', this.totalValueForProeprty, userKey);
-        this.chartValue = {
-          "year": this.lastUpdated.split(' ')[0],
-          "month": this.lastUpdated.split(' ')[1],
-          "day": this.lastUpdated.split(' ')[2],
-          "value": equity.value + currency.value +  parseFloat(this.totalValueForProeprty.value.toString())
-        };
-        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
-        // this.initChart(this.totalValueForCurrency.value, equity.value);
-        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
-        this.initChart(currency.value, equity.value, parseFloat(this.totalValueForProeprty.value.toString()));
-      }
-    });
-    return expenseObservable;
-  }
-
-  getTotalValueForCurrency(equity, userKey): Observable<any[]> {
-    let expenseObservable: Observable<any[]>;
-    let array = [];
-    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/currency/total-values`).snapshotChanges().pipe(
-      map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
-    expenseObservable.subscribe(result => {
-      if (result.length == 0) {
-        this.valueCurrency = 0;
-      }
-      else if (result.length > 0) {
-        array = result;
         this.currencyArr = array;
         this.totalValueForCurrency = array[array.length - 1];
         this.valueCurrency = array[array.length - 1].value;
@@ -223,15 +199,131 @@ export class BankDetailsPage {
     return expenseObservable;
   }
 
-  goToAssetPage(currencyTotalValue, equityTotalValue, totalValue, currencyArr, equityArr, allArr) {
+  // getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
+  //   let expenseObservable: Observable<any[]>;
+  //   let array = [];
+  //   expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
+  //     map(changes =>
+  //       changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+  //   expenseObservable.subscribe(result => {
+  //     if (result.length == 0) {
+  //       this.valuePersonal = 0;
+  //     }
+  //     else if (result.length > 0) {
+  //       array = result;
+  //       this.propertyArr = array;
+  //       this.totalValueForProeprty = array[array.length - 1];
+  //       this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
+  //       this.getTotalValueForDeposits(userKey, equity, currency, this.totalValueForProeprty)
+  //     }
+  //   });
+  //   return expenseObservable;
+  // }
+
+  getTotalValueForDeposits(userKey, equity, currency, property): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/deposit/total-values`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      if (result.length == 0) {
+        this.valueCurrency = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.depositArr = array;
+        this.totalValueForDeposits = array[array.length - 1];
+        this.valueDeposit = array[array.length - 1].value;
+        this.chartValue = {
+          "year": this.lastUpdated.split(' ')[0],
+          "month": this.lastUpdated.split(' ')[1],
+          "day": this.lastUpdated.split(' ')[2],
+          "value": equity.value + currency.value + property.value + this.totalValueForDeposits.value
+        };
+        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
+        this.initChart(currency.value, equity.value, property.value, this.totalValueForDeposits.value);
+      }
+
+    });
+    return expenseObservable;
+  }
+
+  getAllLiabilities(userKey): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    expenseObservable = this.db.list(`userLiabilities/${btoa(userKey)}/total-values`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      if (result.length == 0) {
+        this.liabilities = 0;
+      }
+      else if (result.length > 0) {
+        this.liabilityData = result[0];
+      }
+
+    });
+    return expenseObservable;
+  }
+
+  getOCBCLoanItems(userKey): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+
+    expenseObservable = this.db.list(`/userLiabilities/${btoa(userKey)}/current/ocbc/`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+
+    return expenseObservable;
+  }
+
+  getDBSLoanItems(userKey): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+
+    expenseObservable = this.db.list(`/userLiabilities/${btoa(userKey)}/current/dbs/`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+
+    return expenseObservable;
+  }
+
+  getTotalValueOCBC() {
+    this.storage.get(this.key).then((val) => {
+      this.getOCBCLoanItems(val).subscribe(result => {
+          if (result.length > 0) {
+            this.OCBCLoan = result[0].amount;
+          }
+        }
+      );
+    });
+  }
+
+  getTotalValueDBS() {
+    this.storage.get(this.key).then((val) => {
+      this.getDBSLoanItems(val).subscribe(result => {
+          if (result.length > 0) {
+            this.DBSLoan = result[2].amount;
+            this.DBSLoan2 = result[0].amount
+          }
+        }
+      );
+    });
+  }
+
+  goToAssetPage(currencyTotalValue, equityTotalValue, totalValue, currencyArr, equityArr, depositArr, allArr) {
     this.navCtrl.push(AssetPage, {
       currencyTotalValue: currencyTotalValue,
       equityTotalValue: equityTotalValue,
+      depositTotalValue: this.totalValueForDeposits.value,
       totalValue: totalValue,
       currencyArr: currencyArr,
       equityArr: equityArr,
+      depositArr: depositArr,
       allArr: allArr
     });
+  }
+
+  goToLiabilitiesPage() {
+    this.navCtrl.push(LiabilitiesPage);
   }
 
   getCurrentTime() {
@@ -239,62 +331,9 @@ export class BankDetailsPage {
     return last30Days.format('YYYY MM DD');
   }
 
-  initChart(currency, equity, property) {
-    console.log(currency, equity, 'abab');
+  initChart(currency, equity, property, deposit) {
     HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
-
     HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-liabilities', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
-            }
-          }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Liabilities',
-        colorByPoint: true,
-        data: [{
-          name: 'Car',
-          y: 23.1,
-          sliced: true,
-          selected: true
-        }, {
-          name: 'Housing',
-          y: 43.5
-        }, {
-          name: 'Overdraft',
-          y: 12.7
-        }, {
-          name: 'Credit Card',
-          y: 22.7
-        }]
-      }]
-    });
     HighCharts.chart('chart-assets', {
       chart: {
         plotBackgroundColor: null,
@@ -339,10 +378,62 @@ export class BankDetailsPage {
           y: currency
         }, {
           name: 'Deposits',
-          y: 0
+          y: deposit
         }, {
           name: 'Property',
           y: property
+        }]
+      }]
+    });
+  }
+
+  initLiabilitiesChart() {
+    HighCharts.setOptions(HighCharts.theme);
+    HighCharts.chart('chart-liabilities', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        height: 250
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      credits: {
+        enabled: false
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          size: 160,
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            style: {
+              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+            }
+          }
+        }
+      },
+      title: {
+        text: ''
+      },
+      series: [{
+        name: 'Liabilities',
+        colorByPoint: true,
+        data: [{
+          name: 'Car',
+          y: this.DBSLoan,
+          sliced: true,
+          selected: true
+        }, {
+          name: 'Property',
+          y: this.OCBCLoan
+        }, {
+          name: 'Personal',
+          y: this.DBSLoan2
         }]
       }]
     });

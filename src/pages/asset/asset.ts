@@ -50,13 +50,17 @@ export class AssetPage {
   equityValueChart = {};
   personalValueChart = {};
   currencyValueChart = {};
+  ocbcTotalValueChart = {};
   lastUpdated: string;
   TIME_IN_MS = 1500;
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
+  totalValueForDeposit: any = [];
   totalValue: any = [];
   currencyArr: any = [];
   equityArr: any = [];
+  depositArr: any = [];
+  ocbcChartData: any = [];
   allArr: any = [];
   ocbc_arrName = [];
   ocbc_arrValue = [];
@@ -67,18 +71,17 @@ export class AssetPage {
     this.lastUpdated = this.getCurrentTime();
     this.totalValueForEquities = this.navParams.get('equityTotalValue');
     this.totalValueForCurrency = this.navParams.get('currencyTotalValue');
+    this.totalValueForDeposit = this.navParams.get('depositTotalValue');
     this.totalValue = this.navParams.get('totalValue');
     this.currencyArr = this.navParams.get('currencyArr');
     this.equityArr = this.navParams.get('equityArr');
+    this.depositArr = this.navParams.get('depositArr');
     this.allArr = this.navParams.get('allArr');
-    console.log(this.lastUpdated.split(' '), 'split data');
-    console.log(this.totalValueForEquities, this.totalValueForCurrency, this.totalValue, this.equityArr, this.currencyArr, this.allArr, 'data from prev page');
   }
 
   ionViewWillEnter() {
     this.loadingChart = false;
     this.storage.get(this.key).then((val) => {
-      console.log('Logged in as', val);
       this.getStockItems(val);
       this.getETFItems(val);
       this.getUnitTrustItems(val);
@@ -90,17 +93,14 @@ export class AssetPage {
   }
 
   doRefresh(refresher) {
-    console.log('Begin async operation', refresher);
 
     setTimeout(() => {
       location.reload();
-      console.log('Async operation has ended');
       refresher.complete();
     }, 2000);
   }
 
   ionViewWillLeave() {
-    console.log("left");
     this.shareTotalValue = 0;
     this.ocbcTotalValue = 0;
     this.etfTotalValue = 0;
@@ -108,14 +108,12 @@ export class AssetPage {
     this.cryptoTotalValue = 0;
     this.forexTotalValue = 0;
     this.propertyTotalValue = 0;
+    this.totalValueForDeposit = 0;
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad AssetPage');
-    console.log(this.lastUpdated);
     this.loadingChart = true;
     this.storage.get(this.key).then((val) => {
-      console.log('Logged in as', val);
       setTimeout(() => {
         this.loadingChart = false;
         this.totalEquityValue = this.unittrustTotalValue + this.shareTotalValue + this.etfTotalValue;
@@ -140,10 +138,17 @@ export class AssetPage {
           "day": this.lastUpdated.split(' ')[2],
           "value": this.totalPersonalValue
         };
-        console.log(btoa(val), 'btoa value');
+
+        this.ocbcTotalValueChart = {
+          "year": this.lastUpdated.split(' ')[0],
+          "month": this.lastUpdated.split(' ')[1],
+          "day": this.lastUpdated.split(' ')[2],
+          "value": this.ocbcTotalValue
+        }
         this.db.list(`userAsset/${btoa(val)}/equities/total-values`).push(this.equityValueChart);
         this.db.list(`userAsset/${btoa(val)}/currency/total-values`).push(this.currencyValueChart);
         this.db.list(`userAsset/${btoa(val)}/personal/total-values`).push(this.personalValueChart);
+        this.db.list(`userAsset/${btoa(val)}/deposit/total-values`).push(this.ocbcTotalValueChart);
         this.initChart();
         this.loadingChart = false;
       }, this.TIME_IN_MS);
@@ -163,21 +168,44 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.ocbc_data = result[0];
-
-        console.log(this.ocbcTotalValue, this.ocbc_data, this.ocbc_data, 'ocbc');
         for (let i = 0; i < Object.keys(this.ocbc_data).length - 1; i++) {
           this.ocbc_arrName.push({
             name: result[0][i].accountName,
             value: result[0][i].balance.availableBalance
           });
-          console.log(this.ocbc_arrValue, this.ocbc_arrName, 'total value');
           this.ocbcTotalValue += result[0][i].balance.availableBalance;
+          this.ocbcChartData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue,
+            this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue,
+            this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue,
+            this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue]
         }
       }
 
     });
     return expenseObservable;
   }
+
+  // getPropertyItems(userKey): Observable<any[]> {
+  //   let expenseObservable: Observable<any[]>;
+  //   expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/property/`).snapshotChanges().pipe(
+  //     map(changes =>
+  //       changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+  //   expenseObservable.subscribe(result => {
+  //     if (result.length > 0) {
+  //       this.property_data = result;
+  //       let data = result;
+  //       for (let i = 0; i < data.length; i++) {
+  //         this.propertyTotalValue += parseFloat(data[i].resalePrice.toString());
+  //       }
+  //     }
+  //     else {
+  //       this.propertyTotalValue = 0;
+  //     }
+
+  //   });
+  //   return expenseObservable;
+  // }
 
   getPropertyItems(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
@@ -209,7 +237,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.stock_data = result;
-        console.log('retrieve stock', this.stock_data);
         for (let i = 0; i < this.stock_data.length; i++) {
           this.shareTotalValue += this.stock_data[i].value;
         }
@@ -230,7 +257,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.stock_data = result;
-        console.log('retrieve ETF', this.stock_data);
         for (let i = 0; i < this.stock_data.length; i++) {
           this.etfTotalValue += this.stock_data[i].value;
         }
@@ -251,7 +277,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.stock_data = result;
-        console.log('retrieve UT', this.stock_data);
         for (let i = 0; i < this.stock_data.length; i++) {
           this.unittrustTotalValue += this.stock_data[i].value;
         }
@@ -272,7 +297,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.crypto_data = result;
-        console.log('retrieve crypto data', this.crypto_data);
         for (let i = 0; i < this.crypto_data.length; i++) {
           this.cryptoTotalValue += this.crypto_data[i].value;
         }
@@ -293,7 +317,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.forexdata = result;
-        console.log('retrieve forex data', this.forexdata);
         for (let i = 0; i < this.forexdata.length; i++) {
           this.forexTotalValue += this.forexdata[i].value;
         }
@@ -339,7 +362,6 @@ export class AssetPage {
   }
 
   initChart() {
-    console.log('date', Date.UTC(this.totalValue.year, this.totalValue.month, this.totalValue.day));
     const equityArr = this.equityArr.map(value => value.value);
     const currencyArr = this.currencyArr.map(value => value.value);
     const allArr = this.allArr.map(value => value.value);
@@ -406,7 +428,7 @@ export class AssetPage {
         type: 'area',
         data: allArr,
         pointStart: Date.UTC(this.totalValue.year, this.totalValue.month - 1, this.totalValue.day),
-        pointInterval: 24 * 3600 * 100
+        pointInterval: 24 * 360 * 100
       }]
     });
     HighCharts.chart('chart-equity-value', {
@@ -470,7 +492,7 @@ export class AssetPage {
         type: 'area',
         data: equityArr,
         pointStart: Date.UTC(this.totalValueForEquities.year, this.totalValue.month - 1, this.totalValueForEquities.day),
-        pointInterval: 24 * 3600 * 1000 // one day
+        pointInterval: 24 * 360 * 1000 // one day
       }]
     });
     HighCharts.chart('chart-equity', {
@@ -582,7 +604,7 @@ export class AssetPage {
         type: 'area',
         data: currencyArr,
         pointStart: Date.UTC(this.totalValueForCurrency.year, this.totalValue.month - 1, this.totalValueForCurrency.day),
-        pointInterval: 24 * 3600 * 1000 // one day
+        pointInterval: 24 * 360 * 1000 // one day
       }]
     });
     HighCharts.chart('chart-currency', {
@@ -689,12 +711,12 @@ export class AssetPage {
       },
       series: [{
         type: 'area',
-        data: equityArr,
+        data: this.ocbcChartData,
         pointStart: Date.UTC(this.totalValueForEquities.year, this.totalValueForEquities.month - 1, this.totalValueForEquities.day),
-        pointInterval: 24 * 3600 * 1000 // one day
+        pointInterval: 24 * 360 * 1000 // one day
       }]
     });
-    HighCharts.chart('chart-equity1', {
+    HighCharts.chart('chart-equity1',   {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -726,19 +748,64 @@ export class AssetPage {
         text: ''
       },
       series: [{
-        name: 'Equities',
+        name: 'Deposits',
         colorByPoint: true,
         data: [{
-          name: 'Shares',
-          y: this.shareTotalValue,
+          name: 'OCBC',
+          y: this.ocbcTotalValue,
           sliced: true,
           selected: true
         }, {
-          name: 'ETFs',
-          y: this.etfTotalValue
+          name: 'DBS',
+          y: 0
         }, {
-          name: 'Unit Trusts',
-          y: this.unittrustTotalValue
+          name: 'Citibank',
+          y: 0
+        }]
+      }]
+    });
+    HighCharts.chart('chart-personal', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        height: 250
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      credits: {
+        enabled: false
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          size: 160,
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            style: {
+              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+            }
+          }
+        }
+      },
+      title: {
+        text: ''
+      },
+      series: [{
+        name: 'Personal',
+        colorByPoint: true,
+        data: [{
+          name: 'Property',
+          y: this.propertyTotalValue,
+          sliced: true,
+          selected: true
+        }, {
+          name: 'Car',
+          y: this.carTotalValue
         }]
       }]
     });
