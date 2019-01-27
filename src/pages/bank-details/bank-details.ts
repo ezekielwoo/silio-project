@@ -29,7 +29,7 @@ export class BankDetailsPage {
   accessToken = null;
   code = "";
   ocbcData: any = {};
-  liabilityData: any = {};
+  liabilityData = null;
   currentChartTheme = "dark"; //default dark theme
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
@@ -253,10 +253,10 @@ export class BankDetailsPage {
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
     expenseObservable.subscribe(result => {
       if (result.length == 0) {
-        this.liabilities = 0;
+        this.liabilityData = 0;
       }
       else if (result.length > 0) {
-        this.liabilityData = result[0];
+        this.liabilityData = result[0].value;
       }
 
     });
@@ -298,7 +298,7 @@ export class BankDetailsPage {
     this.storage.get(this.key).then((val) => {
       this.getDBSLoanItems(val).subscribe(result => {
           if (result.length > 0) {
-            this.DBSLoan = result[2].amount;
+            this.DBSLoan = result[1].amount;
             this.DBSLoan2 = result[0].amount
           }
         }

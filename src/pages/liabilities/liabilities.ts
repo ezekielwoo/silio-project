@@ -101,7 +101,7 @@ export class LiabilitiesPage {
       console.log('Logged in as', val);
       this.subscription = this.getDBSLoanItems(val).subscribe(result => {
           if (result.length > 0) {
-            this.DBSLoan = result[2].amount;
+            this.DBSLoan = result[1].amount;
             this.DBSLoan2 = result[0].amount
             console.log(this.DBSLoan.amount, 'dbs loan');
           }
