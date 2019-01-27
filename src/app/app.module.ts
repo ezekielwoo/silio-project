@@ -35,6 +35,12 @@ import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AddEquityPage} from "../pages/add-equity/add-equity";
 import {CurrencyMarketPage} from "../pages/currency-market/currency-market";
 import {ViewEquityPage} from "../pages/view-equity/view-equity";
+import {EquityDetailsPage} from "../pages/equity-details/equity-details";
+import {AddCryptoPage} from "../pages/add-crypto/add-crypto"
+import {ViewCryptoPage} from "../pages/view-crypto/view-crypto"
+import {OwnCryptoDetailPage} from "../pages/own-crypto-detail/own-crypto-detail"
+import {AddPropertyPage} from "../pages/add-property/add-property";
+import {PropertymarketPage} from "../pages/propertymarket/propertymarket";
 import { ViewaccountsPage } from '../pages/viewaccounts/viewaccounts';
 import { CommonModule} from '@angular/common';
 
@@ -66,7 +72,13 @@ const firebaseConfig = {
     CurrencyMarketPage,
     AddEquityPage,
     ViewEquityPage,
-    ViewaccountsPage
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
+    AddPropertyPage,
+    ViewaccountsPage,
+    PropertymarketPage
   ],
   
   imports: [
@@ -105,6 +117,12 @@ const firebaseConfig = {
     CurrencyMarketPage,
     AddEquityPage,
     ViewEquityPage,
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
+    AddPropertyPage,
+    PropertymarketPage,
     ViewaccountsPage
   ],
   providers: [

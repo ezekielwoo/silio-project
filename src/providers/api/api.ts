@@ -44,6 +44,36 @@ export class ApiProvider {
     })
   }
 
+  getPropertyMarket(pageNumber, infiniteScroll?) {
+    return new Promise((resolve, reject) => {
+      this.http.get(`https://data.gov.sg/api/action/datastore_search?resource_id=1b702208-44bf-4829-b620-4615ee19b57c&limit=5000`).subscribe((data) => {
+        if (infiniteScroll) {
+          infiniteScroll.complete();
+        }
+        console.log(data, 'resolved');
+        resolve(data);
+      }, (e) => {
+        reject(e);
+        console.log('rejected');
+      })
+    })
+  }
+
+  getPropertyMarket2(pageNumber, query, infiniteScroll?) {
+    return new Promise((resolve, reject) => {
+      this.http.get(`https://data.gov.sg/api/action/datastore_search?resource_id=1b702208-44bf-4829-b620-4615ee19b57c&limit=79100&q=${query}`).subscribe((data) => {
+        if (infiniteScroll) {
+          infiniteScroll.complete();
+        }
+        console.log(data, 'resolved');
+        resolve(data);
+      }, (e) => {
+        reject(e);
+        console.log('rejected');
+      })
+    })
+  }
+
   getAllStock(pageNumber, infiniteScroll?) {
     return new Promise((resolve, reject) => {
       this.http.get(`${default_stock_url}/1.0/ref-data/symbols`).subscribe((data) => {
@@ -63,7 +93,7 @@ export class ApiProvider {
         if (infiniteScroll) {
           infiniteScroll.complete();
         }
-        console.log(data,'currency data');
+        console.log(data, 'currency data');
         resolve(data);
       }, (e) => {
         reject(e);
@@ -152,24 +182,6 @@ export class ApiProvider {
         })
       })
     }
-
-  getnews() {
-    return new Promise((resolve, reject) => {
-      var headers = new HttpHeaders();
-      headers.append('Access-Control-Allow-Origin', '*');
-      headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT');
-
-      this.http.get(default_news_rss, {responseType: 'text', headers: headers})
-        .subscribe((data) => {
-          x2js.parseString(data, {trim: true}, function (err, result) {
-            resolve(result);
-          });
-        }, (e) => {
-          reject(e);
-        })
-    })
-  }
-
 
   getGlobalMarket() {
     return new Promise((resolve, reject) => {

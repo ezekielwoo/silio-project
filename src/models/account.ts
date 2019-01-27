@@ -9,13 +9,11 @@ export class Account {
   
         public bankaccnum: string,
 
+        public bank:string,
 
-
-        
 
         
       ) {}
-  
        
   
     }

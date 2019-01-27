@@ -1,0 +1,146 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="trending-up"></ion-icon>
+      Property Transaction
+    </ion-title>
+    <ion-buttons right>
+      <button (click)="search = !search" ion-button icon-only>
+        <ion-icon name="ios-search-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="!loading">
+
+    <form #searchPropertyForm="ngForm" *ngIf="search">
+      <ion-list>
+
+        <ion-item style="background-color: #ac5d70">
+          <ion-label class="coin-info-name" fixed>Street</ion-label>
+          <ion-input style="color:white" [(ngModel)]="searchProperty.street" name="street_name"
+                     placeholder="Admiralty Dr"></ion-input>
+        </ion-item>
+
+        <ion-item style="background-color: #ac5d70">
+          <ion-label class="coin-info-name" fixed>Block</ion-label>
+          <ion-input [(ngModel)]="searchProperty.block" name="block" style="color:white" placeholder="467B"></ion-input>
+        </ion-item>
+
+        <ion-item style="background-color: #ac5d70">
+          <ion-label class="coin-info-name" fixed>Room</ion-label>
+          <ion-select [(ngModel)]="searchProperty.flatType" name="flat-type" style="color: white;">
+            <ion-option value="1 ROOM">1 ROOM</ion-option>
+            <ion-option value="2 ROOM">2 ROOM</ion-option>
+            <ion-option value="3 ROOM">3 ROOM</ion-option>
+            <ion-option value="4 ROOM">4 ROOM</ion-option>
+            <ion-option value="5 ROOM">5 ROOM</ion-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item style="background-color: #ac5d70">
+          <ion-label class="coin-info-name" fixed>Floor</ion-label>
+          <ion-select [(ngModel)]="searchProperty.storeyRange" name="storey-range" style="color: white;">
+            <ion-option value="01 TO 03">01 TO 03</ion-option>
+            <ion-option value="04 TO 06">04 TO 06</ion-option>
+            <ion-option value="07 TO 09">07 TO 09</ion-option>
+            <ion-option value="10 TO 12">10 TO 12</ion-option>
+            <ion-option value="13 TO 15">13 TO 15</ion-option>
+            <ion-option value="16 TO 18">16 TO 18</ion-option>
+            <ion-option value="19 TO 21">19 TO 21</ion-option>
+            <ion-option value="22 TO 24">22 TO 24</ion-option>
+            <ion-option value="25 TO 27">25 TO 27</ion-option>
+            <ion-option value="28 TO 30">28 TO 30</ion-option>
+            <ion-option value="31 TO 33">31 TO 33</ion-option>
+            <ion-option value="34 TO 36">34 TO 36</ion-option>
+            <ion-option value="37 TO 39">37 TO 39</ion-option>
+            <ion-option value="40 RO 42">40 TO 42</ion-option>
+          </ion-select>
+        </ion-item>
+
+      </ion-list>
+
+      <div class="button-group" padding>
+        <ion-row>
+
+          <ion-col col-12 style="text-align:center;">
+            <button ion-button round class="buttons" (click)="onSubmit(searchPropertyForm)"
+                    style="background-color: #ac5d70;text-align: center" [disabled]="enabled">
+              Search
+            </button>
+          </ion-col>
+
+        </ion-row>
+      </div>
+    </form>
+
+
+    <ion-item class="cp-search">
+      <ion-label stacked>Search</ion-label>
+      <ion-input (keyup)="applyFilter($event.target.value)" placeholder="Search"></ion-input>
+    </ion-item>
+    <mat-table #table [dataSource]="dataSource" matSort [class.marginTop]="search">
+      <ng-container matColumnDef="street">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.street_name}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="block">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Block</mat-header-cell>
+        <mat-cell *matCellDef="let element"> &nbsp;&nbsp;&nbsp;{{element.block | uppercase }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="flat_type">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Flat Type</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.flat_type}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="floor_range">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Floor</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.storey_range}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="resale">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Resale</mat-header-cell>
+        <mat-cell *matCellDef="let element"><span
+          style="color: yellowgreen">{{element.resale_price | number : 0}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openStock(row)"></mat-row>
+    </mat-table>
+    <ion-infinite-scroll (ionInfinite)="loadMoreStock($event) || loadMoreProperty($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-container>
+  <ng-container *ngIf="loading">
+    <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+      <h2>
+        <div class="load-bar"></div>
+      </h2>
+      <h3>
+        <div class="load-bar"></div>
+      </h3>
+      <h4>
+        <div class="load-bar"></div>
+      </h4>
+    </div>
+  </ng-container>
+</ion-content>

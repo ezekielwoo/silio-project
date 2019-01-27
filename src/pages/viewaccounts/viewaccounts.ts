@@ -1,14 +1,20 @@
-import { Component, ViewChild,OnInit  } from '@angular/core';
-import { IonicPage, NavController, NavParams,Platform } from 'ionic-angular';
-import {Storage} from '@ionic/storage';
-import {ApiProvider} from './../../providers/api/api';
-import {CryptoDetailsPage} from './../crypto-details/crypto-details';
-import {MatTableDataSource, MatSort} from '@angular/material';
-import {Events} from 'ionic-angular';
-import {watchListPage} from '../watch-list/watch-list';
-import {SettingProvider} from '../../providers/setting/setting';
-import {StockDetailsPage} from "../stock-details/stock-details";
+import { Component, ViewChild, OnInit } from '@angular/core';
+import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
+import { ApiProvider } from './../../providers/api/api';
+import { CryptoDetailsPage } from './../crypto-details/crypto-details';
+import { MatTableDataSource, MatSort } from '@angular/material';
+import { Events } from 'ionic-angular';
+import { watchListPage } from '../watch-list/watch-list';
+import { SettingProvider } from '../../providers/setting/setting';
+import { StockDetailsPage } from "../stock-details/stock-details";
 import { Account } from '../../models/account';
+import * as HighCharts from 'HighCharts';
+import { darkChartTheme, globalChartTheme } from '../../theme/chart.dark';
+import { lightChartTheme, globalLightChartTheme } from '../../theme/chart.light';
+import * as moment from 'moment';
+import { Observable } from 'rxjs';
+
 
 /**
  * Generated class for the ViewaccountsPage page.
@@ -23,156 +29,213 @@ import { Account } from '../../models/account';
   templateUrl: 'viewaccounts.html',
 })
 export class ViewaccountsPage implements OnInit {
-    accounts: Account[];
-    
-  
-    //Sorting Data
-    @ViewChild(MatSort) sort: MatSort;
-  
-    //store coins data
-    COIN_DATA = [];
-  
-    //names of columns that will be displayed
-    displayedColumns = ['rank', 'name', 'current_price', 'price_change_24', 'price_change_7d', 'price_change_14d', 'price_change_30d'];
-    dataSource = new MatTableDataSource(this.COIN_DATA);
-  
-    search = false; //Search bar
-  
-    currentPage = 1;//current Page pagination
-    maxPageNumber = 40 // maximum page pagination, currently, they are 500 coins on the market
-    loading = true; // display loading when fetching data from API
-  
-    currentCurrency = "USD" // default currency
-  
-    constructor(public navCtrl: NavController,
-                public api: ApiProvider,
-                private storage: Storage,
-                public events: Events,
-                public settingsProvider: SettingProvider,
-                public platform: Platform) {
-      this.api.getnews();
-    }
-    ngOnInit(){
-       this.accounts = [
-    
-        new Account("DBS SAVINGS BANK", 1250.00, "XXX-XXXXXX-888"),
-    
-        new Account("OCBC SAVINGS BANK", 1150.00, "XXX-XXXXXX-999"),
-    
-        new Account("POSB SAVINGS BANK", 150.00, "XXX-XXXXXX-878") 
-       ]
+  accounts: Account[];
+  allArr: any = [];
+  depositArr: any = [];
+  currentChartTheme = "dark";
 
-      };
+  //Sorting Data
+  @ViewChild(MatSort) sort: MatSort;
 
-      
-    
-      
-    
-    
-    deleteItem(item:Account){
-  
-      this.accounts.splice(this.accounts.indexOf(item),1);
-    
-    }
-  
-  
-  
-    ionViewDidLoad() {
-      this.settingsProvider.settingSubject.subscribe((data) => {
-        this.currentCurrency = this.settingsProvider.currentSetting.currency;
-      })
-      
-      console.log(this.accounts);
-  
-      this.fetch_coins().then(() => {
-        this.checkFavorite();
-        this.dataSource.sort = this.sort;
-        console.log("dsds", this.dataSource);
-      });
-    }
-  
-  
-    ionViewDidEnter() {
-      //subscribe to event when add new coin to favorite
-      this.events.subscribe('toggle_favorite', (coin_id, is_favorite) => {
-        this.COIN_DATA.forEach((e) => {
-          if (e.id == coin_id) {
-            e.is_favorite = is_favorite;
-          }
-        })
-      })
-    }
-  
-    fetch_coins(infiniteScroll?) {
-      return new Promise((resolve) => {
-        this.api.getAllCoins(this.currentPage, infiniteScroll).then((data) => {
-          this.COIN_DATA = this.COIN_DATA.concat(data);
-          this.dataSource = new MatTableDataSource(this.COIN_DATA);
-          this.dataSource.sortingDataAccessor = (item, property) => {
-            switch (property) {
-              case 'current_price':
-                return item.market_data.current_price[this.currentCurrency.toLowerCase()];
-              case 'price_change_24':
-                return item.market_data.price_change_percentage_24h;
-              case 'price_change_7d':
-                return item.market_data.price_change_percentage_7d;
-              case 'price_change_14d':
-                return item.market_data.price_change_percentage_14d;
-              case 'price_change_30d':
-                return item.market_data.price_change_percentage_30d;
-              default:
-                return item[property];
-            }
-          };
-          this.loading = false;
-          resolve(true);
-        });
-      });
-    }
-  
-    applyFilter(filterValue: string) {
-      filterValue = filterValue.trim(); // Remove whitespace
-      filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-      this.dataSource.filter = filterValue;
-    }
-  
-  
-    openCrypto(data) {
-      this.navCtrl.push(CryptoDetailsPage, {coin: data});
-    }
-  
-    openStock() {
-      this.navCtrl.push(StockDetailsPage);
-    }
-  
-    checkFavorite() {
-      this.storage.get('favorites').then((val) => {
-        let favorites = val;
-        if (favorites) {
-          this.COIN_DATA.forEach((e) => {
-            if (favorites.map((e) => e.id).indexOf(e.id) != -1) {
-              e.is_favorite = true;
-            }
-          })
-        }
-      })
-    }
-  
-    openWatchList() {
-      this.navCtrl.push(watchListPage);
-    }
-  
-    loadMoreCoins(infiniteScroll) {
-      this.currentPage++;
-      this.fetch_coins(infiniteScroll);
-      if (this.currentPage === this.maxPageNumber) {
-        infiniteScroll.enable(false);
-      }
-  
-    }
-   
-    
-  
-    
+  //store coins data
+  COIN_DATA = [];
+
+  //names of columns that will be displayed
+  // displayedColumns = ['rank', 'name', 'current_price', 'price_change_24', 'price_change_7d', 'price_change_14d', 'price_change_30d'];
+  dataSource = new MatTableDataSource(this.COIN_DATA);
+
+  search = false; //Search bar
+
+  currentPage = 1;//current Page pagination
+  maxPageNumber = 40 // maximum page pagination, currently, they are 500 coins on the market
+  loading = true; // display loading when fetching data from API
+
+  currentCurrency = "USD" // default currency
+  totalValueForEquities: any = [];
+  totalValueForCurrency: any = [];
+  totalValue: any = [];
+  currencyArr: any = [];
+  equityArr: any = [];
+
+
+  constructor(public navCtrl: NavController,
+    public api: ApiProvider,
+    private storage: Storage,
+    public navParams: NavParams,
+    public events: Events,
+    public settingsProvider: SettingProvider,
+    public platform: Platform) {
   }
+  ngOnInit() {
+    this.accounts = [
+
+      new Account("SAVINGS BANK", 1250.00, "XXX-XXXXXX-888", "OCBC"),
+
+      new Account("SAVINGS BANK", 1150.00, "XXX-XXXXXX-999", "OCBC"),
+
+      new Account("SAVINGS BANK", 150.00, "XXX-XXXXXX-878", "Maybank")
+    ]
+
+  };
+
+
+  deleteItem(item: Account) {
+
+    this.accounts.splice(this.accounts.indexOf(item), 1);
+
+  }
+  getCurrentTime() {
+    let last30Days = moment().subtract(1, 'months');
+    return last30Days.format('YYYY MM DD');
+  }
+
+
+  ionViewDidLoad() {
+    this.settingsProvider.settingSubject.subscribe((data) => {
+      this.initAccountChart();
+      this.currentChartTheme = data.theme;
+    })
+  }
+ 
   
+  initChart(arr1, arr2, arr3, arr4) {
+    HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
+    let maybank = null;
+    let chartData1 = [];
+
+
+
+
+    for (let i = 0; i < arr3.length; i++) {
+      //ocbc += arr3[i]
+       chartData1.push({
+         name: arr1[i],
+         y: arr3[i]
+ 
+         
+       })
+     }
+    //  for (let i = 1; i < arr3.length; i++) {
+    //   ocbc1 += arr3[i]
+    //    chartData1.push({
+    //      name: arr1[i],
+    //      y: ocbc1
+    //    })
+    //  }
+
+    for (let i = 0; i < arr4.length; i++) {
+      maybank += arr4[0]
+      chartData1.push({
+        name: arr2[0],
+        y: maybank
+      })
+    }
+    
+ 
+    
+
+    console.log(chartData1, 'chart data ocbc');
+
+
+   
+    HighCharts.chart('chart-amount', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        height: 250
+      },
+      tooltip: {
+        // pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        pointFormat: '<b>{point.name}</b>: {point.y:.1f} Rs.'
+      },
+      credits: {
+        enabled: false
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          size: 160,
+          dataLabels: {
+            enabled: true,
+            //format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            format: '<b>{point.name}</b>: {point.y:.1f} Rs.',
+            style: {
+              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+            }
+          }
+        }
+      },
+      title: {
+        text: ''
+      },
+      series: [{
+        name: '',
+        colorByPoint: true,
+        data: chartData1
+
+
+
+      }]
+
+    });
+  }
+
+
+
+  initAccountChart() {
+    let arr1 = [];
+    let arr2 = [];
+    let arr3 = [];
+    let arr4 = [];
+    let accountAmt = 0;
+    const accountsBank = this.accounts.map(accounts => accounts.bank);
+    const accountsAmt = this.accounts.map(accounts => accounts.amount);
+
+    for (let i = 0; i < this.accounts.length; i++) {
+      if (accountsBank[i] == "OCBC") {
+        console.log(accountsBank[i], i)
+        accountAmt += this.accounts[i].amount
+        arr1.push(accountsBank[i]);
+        
+      }
+
+      else if (accountsBank[i] == "Maybank") {
+        console.log(accountsBank[i], i)
+        arr2.push(accountsBank[i]);
+        arr4.push(accountsAmt[i]);
+      }
+
+
+    }
+    
+    console.log('accountAmt'+ accountAmt);
+    arr3.push(accountAmt);
+
+    this.initChart(arr1, arr2, arr3, arr4);
+    console.log(arr1, arr2, arr3, arr4);
+    //console.log(chartData1);
+    //console.log(arr1, arr2);
+
+  }
+
+
+
+
+
+
+  loadMoreCoins(infiniteScroll) {
+    this.currentPage++;
+
+    if (this.currentPage === this.maxPageNumber) {
+      infiniteScroll.enable(false);
+    }
+
+  }
+
+
+
+
+}

@@ -21,6 +21,8 @@
       
               <h2 class="fontcolor !important" text-center style="font-size: 34px;" > ${{detailsaccount.amount}} </h2>
       
+              <h1 class="fontcolor !important" text-center style="font-size: 34px;" > {{detailsaccount.bank}} </h1>
+
               <h6 class="fontcolor !important" text-center> {{detailsaccount.bankaccnum}} </h6>
       
        
@@ -28,6 +30,19 @@
               <ion-icon item-end color="primary" name="{{detailsaccount.favIcon}}" (click)="toggleFav(expenseItem)"></ion-icon>
       
             </ion-item>
+            <div class="con-card">
+              <ion-slides pager="true" class="slider slider-pager" spaceBetween="5px">
+                <!-- <ion-slide>
+                  <!-- <h1 text-center>TOTAL ACCOUNTS</h1> -->
+                  <!-- <div id="chart-accounts" style="display: block;"></div>
+                </ion-slide> -->
+          
+                <ion-slide>
+                  <h1 text-center>TOTAL BALANCE</h1>
+                  <div id="chart-amount" style="display: block;"></div>
+                </ion-slide>
+              </ion-slides>
+            </div>
       
        
       
