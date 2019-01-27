@@ -61,7 +61,7 @@
 
       <div class="coin-card-pink" padding>
         <h1 text-center style="font-size: 34px;"> {{cryptoTotalValue + shareTotalValue + etfTotalValue + forexTotalValue
-          + unittrustTotalValue + propertyTotalValue| number :
+          + unittrustTotalValue + propertyTotalValue + totalValueForDeposit| number :
           0}} SGD</h1>
         <h6 text-center>Total Assets Held</h6>
       </div>
@@ -86,16 +86,7 @@
               <span class="coin-info-name">Deposits Held</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              0 SGD
-            </ion-col>
-          </ion-row>
-
-          <ion-row>
-            <ion-col col-6 text-center>
-              <span class="coin-info-name">Equities Held</span>
-            </ion-col>
-            <ion-col col-6 class="coin-info-detail" text-center>
-              0 SGD
+              {{totalValueForDeposit | number : 0}} SGD
             </ion-col>
           </ion-row>
 

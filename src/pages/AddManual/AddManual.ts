@@ -9,6 +9,7 @@ import {InAppBrowser, InAppBrowserOptions} from "@ionic-native/in-app-browser";
 import {TabsPage} from "../tabs/tabs";
 import {Storage} from "@ionic/storage";
 import {AngularFireDatabase} from "angularfire2/database";
+import * as moment from "moment";
 
 
 @Component({
@@ -58,11 +59,9 @@ export class AddManualPage {
 
   }
 
-
   goToCredit() {
     this.navCtrl.push(ViewCreditPage);
   }
-
 
   goToLogin() {
     this.navCtrl.push(AddCreditPage)
@@ -93,10 +92,19 @@ export class AddManualPage {
   }
 
   syncDBS() {
+    this.storage.get(this.key).then((val) => {
+      let DBSChart = {
+        "type": 'personal',
+        "amount": 40000,
+        "tenor": "2 years",
+        "interest": "2.5%"
+      };
+      console.log('data pushed', DBSChart);
+      this.db.list(`userLiabilities/${btoa(val)}/current/dbs`).push(DBSChart);
+    });
     this.navCtrl.setRoot(TabsPage);
     const url = 'https://www.dbs.com/sandbox/api/sg/v1/oauth/authorize?client_id=1edf0eab-7b4d-474b-adcf-d5034d08e4de&redirect_uri=http%3A%2F%2Flocalhost%3A8100%2F&scope=Read&response_type=code&state=0399';
     this.iab.create(url, '_self');
-
     this.api.getDBSAccessToken(this.code).then((data: any) => {
       console.log(data.access_token, 'ATATAT');
       this.api.getDBSData(data.access_token).then((data: any) => {

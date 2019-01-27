@@ -15,6 +15,7 @@ import * as moment from 'moment';
 import {Storage} from "@ionic/storage";
 import {AddManualPage} from "../AddManual/AddManual";
 import {AlertController} from "ionic-angular";
+import {LiabilitiesPage} from "../liabilities/liabilities";
 
 @IonicPage()
 @Component({
@@ -32,16 +33,19 @@ export class BankDetailsPage {
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
   totalValueForProeprty: any = [];
+  totalValueForDeposits: any = [];
   totalValue: any = [];
   currencyArr: any = [];
   equityArr: any = [];
   propertyArr: any = [];
+  depositArr: any = [];
   allArr: any = [];
   lastUpdated = null;
   chartValue: any = {};
   valueEquity = 0;
   valueCurrency = 0;
   valuePersonal = 0;
+  valueDeposit = 0;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -167,37 +171,6 @@ export class BankDetailsPage {
     return expenseObservable;
   }
 
-  getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
-    let expenseObservable: Observable<any[]>;
-    let array = [];
-    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
-      map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
-    expenseObservable.subscribe(result => {
-      console.log(result);
-      if (result.length == 0) {
-        this.valuePersonal = 0;
-      }
-      else if (result.length > 0) {
-        array = result;
-        this.propertyArr = array;
-        this.totalValueForProeprty = array[array.length - 1];
-        this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
-        console.log('retrieve totalValueForEquities', this.totalValueForProeprty, userKey);
-        this.chartValue = {
-          "year": this.lastUpdated.split(' ')[0],
-          "month": this.lastUpdated.split(' ')[1],
-          "day": this.lastUpdated.split(' ')[2],
-          "value": equity.value + currency.value +  parseFloat(this.totalValueForProeprty.value.toString())
-        };
-        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
-        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
-        this.initChart(currency.value, equity.value, parseFloat(this.totalValueForProeprty.value.toString()));
-      }
-    });
-    return expenseObservable;
-  }
-
   getTotalValueForCurrency(equity, userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     let array = [];
@@ -220,15 +193,75 @@ export class BankDetailsPage {
     return expenseObservable;
   }
 
-  goToAssetPage(currencyTotalValue, equityTotalValue, totalValue, currencyArr, equityArr, allArr) {
+  getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      console.log(result);
+      if (result.length == 0) {
+        this.valuePersonal = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.propertyArr = array;
+        this.totalValueForProeprty = array[array.length - 1];
+        this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
+        this.getTotalValueForDeposits(userKey,equity,currency,this.totalValueForProeprty)
+      }
+    });
+    return expenseObservable;
+  }
+
+  getTotalValueForDeposits(userKey,equity,currency,property): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/deposit/total-values`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      if (result.length == 0) {
+        this.valueCurrency = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.depositArr = array;
+        this.totalValueForDeposits = array[array.length - 1];
+        this.valueDeposit = array[array.length - 1].value;
+        console.log('retrieve totalValueForEquities', this.totalValueForProeprty, userKey);
+        this.chartValue = {
+          "year": this.lastUpdated.split(' ')[0],
+          "month": this.lastUpdated.split(' ')[1],
+          "day": this.lastUpdated.split(' ')[2],
+          "value": equity.value + currency.value + property.value + this.totalValueForDeposits.value
+        };
+        console.log(this.totalValueForDeposits, 'abab');
+        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
+        this.initChart(currency.value, equity.value, property.value, this.totalValueForDeposits.value);
+      }
+
+    });
+    return expenseObservable;
+  }
+
+  goToAssetPage(currencyTotalValue, equityTotalValue, totalValue, currencyArr, equityArr, depositArr, allArr) {
+    console.log(currencyArr, 'currency arr');
     this.navCtrl.push(AssetPage, {
       currencyTotalValue: currencyTotalValue,
       equityTotalValue: equityTotalValue,
+      depositTotalValue: this.totalValueForDeposits.value,
       totalValue: totalValue,
       currencyArr: currencyArr,
       equityArr: equityArr,
+      depositArr: depositArr,
       allArr: allArr
     });
+  }
+
+  goToLiabilitiesPage() {
+    this.navCtrl.push(LiabilitiesPage);
   }
 
   getCurrentTime() {
@@ -236,7 +269,7 @@ export class BankDetailsPage {
     return last30Days.format('YYYY MM DD');
   }
 
-  initChart(currency, equity, property) {
+  initChart(currency, equity, property, deposit) {
     console.log(currency, equity, 'abab');
     HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
 
@@ -336,7 +369,7 @@ export class BankDetailsPage {
           y: currency
         }, {
           name: 'Deposits',
-          y: 0
+          y: deposit
         }, {
           name: 'Property',
           y: property

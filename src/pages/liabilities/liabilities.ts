@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
 
 /**
  * Generated class for the LiabilitiesPage page.
@@ -14,6 +14,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'liabilities.html',
 })
 export class LiabilitiesPage {
+
+  type: string = "all";
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
