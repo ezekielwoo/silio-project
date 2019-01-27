@@ -96,11 +96,11 @@ export class SyncBankAccountPage implements OnInit {
             this.accounts = list;
             if (!this.checkAccountExist(account.displayAccountNumber)) {
               const newAccount = new Account(account.productName, account.availableCredit, account.displayAccountNumber, 'CITI');
-              this.bankAccountService.addItem(newAccount);
+              this.bankAccountService.addItem(this.userKey, newAccount);
             }
           } else {
             const newAccount = new Account(account.productName, account.availableCredit, account.displayAccountNumber, 'CITI');
-            this.bankAccountService.addItem(newAccount);
+            this.bankAccountService.addItem(this.userKey, newAccount);
           }
         },
         (error) => this.showAlertMessage('Error', error.json().error).present()

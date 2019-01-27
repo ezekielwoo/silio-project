@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { newsPage } from '../news/news';
 import { HomePage } from '../home/home';
 import { GlobalMarketPage } from '../global-market/global-market';
-import { SettingsPage } from '../settings/settings';
+// import { SettingsPage } from '../settings/settings';
 import { StockMarketPage } from "../stock-market/stock-market";
 import { BankDetailsPage } from "../bank-details/bank-details";
 import { ValuationPage } from "../valuation/valuation";

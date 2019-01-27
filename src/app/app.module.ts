@@ -22,7 +22,7 @@ import { ApiProvider } from '../providers/api/api';
 import { watchListPage } from '../pages/watch-list/watch-list';
 import { SettingProvider } from '../providers/setting/setting';
 import { ComponentsModule } from '../components/components.module';
-import { SettingsPage } from '../pages/settings/settings';
+// import { SettingsPage } from '../pages/settings/settings';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { AdmobFreeProvider } from '../providers/admob/admob';
 import { Network } from '@ionic-native/network';
@@ -61,6 +61,7 @@ import { TransactionFormPage } from '../pages/TransForm/TransactionForm';
 import { AddCreditPage } from '../pages/AddCredit/AddCredit';
 import { ViewCreditPage } from '../pages/ViewCredit/ViewCredit';
 import { AddManualPage } from '../pages/AddManual/AddManual';
+import {CreditUpdatePage} from '../pages/CreditUpdate/CreditUpdate'
 
 // Transactions
 import { OverviewTransactionsPage } from '../pages/overview-transactions/overview-transactions';
@@ -94,10 +95,16 @@ const firebaseConfig = {
     MyApp,
     newsPage,
     HomePage,
+    TransactionPage,
     TabsPage,
+    BankFormPage,
+    ViewCreditPage,
+    TransactionFormPage,
     CryptoDetailsPage,
     GlobalMarketPage,
-    SettingsPage,
+    CreditUpdatePage,
+    AddManualPage,
+    AddCreditPage,
     watchListPage,
     StockDetailsPage,
     StockMarketPage,
@@ -161,9 +168,14 @@ const firebaseConfig = {
     newsPage,
     HomePage,
     TabsPage,
+    TransactionPage,
     CryptoDetailsPage,
+    TransactionFormPage,
+    CreditUpdatePage,
+    ViewCreditPage,
     GlobalMarketPage,
-    SettingsPage,
+    AddManualPage,
+    AddCreditPage,
     watchListPage,
     StockDetailsPage,
     StockMarketPage,
@@ -171,6 +183,7 @@ const firebaseConfig = {
     ValuationPage,
     AssetPage,
     AddEquityPage,
+    BankFormPage,
     CurrencyMarketPage,
     AddEquityPage,
     ViewEquityPage,

@@ -26,8 +26,8 @@ export class bankFbProvider {
       .pipe(map(changes => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
   }
 
-  addItem(item) {
-    this.db.list(`userAsset/bankAccounts/${btoa(this.userKey)}/BankFormItems/`).push(item);
+  addItem(userKey: string, item: any) {
+    this.db.list(`userAsset/bankAccounts/${btoa(userKey)}/BankFormItems/`).push(item);
   }
 
   removeItem(item) {
