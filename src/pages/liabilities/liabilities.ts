@@ -73,6 +73,17 @@ export class LiabilitiesPage {
     return expenseObservable;
   }
 
+  doRefresh(refresher) {
+
+    setTimeout(() => {
+      this.ionViewDidLoad();
+      this.storage.get(this.key).then((val) => {
+        this.ionViewDidLoad();
+      });
+      refresher.complete();
+    }, 2000);
+  }
+
   getDBSLoanItems(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
 

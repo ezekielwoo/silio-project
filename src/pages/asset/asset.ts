@@ -186,27 +186,6 @@ export class AssetPage {
     return expenseObservable;
   }
 
-  // getPropertyItems(userKey): Observable<any[]> {
-  //   let expenseObservable: Observable<any[]>;
-  //   expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/property/`).snapshotChanges().pipe(
-  //     map(changes =>
-  //       changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
-  //   expenseObservable.subscribe(result => {
-  //     if (result.length > 0) {
-  //       this.property_data = result;
-  //       let data = result;
-  //       for (let i = 0; i < data.length; i++) {
-  //         this.propertyTotalValue += parseFloat(data[i].resalePrice.toString());
-  //       }
-  //     }
-  //     else {
-  //       this.propertyTotalValue = 0;
-  //     }
-
-  //   });
-  //   return expenseObservable;
-  // }
-
   getPropertyItems(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/property/`).snapshotChanges().pipe(
