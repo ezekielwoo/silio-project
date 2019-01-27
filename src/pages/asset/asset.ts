@@ -77,14 +77,11 @@ export class AssetPage {
     this.equityArr = this.navParams.get('equityArr');
     this.depositArr = this.navParams.get('depositArr');
     this.allArr = this.navParams.get('allArr');
-    console.log(this.lastUpdated.split(' '), 'split data');
-    console.log(this.totalValueForEquities, this.totalValueForCurrency, this.totalValueForDeposit, this.totalValue, this.equityArr, this.currencyArr, this.depositArr, this.allArr, 'data from prev page');
   }
 
   ionViewWillEnter() {
     this.loadingChart = false;
     this.storage.get(this.key).then((val) => {
-      console.log('Logged in as', val);
       this.getStockItems(val);
       this.getETFItems(val);
       this.getUnitTrustItems(val);
@@ -96,17 +93,14 @@ export class AssetPage {
   }
 
   doRefresh(refresher) {
-    console.log('Begin async operation', refresher);
 
     setTimeout(() => {
       location.reload();
-      console.log('Async operation has ended');
       refresher.complete();
     }, 2000);
   }
 
   ionViewWillLeave() {
-    console.log("left");
     this.shareTotalValue = 0;
     this.ocbcTotalValue = 0;
     this.etfTotalValue = 0;
@@ -118,11 +112,8 @@ export class AssetPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad AssetPage');
-    console.log(this.lastUpdated);
     this.loadingChart = true;
     this.storage.get(this.key).then((val) => {
-      console.log('Logged in as', val);
       setTimeout(() => {
         this.loadingChart = false;
         this.totalEquityValue = this.unittrustTotalValue + this.shareTotalValue + this.etfTotalValue;
@@ -154,7 +145,6 @@ export class AssetPage {
           "day": this.lastUpdated.split(' ')[2],
           "value": this.ocbcTotalValue
         }
-        console.log(btoa(val), 'btoa value');
         this.db.list(`userAsset/${btoa(val)}/equities/total-values`).push(this.equityValueChart);
         this.db.list(`userAsset/${btoa(val)}/currency/total-values`).push(this.currencyValueChart);
         this.db.list(`userAsset/${btoa(val)}/personal/total-values`).push(this.personalValueChart);
@@ -178,13 +168,11 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.ocbc_data = result[0];
-        console.log(this.ocbcTotalValue, this.ocbc_data, this.ocbc_data, 'ocbc');
         for (let i = 0; i < Object.keys(this.ocbc_data).length - 1; i++) {
           this.ocbc_arrName.push({
             name: result[0][i].accountName,
             value: result[0][i].balance.availableBalance
           });
-          console.log(this.ocbc_arrValue, this.ocbc_arrName, 'total value ocbc');
           this.ocbcTotalValue += result[0][i].balance.availableBalance;
           this.ocbcChartData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue, this.ocbcTotalValue,
@@ -206,7 +194,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.property_data = result;
-        console.log(this.property_data, 'property data');
         let data = result;
         for (let i = 0; i < data.length; i++) {
           this.propertyTotalValue += parseFloat(data[i].resalePrice.toString());
@@ -228,7 +215,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.stock_data = result;
-        console.log('retrieve stock', this.stock_data);
         for (let i = 0; i < this.stock_data.length; i++) {
           this.shareTotalValue += this.stock_data[i].value;
         }
@@ -249,7 +235,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.stock_data = result;
-        console.log('retrieve ETF', this.stock_data);
         for (let i = 0; i < this.stock_data.length; i++) {
           this.etfTotalValue += this.stock_data[i].value;
         }
@@ -270,7 +255,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.stock_data = result;
-        console.log('retrieve UT', this.stock_data);
         for (let i = 0; i < this.stock_data.length; i++) {
           this.unittrustTotalValue += this.stock_data[i].value;
         }
@@ -291,7 +275,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.crypto_data = result;
-        console.log('retrieve crypto data', this.crypto_data);
         for (let i = 0; i < this.crypto_data.length; i++) {
           this.cryptoTotalValue += this.crypto_data[i].value;
         }
@@ -312,7 +295,6 @@ export class AssetPage {
     expenseObservable.subscribe(result => {
       if (result.length > 0) {
         this.forexdata = result;
-        console.log('retrieve forex data', this.forexdata);
         for (let i = 0; i < this.forexdata.length; i++) {
           this.forexTotalValue += this.forexdata[i].value;
         }
@@ -358,10 +340,8 @@ export class AssetPage {
   }
 
   initChart() {
-    console.log('date', Date.UTC(this.totalValue.year, this.totalValue.month, this.totalValue.day));
     const equityArr = this.equityArr.map(value => value.value);
     const currencyArr = this.currencyArr.map(value => value.value);
-    console.log(this.ocbcChartData, 'ocbc arr');
     const allArr = this.allArr.map(value => value.value);
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);

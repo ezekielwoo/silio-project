@@ -56,12 +56,12 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> 515,000 SGD</h1>
+        <h1 text-center style="font-size: 34px;"> {{OCBCLoan + DBSLoan2 + DBSLoan}} SGD</h1>
         <h6 text-center>Total Liabilities Held</h6>
       </div>
 
       <h3 text-center>Portfolio</h3>
-      <div [hidden]="loadingChart" id="chart-container" style="display: block;"></div>
+      <div [hidden]="loadingChart" id="total-liabilities" style="display: block;"></div>
 
       <div class="coin-info" style="margin-top: 20px">
         <div class="coin-info-card">
@@ -71,7 +71,7 @@
               <span class="coin-info-name">Long Term</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              500,000 SGD
+             {{OCBCLoan + DBSLoan}} SGD
             </ion-col>
           </ion-row>
 
@@ -80,7 +80,7 @@
               <span class="coin-info-name">Short Term</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              15,000 SGD
+              {{DBSLoan2}} SGD
             </ion-col>
           </ion-row>
         </div>
@@ -104,12 +104,12 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> 15,000 SGD</h1>
+        <h1 text-center style="font-size: 34px;"> {{DBSLoan2}} SGD</h1>
         <h6 text-center>Short Term Loans</h6>
       </div>
 
       <h3 text-center>Portfolio</h3>
-      <div [hidden]="loadingChart" id="chart-liabilities" style="display: block;"></div>
+      <div [hidden]="loadingChart" id="short-term" style="display: block;"></div>
 
       <div class="coin-info" style="margin-top: 20px">
         <div class="coin-info-card">
@@ -119,7 +119,7 @@
               <span class="coin-info-name">Credit Card</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              5,000 SGD
+              0 SGD
             </ion-col>
           </ion-row>
 
@@ -128,7 +128,7 @@
               <span class="coin-info-name">Overdraft</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              7,000 SGD
+              0 SGD
             </ion-col>
           </ion-row>
 
@@ -137,7 +137,7 @@
               <span class="coin-info-name">Personal</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              3,000 SGD
+              {{DBSLoan2}} SGD
             </ion-col>
           </ion-row>
         </div>
@@ -160,12 +160,12 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> 500,000 SGD</h1>
+        <h1 text-center style="font-size: 34px;"> {{OCBCLoan + DBSLoan}} SGD</h1>
         <h6 text-center>Long Term Loans</h6>
       </div>
 
       <h3 text-center>Portfolio</h3>
-      <div [hidden]="loadingChart" id="chart-liabilities2" style="display: block;"></div>
+      <div [hidden]="loadingChart" id="long-term" style="display: block;"></div>
 
       <div class="coin-info" style="margin-top: 20px">
         <div class="coin-info-card">
@@ -175,7 +175,7 @@
               <span class="coin-info-name">Property</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              450,000 SGD
+              {{OCBCLoan}} SGD
             </ion-col>
           </ion-row>
 
@@ -184,7 +184,7 @@
               <span class="coin-info-name">Car</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              50,000 SGD
+              {{DBSLoan}} SGD
             </ion-col>
           </ion-row>
         </div>
