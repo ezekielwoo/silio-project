@@ -5,10 +5,6 @@ import { User } from '../../models/user';
 import { UserFbProvider } from '../../providers/user-firebase';
 import { MainPage } from '../main/main';
 import { LoginPage } from '../login/login';
-import { ProfilePage } from '../profile/profile';
-import { Storage } from '@ionic/storage';
-import { BankDetailsPage } from '../bank-details/bank-details';
-import { TabsPage } from '../tabs/tabs';
 
 /**
  * Generated class for the OtpPage page.
@@ -30,9 +26,7 @@ export class OtpPage {
   email: string;
   userOTP: number;
   oneTP: number;
-  key:string = 'email';
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, private userService: UserFbProvider, private alertCtrl: AlertController, private storage: Storage) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private userService: UserFbProvider, private alertCtrl: AlertController) {
     this.email = this.navParams.get('email');
   }
 
@@ -53,10 +47,7 @@ export class OtpPage {
                   text: 'Confirm',
                   handler: () => {
                     this.userService.deleteOTP(this.email);
-                    this.storage.set(this.key, this.email);
-                    console.log(this.key);
-                    this.navCtrl.setRoot(TabsPage);
-
+                    this.navCtrl.setRoot(MainPage); 
                   }
                 }
               ]
@@ -83,14 +74,14 @@ export class OtpPage {
       }
 
     });
-
+  
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad OtpPage');
   }
 
   clearOTP(email){
-
+    
   }
   }
 

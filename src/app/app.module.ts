@@ -35,6 +35,8 @@ import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AddEquityPage} from "../pages/add-equity/add-equity";
 import {CurrencyMarketPage} from "../pages/currency-market/currency-market";
 import {ViewEquityPage} from "../pages/view-equity/view-equity";
+import {UserFbProvider} from '../providers/user-firebase';
+import {FingerprintAIO} from '@ionic-native/fingerprint-aio';
 import {EquityDetailsPage} from "../pages/equity-details/equity-details";
 import {AddCryptoPage} from "../pages/add-crypto/add-crypto"
 import {ViewCryptoPage} from "../pages/view-crypto/view-crypto"
@@ -48,8 +50,6 @@ import {LoginPage} from "../pages/login/login";
 import {OtpPage} from "../pages/otp/otp";
 import {ProfilePage} from "../pages/profile/profile";
 import {ForgetPassPage} from "../pages/forget-pass/forget-pass";
-import {UserFbProvider} from "../providers/user-firebase";
-import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
 import {TransactionFbProvider} from '../providers/transaction-firebase';
 import {ExpenseFbProvider} from '../providers/expense-firebase';
 import {bankFbProvider} from '../providers/bankform-firebase';
@@ -243,10 +243,14 @@ const firebaseConfig = {
     TransactionCategoriesService,
     CurrencyListService,
     CitibankService,
+    UserFbProvider,
+    FingerprintAIO,
     {provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true}
+
   ]
 })
 export class AppModule {
+
 }
 
 export function currenciesProviderFactory(provider: CurrencyListService) {

@@ -17,14 +17,14 @@ export class UserFbProvider {
 // USER
     addUser(user) {
 
-        this.db.list('/User/userProfile').push(user);
+        this.db.list('/User/').push(user);
       }
     
     getUsers(): Observable<any[]> {
 
         let userObservable: Observable<any[]>;
 
-        userObservable = this.db.list('/User/userProfile').snapshotChanges().pipe(
+        userObservable = this.db.list('/User/').snapshotChanges().pipe(
           map(changes =>
             changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
 
@@ -77,7 +77,7 @@ export class UserFbProvider {
       }
       updateUser(user) {
 
-        this.db.list('/User/userProfile').update(user.key, user);
+        this.db.list('/User/').update(user.key, user);
     
       }
 

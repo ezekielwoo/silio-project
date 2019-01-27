@@ -1,6 +1,6 @@
 
 
-<ion-content style="background-color: #ac5d70" padding> 
+<ion-content>
     <div id="bg">
         <ion-buttons left (click)= "closeModal()" >
             <button ion-button clear color="chip">
@@ -18,16 +18,16 @@
                 </tr>
                 <tr>
                   <td>
-                      <ion-label style="color:white" text-wrap>Forgot your password?</ion-label>
-                      <ion-label style="color:white" text-wrap>Do enter your email below to receive your new password.</ion-label>
+                      <ion-label color="chip" id="textNo" text-wrap>Forgot your password?</ion-label>
+                      <ion-label id="sub" text-wrap>Do enter your email below to receive your new password.</ion-label>
                   </td>
                 </tr>
               </table>
             </div>
 
             <div id="input">
-            <ion-item style="background-color: #ac5d70">
-                <ion-label style="color:white" stacked>Email</ion-label>
+            <ion-item>
+                <ion-label color="primary" stacked>Email</ion-label>
                 <ion-input type="email" [(ngModel)] = "email" name="email"></ion-input>
               </ion-item>
             </div>
