@@ -115,7 +115,7 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openStock(row)"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openProperty(row)"></mat-row>
     </mat-table>
     <ion-infinite-scroll (ionInfinite)="loadMoreStock($event) || loadMoreProperty($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>

@@ -12,6 +12,7 @@ import {ApiProvider} from './../../providers/api/api';
 import {AddCrypto} from "../../models/add-crypto";
 import {OwnCryptoDetailPage} from "../own-crypto-detail/own-crypto-detail";
 import {Storage} from "@ionic/storage";
+import * as moment from "moment";
 
 /**
  * Generated class for the ViewCryptoPage page.
@@ -30,6 +31,7 @@ export class ViewCryptoPage {
   coin_data: any = [];
   coin: AddCrypto[];
   value = [];
+  chartData: any = [];
   totalValueCrypto = 0;
   totalValueForex = 0;
   totalValue = 0;
@@ -45,14 +47,18 @@ export class ViewCryptoPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider, private storage: Storage) {
   }
 
+  ionViewWillLeave() {
+    this.coin = null;
+  }
+
 
   ionViewWillEnter() {
-    this.getTotalValue();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ViewCryptoPage');
     this.loadingChart = false;
+    this.getTotalValue();
   }
 
   getCryptoItems(userkey): Observable<any[]> {
@@ -91,6 +97,7 @@ export class ViewCryptoPage {
           }
           this.cryptoPrice = marketvalueOfCrypto;
         });
+        console.log(this.cryptoPrice)
       }
     }
   }
@@ -136,7 +143,22 @@ export class ViewCryptoPage {
           console.log(this.coin, 'coin');
           this.getCryptoData(this.coin);
           if (this.coin) {
-            this.initCryptoChart(this.coin);
+            if (this.coin.length > 0) {
+              let cryptochartData = [];
+              const arrayOfValues = this.coin.map(value => value.value);
+              const arrayOfCompanies = this.coin.map(value => value.symbol.toUpperCase());
+              console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
+              if (arrayOfValues) {
+                for (let i = 0; i < this.coin.length; i++) {
+                  cryptochartData.push({
+                    name: arrayOfCompanies[i],
+                    y: arrayOfValues[i]
+                  });
+                }
+                this.initCryptoChart(cryptochartData);
+              }
+            }
+
             const reducer = (accumulator, currentValue) => accumulator + currentValue;
             const arrayOfValues = this.coin.map(value => value.value);
             console.log(arrayOfValues, 'crypto array');
@@ -149,6 +171,7 @@ export class ViewCryptoPage {
           this.totalValueCrypto = 0;
           this.cryptoPrice = 0;
           this.totalValueForex = 0;
+          this.initCryptoChart(null);
         }
 
         this.getCurrencyItems(val).subscribe(result => {
@@ -170,27 +193,20 @@ export class ViewCryptoPage {
           }
           this.totalValue = this.totalValueCrypto + this.totalValueForex;
           console.log(this.totalValue, this.totalValueCrypto, this.totalValueForex, 'valuessss');
+          let currencyValueChart = {
+            "year": this.getCurrentTime().split(' ')[0],
+            "month": this.getCurrentTime().split(' ')[1],
+            "day": this.getCurrentTime().split(' ')[2],
+            "value": this.totalValue
+          };
+          console.log(btoa(val), 'btoa value');
+          this.db.list(`userAsset/${btoa(val)}/currency/total-values`).push(currencyValueChart);
         });
       });
     });
   }
 
-  initCryptoChart(value) {
-    let chartData = [];
-    if (value.length > 0) {
-      const arrayOfValues = value.map(value => value.value);
-      const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
-      console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
-      if (arrayOfValues) {
-        for (let i = 0; i < value.length; i++) {
-          chartData.push({
-            name: arrayOfCompanies[i],
-            y: arrayOfValues[i]
-          });
-        }
-      }
-    }
-
+  initCryptoChart(chartData?) {
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
     HighCharts.chart('chart-crypto', {
@@ -235,10 +251,10 @@ export class ViewCryptoPage {
   initForexChart(value) {
     console.log(value, 'valueeee');
 
+    let chartData = [];
     const arrayOfValues = value.map(value => value.value);
     const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
     console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
-    let chartData = [];
     if (arrayOfValues) {
       for (let i = 0; i < value.length; i++) {
         chartData.push({
@@ -248,7 +264,7 @@ export class ViewCryptoPage {
       }
     }
 
-    console.log('chartData', chartData);
+    console.log('chartData', this.chartData);
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
     HighCharts.chart('chart-currencies', {
@@ -288,6 +304,11 @@ export class ViewCryptoPage {
         data: chartData
       }]
     });
+  }
+
+  getCurrentTime() {
+    let last30Days = moment().subtract(1, 'months');
+    return moment().format('YYYY MM DD');
   }
 
 }

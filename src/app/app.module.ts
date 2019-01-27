@@ -2,7 +2,7 @@ import {GlobalMarketPage} from './../pages/global-market/global-market';
 import {CryptoDetailsPage} from './../pages/crypto-details/crypto-details';
 import {StockDetailsPage} from '../pages/stock-details/stock-details';
 import {AngularMaterialModule} from './angular-material.module';
-import {NgModule, ErrorHandler} from '@angular/core';
+import {NgModule, ErrorHandler, APP_INITIALIZER} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {IonicApp, IonicModule, IonicErrorHandler} from 'ionic-angular';
 import {MyApp} from './app.component';
@@ -41,20 +41,39 @@ import {ViewCryptoPage} from "../pages/view-crypto/view-crypto"
 import {OwnCryptoDetailPage} from "../pages/own-crypto-detail/own-crypto-detail"
 import {AddPropertyPage} from "../pages/add-property/add-property";
 import {PropertymarketPage} from "../pages/propertymarket/propertymarket";
-
-import{TransactionFbProvider} from '../providers/transaction-firebase';
-import{ExpenseFbProvider} from '../providers/expense-firebase';
-import{bankFbProvider} from '../providers/bankform-firebase';
-import { TransactionPage } from '../pages/CcTrans/Transaction';
-import { BankFormPage } from '../pages/BankForm/BankForm';
-import{TransactionFormPage}from '../pages/TransForm/TransactionForm';
+import {TransactionFbProvider} from '../providers/transaction-firebase';
+import {ExpenseFbProvider} from '../providers/expense-firebase';
+import {bankFbProvider} from '../providers/bankform-firebase';
+import {TransactionPage} from '../pages/CcTrans/Transaction';
+import {BankFormPage} from '../pages/BankForm/BankForm';
+import {TransactionFormPage} from '../pages/TransForm/TransactionForm';
 import {AddCreditPage} from '../pages/AddCredit/AddCredit';
 import {ViewCreditPage} from '../pages/ViewCredit/ViewCredit';
 import {AddManualPage} from '../pages/AddManual/AddManual';
+import {ViewaccountsPage} from "../pages/viewaccounts/viewaccounts";
+// Transactions
+import {OverviewTransactionsPage} from '../pages/overview-transactions/overview-transactions';
+import {CurrencyPipe} from '@angular/common';
+import {TransactionService} from '../providers/transactions/transaction.service';
+import {ManualAccountsService} from '../providers/transactions/manual-accounts.service';
+import {TransactionCategoriesService} from '../providers/transactions/transaction-categories.service';
+import {CurrencyListService} from '../providers/transactions/currency-list.service';
+import {CitibankService} from '../providers/transactions/citibank.service';
+import {SortPipe} from '../pipes/sort.pipe';
+import {AddTransactionPage} from '../pages/add-transaction/add-transaction';
+import {SelectTransactionAccountPage} from '../pages/select-transaction-account/select-transaction-account';
+import {SelectBankPage} from '../pages/select-bank/select-bank';
+import {SyncBankAccountPage} from '../pages/sync-bank-account/sync-bank-account';
+import {SelectCategoryPage} from '../pages/select-category/select-category';
+import {SelectCurrencyPage} from '../pages/select-currency/select-currency';
+import {TransactionCategoryPage} from '../pages/transaction-category/transaction-category';
+import {CategoryFilterOptionsPage} from '../pages/transaction-category/category-filter-options';
+import {ViewPropertyPage} from "../pages/view-property/view-property";
 
 
 import { UserFbProvider } from '../providers/user-firebase';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+import { Facebook, FacebookOriginal } from '@ionic-native/facebook';
 
 import { MainPage } from '../pages/main/main';
 import { RegisterPage } from '../pages/register/register';
@@ -101,7 +120,6 @@ const firebaseConfig = {
     AddPropertyPage,
     PropertymarketPage,
     MainPage,
-    //EditProfilePage,
     RegisterPage,
     LoginPage,
     OtpPage,
@@ -112,7 +130,20 @@ const firebaseConfig = {
     ViewCreditPage,
     TransactionFormPage,
     AddManualPage,
-    AddCreditPage
+    AddCreditPage,
+    ViewaccountsPage,
+    ViewPropertyPage,
+    // Transactions
+    SortPipe,
+    OverviewTransactionsPage,
+    AddTransactionPage,
+    SelectTransactionAccountPage,
+    SelectBankPage,
+    SyncBankAccountPage,
+    SelectCategoryPage,
+    SelectCurrencyPage,
+    TransactionCategoryPage,
+    CategoryFilterOptionsPage
 
 
   ],
@@ -129,7 +160,6 @@ const firebaseConfig = {
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(firebaseConfig),
     EditProfilePageModule
-   
 
   ],
   bootstrap: [IonicApp],
@@ -170,6 +200,18 @@ const firebaseConfig = {
     TransactionFormPage,
     AddManualPage,
     AddCreditPage,
+    ViewaccountsPage,
+    ViewPropertyPage,
+    // Transactions
+    OverviewTransactionsPage,
+    AddTransactionPage,
+    SelectTransactionAccountPage,
+    SelectBankPage,
+    SyncBankAccountPage,
+    SelectCategoryPage,
+    SelectCurrencyPage,
+    TransactionCategoryPage,
+    CategoryFilterOptionsPage
   ],
   providers: [
     StatusBar,
@@ -187,8 +229,20 @@ const firebaseConfig = {
     TransactionFbProvider,
     ExpenseFbProvider,
     bankFbProvider,
+    CurrencyPipe,
+    FacebookOriginal,
+    TransactionService,
+    ManualAccountsService,
+    TransactionCategoriesService,
+    CurrencyListService,
+    CitibankService,
+    {provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true}
   ]
 })
 export class AppModule {
 
+}
+
+export function currenciesProviderFactory(provider: CurrencyListService) {
+  return () => provider.load();
 }

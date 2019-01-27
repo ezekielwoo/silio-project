@@ -56,7 +56,7 @@ export class EditProfilePage {
       this.storage.get(this.key).then((val) =>{
         this.userList = users;
         for(var i = 0; i < this.userList.length; i++){
-          if(keepGoing) {
+          if(keepGoing == true){
           if(this.userList[i].email == val){
             this.userList[i].email = user.email;
             this.userList[i].password = user.password;
@@ -64,7 +64,7 @@ export class EditProfilePage {
             this.userList[i].lastName = user.lastName;
             this.userList[i].mobileNum = user.mobileNum;
             this.userService.updateUser(this.userList[i]);
-            let alert = this.alertCtrl.create({
+            let alertEdit = this.alertCtrl.create({
               title: 'Update',
               message: 'Update successful!',
               buttons: [
@@ -76,15 +76,17 @@ export class EditProfilePage {
                 }
               ]
             });
-            alert.present();
+            alertEdit.present();
             keepGoing = false;
           }
         }
+        
         }
       });
     });
     
   }
+
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad EditProfilePage');

@@ -60,7 +60,8 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> {{totalValueForCurrency.value + totalValueForEquities.value | number :
+        <h1 text-center style="font-size: 34px;"> {{cryptoTotalValue + shareTotalValue + etfTotalValue + forexTotalValue
+          + unittrustTotalValue| number :
           0}} SGD</h1>
         <h6 text-center>Total Assets Held</h6>
       </div>
@@ -76,7 +77,7 @@
               <span class="coin-info-name">Equities Held</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              {{totalValueForEquities.value | number : 0}} SGD
+              {{unittrustTotalValue + etfTotalValue + shareTotalValue | number : 0}} SGD
             </ion-col>
           </ion-row>
 
@@ -103,7 +104,7 @@
               <span class="coin-info-name">Currency Held</span>
             </ion-col>
             <ion-col col-6 class="coin-info-detail" text-center>
-              {{totalValueForCurrency.value | number : 0}} SGD
+              {{forexTotalValue + cryptoTotalValue | number : 0}} SGD
             </ion-col>
           </ion-row>
 
@@ -136,7 +137,8 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;"> {{totalValueForEquities.value | number: 0}} SGD</h1>
+        <h1 text-center style="font-size: 34px;"> {{shareTotalValue + etfTotalValue + unittrustTotalValue | number: 0}}
+          SGD</h1>
         <h6 text-center>Total Equities Held</h6>
       </div>
 
@@ -221,7 +223,7 @@
       </ng-container>
 
       <div class="coin-card-pink" padding>
-        <h1 text-center style="font-size: 34px;">{{totalValueForCurrency.value | number : 0}} SGD</h1>
+        <h1 text-center style="font-size: 34px;">{{cryptoTotalValue + forexTotalValue | number : 0}} SGD</h1>
         <h6 text-center>Total Currency Held</h6>
       </div>
 
@@ -305,7 +307,15 @@
 
       <!-- <h3 text-center>Balance</h3> -->
       <div class="con-card">
-        <div id="chart-accountdetails" style="display: block;"></div>
+        <ion-slides>
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-equity-value1" style="display: block;"></div>
+          </ion-slide>
+
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-equity1" style="display: block;"></div>
+          </ion-slide>
+        </ion-slides>
       </div>
 
       <div class="button-group" padding style="margin-top: -18px">
@@ -342,9 +352,64 @@
     </div>
 
     <div [hidden]="type != 'personal'">
+      <div class="coin-card-pink" padding>
+        <h1 text-center style="font-size: 34px;">1,231,168.86 SGD</h1>
+        <h6 text-center>Total Personal Assets</h6>
+      </div>
 
+      <h3 text-center>Personal</h3>
+      <div class="con-card">
+        <ion-slides pager="true" spaceBetween="5px">
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-personal-value" style="display: block;"></div>
+          </ion-slide>
+
+          <ion-slide>
+            <div [hidden]="loadingChart" id="chart-personal" style="display: block;"></div>
+          </ion-slide>
+        </ion-slides>
+      </div>
+
+      <div class="button-group" padding style="margin-top: -18px">
+        <ion-row>
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70" (click)="goToAddProperty()">
+              Add Property
+            </button>
+          </ion-col>
+
+          <ion-col col-6>
+            <button ion-button round class="buttons" style="background-color: #ac5d70;margin-left: 28px"
+                    (click)="goToViewPropertyPage()">
+              View Property
+            </button>
+          </ion-col>
+        </ion-row>
+      </div>
+
+      <div class="coin-info" style="margin-top: 20px">
+        <div class="coin-info-card">
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Property</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              1,000,000 SGD
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col col-6 text-center>
+              <span class="coin-info-name">Car</span>
+            </ion-col>
+            <ion-col col-6 class="coin-info-detail" text-center>
+              257,912 SGD
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
     </div>
-
   </div>
 
 </ion-content>

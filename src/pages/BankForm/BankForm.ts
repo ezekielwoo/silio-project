@@ -10,24 +10,24 @@ import { ViewCreditPage } from '../ViewCredit/ViewCredit';
 @Component({
   selector: 'page-BankForm',
   templateUrl: 'BankForm.html',
-  
+
 })
 export class BankFormPage {
- 
-  bank: bankAcc;
-  
+
+  log: bankAcc;
+
  submitted = false;
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public settingProvider:SettingProvider,
               public alertCtrl: AlertController,
               public admob:AdmobFreeProvider, private expenseService: bankFbProvider) {
 
-              
-                
-               
-                this.bank = new bankAcc ('',0,'','');
-               
+
+
+
+                this.log = new bankAcc ('',0,'','');
+
   }
 
  onSubmit(form: NgForm) {
@@ -35,7 +35,7 @@ export class BankFormPage {
    this.submitted = true;
    if (form.valid) {
 
-  this.expenseService.addItem(this.bank);
+  this.expenseService.addItem(this.log);
   this.navCtrl.push(ViewCreditPage);
    }
 

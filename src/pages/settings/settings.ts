@@ -3,7 +3,8 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { SettingProvider } from '../../providers/setting/setting';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
 import { ProfilePage } from '../profile/profile';
-
+import {MainPage} from "../main/main";
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-settings',
@@ -15,11 +16,12 @@ export class SettingsPage {
   currentCurrency = null;
   isDarkTheme  = true;
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public settingProvider:SettingProvider,
               public alertCtrl: AlertController,
-              public admob:AdmobFreeProvider) {
+              public admob:AdmobFreeProvider,
+              public storage: Storage) {
   }
 
 
@@ -41,7 +43,7 @@ export class SettingsPage {
 
   addFlag(el:HTMLElement) {
     var icon = document.createElement('i');
-    icon.className = "flag-icon flag-icon-"+ el.innerText.substring(0, el.innerText.length - 1).toLowerCase(); 
+    icon.className = "flag-icon flag-icon-"+ el.innerText.substring(0, el.innerText.length - 1).toLowerCase();
     el.innerHTML = icon.outerHTML +  el.innerHTML;
   }
 
@@ -86,5 +88,33 @@ export class SettingsPage {
   goToProfile(){
     this.navCtrl.push(ProfilePage);
   }
-  
+  Logout(){
+      let alert = this.alertCtrl.create({
+        title: 'Logout',
+        message: 'Do you wish to Logout?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
+          },
+          {
+            text: 'Confirm',
+            handler: () => {
+
+              this.storage.get("email").then((val) =>{
+                console.log(val);
+              });
+              this.storage.set("email", null);
+              this.navCtrl.parent.parent.setRoot(MainPage);
+
+            }
+          }
+        ]
+      });
+      alert.present();
+    }
+
 }

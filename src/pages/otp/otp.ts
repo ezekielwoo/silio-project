@@ -17,7 +17,7 @@ import { TabsPage } from '../tabs/tabs';
  * Ionic pages and navigation.
  */
 
-declare function require(name: string);
+// declare function require(name: string);
 
 @IonicPage()
 @Component({
@@ -37,15 +37,17 @@ export class OtpPage {
   }
 
   otpLogin(){
+    var emailExist = false;
 
     this.userService.getUserOTP().subscribe(userOTPList => {
       console.log(this.email);
       console.log(userOTPList);
       for(var i = 0; i < userOTPList.length; i++){
         if(userOTPList[i].email == this.email){
+          emailExist = true;
           if(userOTPList[i].OTP == this.oneTP){
 
-            let alert = this.alertCtrl.create({
+            let alertOTP1 = this.alertCtrl.create({
               title: 'Login',
               message: 'You have successfully login',
               buttons: [
@@ -56,29 +58,28 @@ export class OtpPage {
                     this.storage.set(this.key, this.email);
                     console.log(this.key);
                     this.navCtrl.setRoot(TabsPage);
-                    
                   }
                 }
               ]
             });
-            alert.present();
+            alertOTP1.present();
           }
-          else{
-            let alert = this.alertCtrl.create({
+          else if (userOTPList[i].OTP != this.oneTP && this.oneTP != null ) {
+            let alertOTP2 = this.alertCtrl.create({
               title: 'Alert',
               subTitle: 'Invalid OTP.',
               buttons: ['Dismiss']
             });
-            alert.present();
+            alertOTP2.present();
           }
         }
-        else{
-          let alert = this.alertCtrl.create({
+        else if(emailExist == false){
+          let alertEmail3 = this.alertCtrl.create({
             title: 'Error',
-            subTitle: 'Invalid',
+            subTitle: 'Invalid Email',
             buttons: ['Dismiss']
           });
-          alert.present();
+          alertEmail3.present();
         }
       }
       

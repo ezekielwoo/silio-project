@@ -13,6 +13,9 @@ import {HomePage} from "../home/home";
 import {ViewCryptoPage} from "../view-crypto/view-crypto";
 import {ApiProvider} from "../../providers/api/api";
 import {Storage} from "@ionic/storage";
+import {ViewaccountsPage} from "../viewaccounts/viewaccounts"
+import {PropertymarketPage} from "../propertymarket/propertymarket";
+import {ViewPropertyPage} from "../view-property/view-property";
 
 @IonicPage()
 @Component({
@@ -43,7 +46,7 @@ export class AssetPage {
   equityValueChart = {};
   currencyValueChart = {};
   lastUpdated: string;
-  TIME_IN_MS = 3000;
+  TIME_IN_MS = 1500;
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
   totalValue: any = [];
@@ -66,7 +69,7 @@ export class AssetPage {
     console.log(this.totalValueForEquities, this.totalValueForCurrency, this.totalValue, this.equityArr, this.currencyArr, this.allArr, 'data from prev page');
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.loadingChart = false;
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
@@ -83,16 +86,26 @@ export class AssetPage {
     console.log('Begin async operation', refresher);
 
     setTimeout(() => {
-      this.ionViewDidEnter();
-      this.ionViewDidLoad();
+      location.reload();
       console.log('Async operation has ended');
       refresher.complete();
     }, 2000);
   }
 
+  ionViewWillLeave() {
+    console.log("left");
+    this.shareTotalValue = 0;
+    this.ocbcTotalValue = 0;
+    this.etfTotalValue = 0;
+    this.unittrustTotalValue = 0;
+    this.cryptoTotalValue = 0;
+    this.forexTotalValue = 0;
+  }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad AssetPage');
     console.log(this.lastUpdated);
+    this.loadingChart = true;
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
       setTimeout(() => {
@@ -115,13 +128,14 @@ export class AssetPage {
         this.db.list(`userAsset/${btoa(val)}/equities/total-values`).push(this.equityValueChart);
         this.db.list(`userAsset/${btoa(val)}/currency/total-values`).push(this.currencyValueChart);
         this.initChart();
+        this.loadingChart = false;
       }, this.TIME_IN_MS);
     });
   }
 
   getCurrentTime() {
     let last30Days = moment().subtract(1, 'months');
-    return last30Days.format('YYYY MM DD');
+    return moment().format('YYYY MM DD');
   }
 
   getDepositAccountOCBC(userKey): Observable<any[]> {
@@ -277,10 +291,18 @@ export class AssetPage {
     this.navCtrl.push(ViewEquityPage);
   }
 
+  goToAddProperty() {
+    this.navCtrl.push(PropertymarketPage);
+  }
+
+  goToViewPropertyPage() {
+    this.navCtrl.push(ViewPropertyPage);
+  }
+
   initChart() {
     console.log('date', Date.UTC(this.totalValue.year, this.totalValue.month, this.totalValue.day));
     const equityArr = this.equityArr.map(value => value.value);
-    const currencyArr = this.equityArr.map(value => value.value);
+    const currencyArr = this.currencyArr.map(value => value.value);
     const allArr = this.allArr.map(value => value.value);
     HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
@@ -569,6 +591,122 @@ export class AssetPage {
         }]
       }]
     });
+    HighCharts.chart('chart-equity-value1', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        zoomType: 'x',
+        height: 250
+      },
+      title: {
+        text: ""
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          day: '%e of %b'
+        }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        },
+        gridLineWidth: 0,
+        minorGridLineWidth: 0,
+        min: 0
+      },
+      legend: {
+        enabled: false
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1
+            },
+            stops: [
+              [0, HighCharts.getOptions().colors[0]],
+              [1, HighCharts.Color(HighCharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+            ]
+          },
+          marker: {
+            enabled: false
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
+      },
+      tooltip: {
+        pointFormat: "Price : {point.y:.2f}"
+      },
+      series: [{
+        type: 'area',
+        data: equityArr,
+        pointStart: Date.UTC(this.totalValueForEquities.year, this.totalValueForEquities.month - 1, this.totalValueForEquities.day),
+        pointInterval: 24 * 3600 * 1000 // one day
+      }]
+    });
+    HighCharts.chart('chart-equity1', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        height: 250
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      credits: {
+        enabled: false
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          size: 160,
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            style: {
+              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+            }
+          }
+        }
+      },
+      title: {
+        text: ''
+      },
+      series: [{
+        name: 'Equities',
+        colorByPoint: true,
+        data: [{
+          name: 'Shares',
+          y: this.shareTotalValue,
+          sliced: true,
+          selected: true
+        }, {
+          name: 'ETFs',
+          y: this.etfTotalValue
+        }, {
+          name: 'Unit Trusts',
+          y: this.unittrustTotalValue
+        }]
+      }]
+    });
+  }
+
+  goToViewAccountsPage() {
+    this.navCtrl.push(ViewaccountsPage);
   }
 
 }

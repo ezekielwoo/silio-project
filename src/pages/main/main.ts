@@ -4,6 +4,7 @@ import { RegisterPage } from '../register/register';
 import { LoginPage } from '../login/login';
 import { TabsPage } from '../tabs/tabs';
 import { Storage } from '@ionic/storage';
+import { FacebookOriginal, FacebookLoginResponse } from '@ionic-native/facebook';
 /**
  * Generated class for the MainPage page.
  *
@@ -18,7 +19,9 @@ import { Storage } from '@ionic/storage';
 })
 export class MainPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage) {
+  userData: any;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage, private facebook: FacebookOriginal) {
   }
 
   ionViewDidLoad() {
@@ -43,4 +46,11 @@ export class MainPage {
     this.navCtrl.push(LoginPage);
   }
 
+  // FBLogin(){
+  //   this.facebook.login(['email', 'public_profile']).then((response: FacebookLoginResponse) => {
+  //     this.facebook.api('me?fields=id,name,email,first_name,picture.width(720).height(720).as(picture_large)', []).then(profile => {
+  //       this.userData = {email: profile['email'], first_name: profile['first_name'], picture: profile['picture_large']['data']['url'], username: profile['name']}
+  //     });
+  //   });
+  // }
 }

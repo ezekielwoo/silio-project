@@ -40,11 +40,11 @@ export class ProfilePage {
             document.getElementById("email").innerText = val;
           }
         }
-        
-  
+
+
       });
-    });  
-    
+    });
+
   }
   goToEditPage(){
     this.navCtrl.push("EditProfilePage");
@@ -53,36 +53,6 @@ export class ProfilePage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
   }
-
-  Logout(){
-      let alert = this.alertCtrl.create({
-        title: 'Logout',
-        message: 'Do you wish to Logout?',
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            handler: () => {
-              console.log('Cancel clicked');
-            }
-          },
-          {
-            text: 'Confirm',
-            handler: () => {
-              
-              this.storage.clear();
-              this.storage.get(this.key).then((val) =>{
-                console.log(val);
-              });
-
-              this.navCtrl.parent.parent.setRoot(MainPage);
-
-            }
-          }
-        ]
-      });
-      alert.present();
-    }
 
 }
 

@@ -46,7 +46,7 @@ export class ApiProvider {
 
   getPropertyMarket(pageNumber, infiniteScroll?) {
     return new Promise((resolve, reject) => {
-      this.http.get(`https://data.gov.sg/api/action/datastore_search?resource_id=1b702208-44bf-4829-b620-4615ee19b57c&limit=5000`).subscribe((data) => {
+      this.http.get(`https://data.gov.sg/api/action/datastore_search?resource_id=1b702208-44bf-4829-b620-4615ee19b57c&limit=1000`).subscribe((data) => {
         if (infiniteScroll) {
           infiniteScroll.complete();
         }
