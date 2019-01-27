@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 import { Account } from '../../models/account';
-// import { ManualAccountsService } from '../../providers/transactions/manual-accounts.service';
 import { bankFbProvider } from '../../providers/bankform-firebase';
+
+const STORAGE_KEY = 'email';
 
 @Component({
   selector: 'page-select-transaction-account',
@@ -12,16 +14,27 @@ import { bankFbProvider } from '../../providers/bankform-firebase';
 export class SelectTransactionAccountPage implements OnInit {
   accounts: Array<Account> = [];
 
-  constructor(private navCtrl: NavController, private bankAccountService: bankFbProvider) { }
+  constructor(
+    private navCtrl: NavController,
+    private storage: Storage,
+    private bankAccountService: bankFbProvider
+  ) { }
 
   ngOnInit() {
-    this.bankAccountService.getBankAccounts()
-      .subscribe(
-        (list: Array<Account>) => {
-          if (list) {
-            this.accounts = list;
-          }
-        });
+    this.storage.ready().then(() => {
+      console.log('Storage ready');
+      this.storage.get(STORAGE_KEY).then((userKey: string) => {
+        this.bankAccountService.getBankAccounts(userKey)
+          .subscribe(
+            (list: Array<Account>) => {
+              if (list) {
+                this.accounts = list;
+              } else {
+                this.accounts = [];
+              }
+            });
+      });
+    });
   }
 
   onSelectAccount(account: Account) {

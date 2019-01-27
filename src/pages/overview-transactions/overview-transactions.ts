@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -13,6 +14,8 @@ import { TransactionCategoryPage } from '../transaction-category/transaction-cat
 import { populateData } from '../../data/transaction-categories';
 import { bankFbProvider } from '../../providers/bankform-firebase';
 import { Account } from '../../models/account';
+
+const STORAGE_KEY = 'email';
 
 @Component({
   selector: 'page-overview-transactions',
@@ -53,8 +56,9 @@ export class OverviewTransactionsPage implements OnDestroy {
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private transactionService: TransactionService,
-    private bankAccountService: bankFbProvider
+    private storage: Storage,
+    private bankAccountService: bankFbProvider,
+    private transactionService: TransactionService
   ) {
     this.selectedRange = 'week';
     this.displayDaily = true;
@@ -638,14 +642,15 @@ export class OverviewTransactionsPage implements OnDestroy {
     this.bankAccountSubscription.unsubscribe();
   }
 
-  private loadbankAccounts() {
-    this.bankAccountSubscription = this.bankAccountService.getBankAccounts()
+  private loadbankAccounts(userKey: string) {
+    this.bankAccountSubscription = this.bankAccountService.getBankAccounts(userKey)
       .subscribe(
         (list: Array<Account>) => {
           if (list) {
             this.bankAccounts = list;
             console.log('bankAccounts: ' + JSON.stringify(list, null, 2));
-            // this.selectedAccount = this.bankAccounts[0].bankaccnum;
+            this.selectedAccount = this.bankAccounts[0].bankaccnum;
+            this.initCharts();
           } else {
             this.bankAccounts = [];
           }
@@ -670,10 +675,13 @@ export class OverviewTransactionsPage implements OnDestroy {
 
   //Runs when the page is about to enter and become the active page.
   ionViewWillEnter() {
-    // this.accounts = ['000012345', '123455533']//['XXXXXXXXXXXX1219', 'XXXXXXXXXXXX1217']; // TODO: Retrieve from Jude's DB
-    // this.selectedAccount = this.accounts[0];
-    this.loadbankAccounts();
-    this.initCharts();
+    this.storage.ready().then(() => {
+      console.log('Storage ready');
+      this.storage.get(STORAGE_KEY).then((userKey: string) => {
+        console.log('Logged in as', userKey);
+        this.loadbankAccounts(userKey);
+      });
+    });
   }
 
   //Runs when the page is about to leave and no longer be the active page.

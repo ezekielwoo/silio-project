@@ -18,6 +18,7 @@ import { CitibankToken } from '../../models/citibank-token.interface';
 import { SelectTransactionAccountPage } from '../select-transaction-account/select-transaction-account';
 import { Account } from '../../models/account';
 import { bankFbProvider } from '../../providers/bankform-firebase';
+import { ScanReceiptPage } from '../scan-receipt/scan-receipt';
 
 @Component({
   selector: 'page-add-transaction',
@@ -26,6 +27,7 @@ import { bankFbProvider } from '../../providers/bankform-firebase';
 export class AddTransactionPage implements OnInit, OnDestroy {
   selectCategoryPage: any = SelectCategoryPage;
   selectTransactionAccPage: any = SelectTransactionAccountPage;
+  scanReceiptPage: any = ScanReceiptPage;
 
   accessToken: CitibankToken;
   transaction: Transaction;
@@ -125,7 +127,7 @@ export class AddTransactionPage implements OnInit, OnDestroy {
   }
 
   private createNewTransaction(foreignCurrencyAmt: number, localCurrencyAmt: number) {
-    const newTransaction = new Transaction(foreignCurrencyAmt, localCurrencyAmt, this.currency, this.category, this.desc, this.currentDate, this.bankAccountNo, "");
+    const newTransaction = new Transaction(foreignCurrencyAmt, localCurrencyAmt, this.currency, this.category, this.desc, this.currentDate, "", this.bankAccountNo, "");
     this.transactionService.storeTransaction(newTransaction);
   }
 

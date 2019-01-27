@@ -6,7 +6,6 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Storage } from "@ionic/storage";
 import { Account } from '../models/account';
 
 @Injectable()
@@ -15,19 +14,14 @@ export class bankFbProvider {
   accountsList: Account[]; // Stores the expense list for search functionality
   userKey: string = '';
 
-  constructor(private db: AngularFireDatabase, private storage: Storage) {
-    this.storage.get('email').then((val) => {
-      console.log('Logged in as', val);
-      this.userKey = val;
-    });
-  }
+  constructor(private db: AngularFireDatabase) { }
 
   setAccount(accountNo: string) {
     this.accountChanged.next(accountNo);
   }
 
-  getBankAccounts(): Observable<any[]> {
-    return this.db.list(`userAsset/bankAccounts/${btoa(this.userKey)}/BankFormItems/`)
+  getBankAccounts(userKey: string): Observable<any[]> {
+    return this.db.list(`userAsset/bankAccounts/${btoa(userKey)}/BankFormItems/`)
       .snapshotChanges()
       .pipe(map(changes => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
   }

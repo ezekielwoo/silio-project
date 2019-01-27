@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { Subscription } from 'rxjs';
 
 import { CitibankService } from '../../providers/transactions/citibank.service';
@@ -8,6 +9,8 @@ import { TransactionService } from '../../providers/transactions/transaction.ser
 import { Currency } from '../../models/currency-model';
 import { Account } from '../../models/account';
 import { bankFbProvider } from '../../providers/bankform-firebase';
+
+const STORAGE_KEY = 'email';
 
 @Component({
   selector: 'page-sync-bank-account',
@@ -18,6 +21,7 @@ export class SyncBankAccountPage implements OnInit {
   transactions: Array<Transaction> = [];
   accounts: Array<Account> = [];
   bankName: string = '';
+  userKey: string = '';
 
   private transactionSubscription: Subscription;
   private bankAccountSubscription: Subscription;
@@ -27,6 +31,7 @@ export class SyncBankAccountPage implements OnInit {
     private navParams: NavParams,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
+    private storage: Storage,
     private citibankService: CitibankService,
     private transactionService: TransactionService,
     private bankAccountService: bankFbProvider
@@ -38,6 +43,13 @@ export class SyncBankAccountPage implements OnInit {
       .then((data: { accountType: string, accounts: Array<any> }) => {
         this.bankData = data;
       });
+    this.storage.ready().then(() => {
+      console.log('Storage ready');
+      this.storage.get(STORAGE_KEY).then((userKey: string) => {
+        console.log('Logged in as', userKey);
+        this.userKey = userKey;
+      });
+    });
   }
 
   onSelectAccount(account: any) {
@@ -75,7 +87,7 @@ export class SyncBankAccountPage implements OnInit {
   }
 
   private createNewAccount(account: any) {
-    this.bankAccountSubscription = this.bankAccountService.getBankAccounts()
+    this.bankAccountSubscription = this.bankAccountService.getBankAccounts(this.userKey)
       .subscribe(
         (list: Array<Account>) => {
           this.bankAccountSubscription.unsubscribe();

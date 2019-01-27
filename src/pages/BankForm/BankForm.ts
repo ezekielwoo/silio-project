@@ -33,6 +33,9 @@ export class BankFormPage {
     this.submitted = true;
 
     if (form.valid) {
+      const trailingCharsIntactCount = 4;
+      this.log.bankaccnum = 'x'.repeat(this.log.bankaccnum.length - trailingCharsIntactCount) + this.log.bankaccnum.slice(-trailingCharsIntactCount);
+      console.log('here -> ' + this.log.bankaccnum);
       this.expenseService.addItem(this.log);
       this.navCtrl.push(ViewCreditPage);
     }

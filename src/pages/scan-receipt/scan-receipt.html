@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons left>
+      <button ion-button icon-only (click)="onGoBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title text-center style="margin-right: -10px;">Scan Receipt</ion-title>
+    <ion-buttons right>
+      <button ion-button [disabled]="!imageSrc" (click)="onNewTransaction()">
+        Done
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="background-scan">
+  <ion-card margin-bottom class="card">
+    <ion-grid *ngIf="!imageSrc" style="height: 100%" (click)="onScanReceipt()">
+      <ion-row justify-content-center align-items-center margin-top style="height: 60%">
+        <ion-icon name="md-camera"></ion-icon>
+      </ion-row>
+      <ion-row justify-content-center>
+        <h2 ion-text>
+          <strong>Tap to open camera</strong>
+        </h2>
+      </ion-row>
+    </ion-grid>
+    <img *ngIf="imageSrc" [src]="imageSrc" alt="My Receipt" (click)="onViewPhoto()" />
+  </ion-card>
+
+  <ion-list margin-top>
+    <button ion-item detail-push class="background-transaction-info" (click)="onLoadCurrencies()">
+      <div item-start>
+        <img [src]="currency.flag" [alt]="currency.name" class="icon" />
+      </div>
+      {{ currency.name }}
+    </button>
+  </ion-list>
+
+  <ion-list margin-top>
+    <button ion-item detail-push class="background-transaction-info" [navPush]="selectCategoryPage">
+      <div item-start>
+        <img [src]="category.icon" [alt]="category.name" class="icon" />
+      </div>
+      {{ category.name }}
+    </button>
+  </ion-list>
+
+  <button ion-button block color="danger" *ngIf="imageSrc" (click)="onScanReceipt()">Rescan</button>
+</ion-content>

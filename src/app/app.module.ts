@@ -50,6 +50,7 @@ import { ProfilePage } from "../pages/profile/profile";
 import { ForgetPassPage } from "../pages/forget-pass/forget-pass";
 import { UserFbProvider } from "../providers/user-firebase";
 import { Camera } from '@ionic-native/camera';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { FingerprintAIO } from "@ionic-native/fingerprint-aio";
 import { TransactionFbProvider } from '../providers/transaction-firebase';
 import { ExpenseFbProvider } from '../providers/expense-firebase';
@@ -70,13 +71,14 @@ import { CurrencyListService } from '../providers/transactions/currency-list.ser
 import { CitibankService } from '../providers/transactions/citibank.service';
 import { SortPipe } from '../pipes/sort.pipe';
 import { AddTransactionPage } from '../pages/add-transaction/add-transaction';
+import { ScanReceiptPage } from '../pages/scan-receipt/scan-receipt';
 import { SelectTransactionAccountPage } from '../pages/select-transaction-account/select-transaction-account';
 import { SyncBankAccountPage } from '../pages/sync-bank-account/sync-bank-account';
 import { SelectCategoryPage } from '../pages/select-category/select-category';
 import { SelectCurrencyPage } from '../pages/select-currency/select-currency';
 import { TransactionCategoryPage } from '../pages/transaction-category/transaction-category';
 import { CategoryFilterOptionsPage } from '../pages/transaction-category/category-filter-options';
-
+import { ReceiptService } from '../providers/transactions/receipt.service';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBwKnps43TxEz6f9AWxqdtEIfrcnBIlCEY",
@@ -129,6 +131,7 @@ const firebaseConfig = {
     SortPipe,
     OverviewTransactionsPage,
     AddTransactionPage,
+    ScanReceiptPage,
     SelectTransactionAccountPage,
     SyncBankAccountPage,
     SelectCategoryPage,
@@ -193,6 +196,7 @@ const firebaseConfig = {
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,
+    ScanReceiptPage,
     SelectTransactionAccountPage,
     SyncBankAccountPage,
     SelectCategoryPage,
@@ -218,11 +222,13 @@ const firebaseConfig = {
     bankFbProvider,
     //Transactions
     Camera,
+    PhotoViewer,
     CurrencyPipe,
     TransactionService,
     TransactionCategoriesService,
     CurrencyListService,
     CitibankService,
+    ReceiptService,
     { provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true }
 
   ]
