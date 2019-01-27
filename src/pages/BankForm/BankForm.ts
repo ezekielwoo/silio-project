@@ -8,7 +8,7 @@ import { bankFbProvider } from '../../providers/bankform-firebase';
 import { ViewCreditPage } from '../ViewCredit/ViewCredit';
 import { Account } from '../../models/account';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
+import{ViewaccountsPage} from'../viewaccounts/viewaccounts';
 @Component({
   selector: 'page-BankForm',
   templateUrl: 'BankForm.html',
@@ -55,7 +55,7 @@ export class BankFormPage {
       this.log.bankaccnum = 'x'.repeat(this.log.bankaccnum.length - trailingCharsIntactCount) + this.log.bankaccnum.slice(-trailingCharsIntactCount);
       console.log('here -> ' + this.log.bankaccnum);
       this.expenseService.addItem(this.userKey,this.log);
-      this.navCtrl.push(ViewCreditPage);
+      this.navCtrl.push(ViewaccountsPage);
     }
   }
 }

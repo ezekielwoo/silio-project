@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { ProfilePage } from '../profile/profile';
 import { User } from '../../models/user';
 import { UserFbProvider } from '../../providers/user-firebase';
@@ -12,8 +12,6 @@ import { Storage } from '@ionic/storage';
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
-@IonicPage()
 @Component({
   selector: 'page-edit-profile',
   templateUrl: 'edit-profile.html',
@@ -24,7 +22,7 @@ export class EditProfilePage {
   userList : User[];
   key:string = 'email';
 
-  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, public userService: UserFbProvider, private storage: Storage) {
+  constructor(private alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, public userService: UserFbProvider, private storage: Storage) {
     this.storage.get(this.key).then((val) =>{
       console.log('Logged in as',val);
 
@@ -56,7 +54,7 @@ export class EditProfilePage {
       this.storage.get(this.key).then((val) =>{
         this.userList = users;
         for(var i = 0; i < this.userList.length; i++){
-          if(keepGoing) {
+          if(keepGoing == true){
           if(this.userList[i].email == val){
             this.userList[i].email = user.email;
             this.userList[i].password = user.password;
@@ -64,22 +62,23 @@ export class EditProfilePage {
             this.userList[i].lastName = user.lastName;
             this.userList[i].mobileNum = user.mobileNum;
             this.userService.updateUser(this.userList[i]);
-            let alert = this.alertCtrl.create({
+            let alertEdit = this.alertCtrl.create({
               title: 'Update',
               message: 'Update successful!',
               buttons: [
                 {
                   text: 'Confirm',
                   handler: () => {
-                    this.navCtrl.pop();
+                    this.navCtrl.popTo(ProfilePage);
                   }
                 }
               ]
             });
-            alert.present();
+            alertEdit.present();
             keepGoing = false;
           }
         }
+        
         }
       });
     });

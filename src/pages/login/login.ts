@@ -1,13 +1,13 @@
-import { Component} from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
-import { UserFbProvider } from '../../providers/user-firebase';
-import { User } from '../../models/user';
-import { MainPage } from '../main/main';
-import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
-import { OtpPage } from '../otp/otp';
-import { ForgetPassPage } from '../forget-pass/forget-pass';
-import { Storage } from '@ionic/storage';
-import { TabsPage } from '../tabs/tabs';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams, ModalController, AlertController} from 'ionic-angular';
+import {UserFbProvider} from '../../providers/user-firebase';
+import {User} from '../../models/user';
+import {MainPage} from '../main/main';
+import {FingerprintAIO} from '@ionic-native/fingerprint-aio';
+import {OtpPage} from '../otp/otp';
+import {ForgetPassPage} from '../forget-pass/forget-pass';
+import {Storage} from '@ionic/storage';
+import {TabsPage} from '../tabs/tabs';
 
 /**
  * Generated class for the LoginPage page.
@@ -31,9 +31,9 @@ export class LoginPage {
   userList: User[];
   defEmail: string;
 
-  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, private faio: FingerprintAIO, public userService: UserFbProvider, public modalCtrl: ModalController, private storage: Storage) {
-
-
+  constructor(private alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, private faio: FingerprintAIO, public userService: UserFbProvider,public modalCtrl: ModalController, private storage: Storage) {
+    
+    
   }
 
   Login() {
@@ -45,18 +45,20 @@ export class LoginPage {
       var textCode = "";
       var num = 0;
       var check: boolean;
+      var keepGoing = true;
       for (var i = 0; i < this.userList.length; i++) {
         //email password validation
+        if(keepGoing == true){
         if (this.userList[i].email == this.email && this.userList[i].password == this.password) {
-
+          keepGoing = false;
           //OTP codes
           // const Nexmo = require('nexmo');
           // const nexmo = new Nexmo({
           //   apiKey: 'bb3bdaf3',
           //   apiSecret: 'Cg4divHzZFicEScg'
           // })
-          console.log(this.userList[i]);
-          console.log(this.userList[i].mobileNum);
+          // console.log(this.userList[i]);
+          // console.log(this.userList[i].mobileNum);
 
           for (var i = 0; i < 6; i++) {
             textCode += code.charAt(Math.floor(Math.random() * code.length));
@@ -66,7 +68,7 @@ export class LoginPage {
           const to = "65" + "98956298";
           const text = "Your verification code is: " + textCode;
 
-          // nexmo.message.sendSms(from, to, text);
+          //nexmo.message.sendSms(from, to, text);
 
           check = true;
           this.userService.addUserOTP(this.email, textCode);
@@ -77,11 +79,18 @@ export class LoginPage {
           check = false;
         }
       }
+    }
 
-      if (check == false) {
-        alert('Invalid email or password');
+    if(keepGoing == true){
+            if (check == false) {
+        let alertInvalid = this.alertCtrl.create({
+          title: 'Error',
+          subTitle: 'Invalid Email and Password.',
+          buttons: ['Dismiss']
+        });
+        alertInvalid.present();
       }
-
+    }
 
     });
   }
@@ -100,23 +109,25 @@ export class LoginPage {
           })
             .then(result => {
               this.storage.set('email', val);
-              this.navCtrl.setRoot('ProfilePage');
+              this.navCtrl.setRoot(TabsPage);
             })
             .catch(err => {
               console.log('Err: ', err);
             })
         }
         else {
-          let alert = this.alertCtrl.create({
+          let alertAcc = this.alertCtrl.create({
             title: 'Error',
             subTitle: 'No default account found.',
             buttons: ['Dismiss']
           });
-          alert.present();
+          alertAcc.present();
         }
       }
     });
   }
+
+  
 
   ForgetPassword() {
     const myNoModal = this.modalCtrl.create(ForgetPassPage);

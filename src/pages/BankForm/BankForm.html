@@ -15,10 +15,18 @@
     <ion-list class="list-setting">
       <ion-item>
         <ion-label>Account Name:</ion-label>
-        <ion-input type="text" [(ngModel)]="log.name" formControlName="bankname" required text-right>
+        <ion-input type="text" [(ngModel)]="log.bankname" formControlName="bankname" required text-right>
         </ion-input>
       </ion-item>
-
+      <ion-item no-lines *ngIf="(signupform.get('bankname').hasError('maxlength') ||signupform.get('bankname').hasError('required') ) && signupform.get('bankname').touched">
+        <div class="error" *ngIf="signupform.get('bankname').hasError('required') && signupform.get('bankname').touched">
+          Input Required
+        </div>
+        <div class="error" *ngIf="signupform.get('bankname').hasError('maxlength') && signupform.get('bankname').touched">
+          Maximum 20 characters
+        </div>
+        
+      </ion-item>
       <ion-item>
         <ion-label>Amount:</ion-label>
         <ion-input type="text" [(ngModel)]="log.amount" formControlName="amount" required text-right></ion-input>

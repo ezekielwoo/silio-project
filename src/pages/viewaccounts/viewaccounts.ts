@@ -85,7 +85,6 @@ export class ViewaccountsPage implements OnInit {
     this.accounts.splice(this.accounts.indexOf(item), 1);
 
   }
-
   getCurrentTime() {
     let last30Days = moment().subtract(1, 'months');
     return last30Days.format('YYYY MM DD');

@@ -52,6 +52,7 @@ import { UserFbProvider } from "../providers/user-firebase";
 import { Camera } from '@ionic-native/camera';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { FingerprintAIO } from "@ionic-native/fingerprint-aio";
+import { Facebook } from '@ionic-native/facebook/ngx';
 import { TransactionFbProvider } from '../providers/transaction-firebase';
 import { ExpenseFbProvider } from '../providers/expense-firebase';
 import { bankFbProvider } from '../providers/bankform-firebase';
@@ -62,7 +63,6 @@ import { AddCreditPage } from '../pages/AddCredit/AddCredit';
 import { ViewCreditPage } from '../pages/ViewCredit/ViewCredit';
 import { AddManualPage } from '../pages/AddManual/AddManual';
 import {CreditUpdatePage} from '../pages/CreditUpdate/CreditUpdate'
-import {EditProfilePageModule} from "../pages/edit-profile/edit-profile.module";
 import {ViewaccountsPage} from "../pages/viewaccounts/viewaccounts";
 import {ViewPropertyPage} from "../pages/view-property/view-property";
 import {SellEquityPage} from "../pages/sell-equity/sell-equity";
@@ -159,7 +159,9 @@ const firebaseConfig = {
     SelectCategoryPage,
     SelectCurrencyPage,
     TransactionCategoryPage,
-    CategoryFilterOptionsPage
+    CategoryFilterOptionsPage,
+    SettingsPage,
+    EditProfilePage
 
 
   ],
@@ -175,7 +177,6 @@ const firebaseConfig = {
     ComponentsModule,
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    EditProfilePageModule
 
   ],
   bootstrap: [IonicApp],
@@ -239,7 +240,8 @@ const firebaseConfig = {
     SelectCategoryPage,
     SelectCurrencyPage,
     TransactionCategoryPage,
-    CategoryFilterOptionsPage
+    CategoryFilterOptionsPage,
+    SettingsPage
   ],
   providers: [
     StatusBar,
@@ -266,6 +268,7 @@ const firebaseConfig = {
     CurrencyListService,
     CitibankService,
     ReceiptService,
+    Facebook,
     { provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true }
 
   ]

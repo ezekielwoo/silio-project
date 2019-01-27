@@ -42,17 +42,15 @@ export class BankDetailsPage {
   valueCurrency = 0;
   valuePersonal = 0;
 
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    private iab: InAppBrowser,
-    public splashScreen: SplashScreen,
-    public api: ApiProvider,
-    public settingsProvider: SettingProvider,
-    private db: AngularFireDatabase,
-    private storage: Storage,
-    public alertCtrl: AlertController
-  ) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private iab: InAppBrowser,
+              public splashScreen: SplashScreen,
+              public api: ApiProvider,
+              public settingsProvider: SettingProvider,
+              private db: AngularFireDatabase,
+              private storage: Storage,
+              public alertCtrl: AlertController) {
 
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
@@ -96,6 +94,9 @@ export class BankDetailsPage {
   ionViewDidLoad() {
     this.settingsProvider.settingSubject.subscribe((data) => {
       this.currentChartTheme = data.theme;
+      // this.initChart();
+      // this.getTotalValueForEquities();
+      // this.getTotalValue();
     });
   }
 
