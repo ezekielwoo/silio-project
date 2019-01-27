@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { ApiProvider } from './../../providers/api/api';
@@ -30,14 +30,17 @@ export class BankDetailsPage {
   currentChartTheme = "dark"; //default dark theme
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
+  totalValueForProeprty: any = [];
   totalValue: any = [];
   currencyArr: any = [];
   equityArr: any = [];
+  propertyArr: any = [];
   allArr: any = [];
   lastUpdated = null;
   chartValue: any = {};
   valueEquity = 0;
   valueCurrency = 0;
+  valuePersonal = 0;
 
   constructor(
     public navCtrl: NavController,
@@ -47,9 +50,40 @@ export class BankDetailsPage {
     public api: ApiProvider,
     public settingsProvider: SettingProvider,
     private db: AngularFireDatabase,
-    private storage: Storage
+    private storage: Storage,
+    public alertCtrl: AlertController
   ) {
 
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      this.storage.get('defaultEmail').then((defVal) => {
+        if (defVal != val) {
+          let alertDefault = this.alertCtrl.create({
+            title: 'Default Account',
+            message: 'Do you wish to set this as your default account? (You will be able to login with your fingerprint)',
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                handler: () => {
+                  console.log('Cancel clicked');
+                }
+              },
+              {
+                text: 'Ok',
+                handler: () => {
+                  this.storage.set("defaultEmail", val);
+                }
+              }
+            ]
+          });
+          alertDefault.present();
+        }
+      });
+    });
+  }
+
+  ionViewWillEnter() {
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
       this.getTotalValueForEquities(val);
@@ -57,7 +91,6 @@ export class BankDetailsPage {
     });
 
     this.lastUpdated = this.getCurrentTime();
-
   }
 
   ionViewDidLoad() {
@@ -68,6 +101,13 @@ export class BankDetailsPage {
 
   goToSyncAcc() {
     this.navCtrl.push(AddManualPage);
+  }
+
+  ionViewWillLeave() {
+    console.log('left')
+    this.valueEquity = 0;
+    this.valueCurrency = 0;
+    this.valuePersonal = 0;
   }
 
   getTotalValue(userKey): Observable<any[]> {
@@ -128,12 +168,44 @@ export class BankDetailsPage {
     return expenseObservable;
   }
 
+  getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+    expenseObservable.subscribe(result => {
+      console.log(result);
+      if (result.length == 0) {
+        this.valuePersonal = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.propertyArr = array;
+        this.totalValueForProeprty = array[array.length - 1];
+        this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
+        console.log('retrieve totalValueForEquities', this.totalValueForProeprty, userKey);
+        this.chartValue = {
+          "year": this.lastUpdated.split(' ')[0],
+          "month": this.lastUpdated.split(' ')[1],
+          "day": this.lastUpdated.split(' ')[2],
+          "value": equity.value + currency.value +  parseFloat(this.totalValueForProeprty.value.toString())
+        };
+        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
+        // this.initChart(this.totalValueForCurrency.value, equity.value);
+        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
+        this.initChart(currency.value, equity.value, parseFloat(this.totalValueForProeprty.value.toString()));
+      }
+    });
+    return expenseObservable;
+  }
+
   getTotalValueForCurrency(equity, userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     let array = [];
     expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/currency/total-values`).snapshotChanges().pipe(
       map(changes =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
     expenseObservable.subscribe(result => {
       if (result.length == 0) {
         this.valueCurrency = 0;
@@ -143,15 +215,7 @@ export class BankDetailsPage {
         this.currencyArr = array;
         this.totalValueForCurrency = array[array.length - 1];
         this.valueCurrency = array[array.length - 1].value;
-        this.chartValue = {
-          "year": this.lastUpdated.split(' ')[0],
-          "month": this.lastUpdated.split(' ')[1],
-          "day": this.lastUpdated.split(' ')[2],
-          "value": equity.value + this.totalValueForCurrency.value
-        };
-        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
-        this.initChart(this.totalValueForCurrency.value, equity.value);
-        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
+        this.getTotalValuesForPersonal(userKey, equity, this.totalValueForCurrency)
       }
 
     });
@@ -174,7 +238,7 @@ export class BankDetailsPage {
     return last30Days.format('YYYY MM DD');
   }
 
-  initChart(currency, equity) {
+  initChart(currency, equity, property) {
     console.log(currency, equity, 'abab');
     HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
 
@@ -277,7 +341,7 @@ export class BankDetailsPage {
           y: 0
         }, {
           name: 'Property',
-          y: 0
+          y: property
         }]
       }]
     });

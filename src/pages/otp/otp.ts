@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 
 import { User } from '../../models/user';
-import {UserFbProvider} from "../../providers/user-firebase";
+import { UserFbProvider } from '../../providers/user-firebase';
 import { MainPage } from '../main/main';
 import { LoginPage } from '../login/login';
 import { ProfilePage } from '../profile/profile';
@@ -56,6 +56,7 @@ export class OtpPage {
                     this.storage.set(this.key, this.email);
                     console.log(this.key);
                     this.navCtrl.setRoot(TabsPage);
+
                   }
                 }
               ]

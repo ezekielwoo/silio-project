@@ -1,7 +1,6 @@
 <ion-header>
   <ion-navbar>
     <ion-title style="text-align: center; color:white">Profile</ion-title>
-    <ion-buttons end> <button (click)="goToEditPage()"> Edit </button> </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -18,4 +17,6 @@
               <ion-label style="color:white" >Email: </ion-label>
               <ion-label style="color:white" text-wrap type="text" id="email" ></ion-label>
           </ion-item>
+          <br />
+    <button ion-button full (click)="goToEditPage()"> Edit </button>
 </ion-content>

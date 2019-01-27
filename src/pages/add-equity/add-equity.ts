@@ -7,6 +7,7 @@ import {AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from "rxjs/index";
 import {map} from "rxjs/operators";
 import {Storage} from "@ionic/storage";
+import {ViewEquityPage} from "../view-equity/view-equity";
 
 /**
  * Generated class for the AddEquityPage page.
@@ -135,6 +136,8 @@ export class AddEquityPage {
           };
 
           this.addEquity.value = this.addEquity.purchasePrice * this.addEquity.amount;
+          this.db.list(`userAsset/${btoa(val)}/equities/stock`).push(this.addEquity);
+          console.log(this.equity, this.stockExisted, 'equityyy');
 
           let alert = this.alertCtrl.create({
             title: 'Success',
@@ -142,12 +145,13 @@ export class AddEquityPage {
             buttons: [
               {
                 text: 'Confirm',
+                handler: () => {
+                  this.navCtrl.push(ViewEquityPage);
+                }
               }
             ]
           });
           alert.present();
-          this.db.list(`userAsset/${btoa(val)}/equities/stock`).push(this.addEquity);
-          console.log(this.equity, this.stockExisted, 'equityyy');
         }
       }
 
@@ -200,6 +204,9 @@ export class AddEquityPage {
             buttons: [
               {
                 text: 'Confirm',
+                handler: () => {
+                  this.navCtrl.push(ViewEquityPage);
+                }
               }
             ]
           });

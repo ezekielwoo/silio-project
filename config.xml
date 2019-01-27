@@ -92,9 +92,8 @@
     <plugin name="cordova-plugin-admob-free" spec="^0.22.0">
         <variable name="ADMOB_APP_ID" value="" />
     </plugin>
-    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
-    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <plugin name="cordova-plugin-fingerprint-aio" spec="^1.5.0" />
-    <plugin name="com-sarriaroman-photoviewer" spec="^1.1.18" />
+    <plugin name="com-sarriaroman-photoviewer" spec="~1.1.18" />
+    <plugin name="cordova-plugin-camera" spec="~4.0.3" />
 </widget>

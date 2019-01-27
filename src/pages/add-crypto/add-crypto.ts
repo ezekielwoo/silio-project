@@ -8,6 +8,8 @@ import {map} from "rxjs/operators";
 import {AddCrypto} from "../../models/add-crypto";
 import {Storage} from "@ionic/storage";
 import {TabsPage} from "../tabs/tabs";
+import {AssetPage} from "../asset/asset";
+import {ViewCryptoPage} from "../view-crypto/view-crypto";
 
 /**
  * Generated class for the AddCryptoPage page.
@@ -147,6 +149,9 @@ export class AddCryptoPage {
             buttons: [
               {
                 text: 'Confirm',
+                handler: () => {
+                  this.navCtrl.push(ViewCryptoPage);
+                }
               }
             ]
           });
@@ -202,6 +207,9 @@ export class AddCryptoPage {
             buttons: [
               {
                 text: 'Confirm',
+                handler: () => {
+                  this.navCtrl.push(ViewCryptoPage);
+                }
               }
             ]
           });

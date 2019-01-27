@@ -4,6 +4,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {ApiProvider} from './../../providers/api/api';
 import {AddCrypto} from "../../models/add-crypto";
 import {AddCryptoPage} from "../add-crypto/add-crypto";
+import {SellCurrencyPage} from "../sell-currency/sell-currency";
 
 /**
  * Generated class for the OwnCryptoDetailPage page.
@@ -62,6 +63,11 @@ export class OwnCryptoDetailPage {
   goToAddCrypto(value, price) {
     console.log(this.price, 'price');
     this.navCtrl.push(AddCryptoPage, {coin: value, price: price, currency: "SGD"})
+  }
+
+  goToSellCrypto(value, price) {
+    console.log(this.price, 'price');
+    this.navCtrl.push(SellCurrencyPage, {coin: value, price: price, currency: "SGD"})
   }
 
 }

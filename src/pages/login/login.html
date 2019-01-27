@@ -30,7 +30,7 @@
 
         </ion-col>
         <ion-col>
-            <button ion-button style="color:white" round outline (click) = "Login()">Login</button>
+            <button ion-button style="border-color:white; color:white" round outline (click) = "Login()">Login</button>
           </ion-col>
           <ion-col>
 
@@ -42,13 +42,12 @@
     <p id='connectW'>Sign in with</p>
 
     <div>
-      <img src="../../assets/imgs/fingerprinticon.jpg" style="display:block;margin-left:auto;margin-right:auto;height:50px" tappable (click)="FPLogin()">
+      <img src="../../assets/imgs/fingerprinticon.jpeg" style="display:block;margin-left:auto;margin-right:auto;height:50px" tappable (click)="FPLogin()">
     </div>
 
     <hr>
 
-    <button id="fgPw" ion-button clear (click)="ForgetPassword()" style="position:absolute;padding-left:90px; color:white">
+    <button id="fgPw" ion-button clear (click)="ForgetPassword()">
       <ion-label>Forgot your password?</ion-label>
     </button>
-
 </ion-content>

@@ -62,6 +62,13 @@ import { AddCreditPage } from '../pages/AddCredit/AddCredit';
 import { ViewCreditPage } from '../pages/ViewCredit/ViewCredit';
 import { AddManualPage } from '../pages/AddManual/AddManual';
 import {CreditUpdatePage} from '../pages/CreditUpdate/CreditUpdate'
+import {EditProfilePageModule} from "../pages/edit-profile/edit-profile.module";
+import {ViewaccountsPage} from "../pages/viewaccounts/viewaccounts";
+import {ViewPropertyPage} from "../pages/view-property/view-property";
+import {SellEquityPage} from "../pages/sell-equity/sell-equity";
+import {SellCurrencyPage} from "../pages/sell-currency/sell-currency";
+import {PersonalAssetPage} from "../pages/personal-asset/personal-asset";
+import {LiabilitiesPage} from "../pages/liabilities/liabilities";
 
 // Transactions
 import { OverviewTransactionsPage } from '../pages/overview-transactions/overview-transactions';
@@ -74,6 +81,7 @@ import { SortPipe } from '../pipes/sort.pipe';
 import { AddTransactionPage } from '../pages/add-transaction/add-transaction';
 import { ScanReceiptPage } from '../pages/scan-receipt/scan-receipt';
 import { SelectTransactionAccountPage } from '../pages/select-transaction-account/select-transaction-account';
+import {SelectBankPage} from '../pages/select-bank/select-bank';
 import { SyncBankAccountPage } from '../pages/sync-bank-account/sync-bank-account';
 import { SelectCategoryPage } from '../pages/select-category/select-category';
 import { SelectCurrencyPage } from '../pages/select-currency/select-currency';
@@ -122,7 +130,6 @@ const firebaseConfig = {
     AddPropertyPage,
     PropertymarketPage,
     MainPage,
-    EditProfilePage,
     RegisterPage,
     LoginPage,
     OtpPage,
@@ -134,12 +141,19 @@ const firebaseConfig = {
     TransactionFormPage,
     AddManualPage,
     AddCreditPage,
+    ViewaccountsPage,
+    ViewPropertyPage,
+    SellEquityPage,
+    SellCurrencyPage,
+    PersonalAssetPage,
+    LiabilitiesPage,
     // Transactions
     SortPipe,
     OverviewTransactionsPage,
     AddTransactionPage,
     ScanReceiptPage,
     SelectTransactionAccountPage,
+    SelectBankPage,
     SyncBankAccountPage,
     SelectCategoryPage,
     SelectCurrencyPage,
@@ -160,6 +174,7 @@ const firebaseConfig = {
     ComponentsModule,
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(firebaseConfig),
+    EditProfilePageModule
 
   ],
   bootstrap: [IonicApp],
@@ -206,11 +221,18 @@ const firebaseConfig = {
     TransactionFormPage,
     AddManualPage,
     AddCreditPage,
+    ViewaccountsPage,
+    ViewPropertyPage,
+    SellEquityPage,
+    SellCurrencyPage,
+    PersonalAssetPage,
+    LiabilitiesPage,
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,
     ScanReceiptPage,
     SelectTransactionAccountPage,
+    SelectBankPage,
     SyncBankAccountPage,
     SelectCategoryPage,
     SelectCurrencyPage,
