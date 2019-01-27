@@ -38,6 +38,9 @@ export class LiabilitiesPage {
 
   ionViewWillLeave() {
     this.subscription.unsubscribe();
+    this.OCBCLoan = 0;
+    this.DBSLoan2 = 0;
+    this.DBSLoan = 0;
   }
 
   ionViewDidLoad() {
@@ -111,10 +114,14 @@ export class LiabilitiesPage {
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
       this.subscription = this.getDBSLoanItems(val).subscribe(result => {
+          console.log(result, 'dbs loan');
           if (result.length > 0) {
             this.DBSLoan = result[1].amount;
-            this.DBSLoan2 = result[0].amount
-            console.log(this.DBSLoan.amount, 'dbs loan');
+            this.DBSLoan2 = result[0].amount;
+          }
+          else {
+            this.DBSLoan = 0;
+            this.DBSLoan2 = 0;
           }
         }
       );

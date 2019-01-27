@@ -141,7 +141,7 @@ export class SellEquityPage {
           });
           let alert = this.alertCtrl.create({
             title: 'Success',
-            message: 'You have sold ' + this.addEquity.name + ' valued at this ' + this.addEquity.purchasePrice * this.addEquity.amount,
+            message: 'You have sold ' + this.addEquity.name + ' valued at this ' + value,
             buttons: [
               {
                 text: 'Confirm',

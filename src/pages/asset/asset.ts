@@ -77,6 +77,7 @@ export class AssetPage {
     this.equityArr = this.navParams.get('equityArr');
     this.depositArr = this.navParams.get('depositArr');
     this.allArr = this.navParams.get('allArr');
+    console.log(this.totalValueForDeposit,this.totalValueForCurrency,'fuck la');
   }
 
   ionViewWillEnter() {
@@ -740,51 +741,6 @@ export class AssetPage {
         }, {
           name: 'Citibank',
           y: 0
-        }]
-      }]
-    });
-    HighCharts.chart('chart-personal', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
-            }
-          }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Personal',
-        colorByPoint: true,
-        data: [{
-          name: 'Property',
-          y: this.propertyTotalValue,
-          sliced: true,
-          selected: true
-        }, {
-          name: 'Car',
-          y: this.carTotalValue
         }]
       }]
     });

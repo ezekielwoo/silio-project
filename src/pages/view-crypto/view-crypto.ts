@@ -300,7 +300,7 @@ export class ViewCryptoPage {
           text: ''
         },
         series: [{
-          name: 'Equities',
+          name: 'Crypto',
           colorByPoint: true,
           data: chartData
         }]
