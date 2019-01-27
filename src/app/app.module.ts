@@ -52,7 +52,7 @@ import { UserFbProvider } from "../providers/user-firebase";
 import { Camera } from '@ionic-native/camera';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { FingerprintAIO } from "@ionic-native/fingerprint-aio";
-import { Facebook } from '@ionic-native/facebook/ngx';
+// import { Facebook } from '@ionic-native/facebook/ngx';
 import { TransactionFbProvider } from '../providers/transaction-firebase';
 import { ExpenseFbProvider } from '../providers/expense-firebase';
 import { bankFbProvider } from '../providers/bankform-firebase';
@@ -268,7 +268,7 @@ const firebaseConfig = {
     CurrencyListService,
     CitibankService,
     ReceiptService,
-    Facebook,
+    // Facebook,
     { provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true }
 
   ]
