@@ -52,11 +52,11 @@ export class LoginPage {
         if (this.userList[i].email == this.email && this.userList[i].password == this.password) {
           keepGoing = false;
           //OTP codes
-          const Nexmo = require('nexmo');
-          const nexmo = new Nexmo({
-            apiKey: 'bb3bdaf3',
-            apiSecret: 'Cg4divHzZFicEScg'
-          })
+          // const Nexmo = require('nexmo');
+          // const nexmo = new Nexmo({
+          //   apiKey: 'bb3bdaf3',
+          //   apiSecret: 'Cg4divHzZFicEScg'
+          // })
           console.log(this.userList[i]);
           console.log(this.userList[i].mobileNum);
 
@@ -68,7 +68,7 @@ export class LoginPage {
           const to = "65" + "98956298";
           const text = "Your verification code is: " + textCode;
 
-          nexmo.message.sendSms(from, to, text);
+          // nexmo.message.sendSms(from, to, text);
 
           check = true;
           this.userService.addUserOTP(this.email, textCode);

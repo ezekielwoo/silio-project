@@ -53,7 +53,7 @@ export class AddPropertyPage {
         this.db.list(`userAsset/${btoa(val)}/personal/property`).push(this.property);
         let alert = this.alertCtrl.create({
           title: 'Success',
-          message: 'You have added ' + this.property.street_name + ' property valued at this ' + this.resalePrice,
+          message: 'You have added property valued at this ' + this.resalePrice,
           buttons: [
             {
               text: 'Confirm',
