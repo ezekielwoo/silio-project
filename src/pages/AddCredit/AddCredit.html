@@ -1,0 +1,92 @@
+
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title text-center>
+      <ion-icon name="ios-cog-outline"></ion-icon>
+      Add Credit Card
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <form #submitExpenseForm="ngForm" [formGroup]="signupform" >
+    <ion-list class="list-setting">
+        <ion-item class="item">
+            <ion-label>Bank:</ion-label>
+           <ion-input type="text" [(ngModel)]="log.bank" formControlName="bank" name="bank" text-right> </ion-input>
+          </ion-item>
+          <ion-item no-lines *ngIf="(signupform.get('bank').hasError('minlength') || signupform.get('bank').hasError('maxlength') ||signupform.get('bank').hasError('pattern') ||signupform.get('bank').hasError('required') ) && signupform.get('bank').touched">
+          <div class="error" *ngIf="signupform.get('bank').hasError('required') && signupform.get('bank').touched">
+              Input Required
+            </div>
+            <div class="error" *ngIf="signupform.get('bank').hasError('minlength') && signupform.get('bank').touched">
+                Minimum 3 characters
+              </div>
+        <div class="error" *ngIf="signupform.get('bank').hasError('maxlength') && signupform.get('bank').touched">
+              Maximum 20 characters
+            </div>
+            </ion-item>
+            <ion-item>
+          <ion-label>Card Number:</ion-label>
+        <ion-input type="text" [(ngModel)]="log.CardNumber" name="CardNumber" formControlName="CardNumber"required text-right></ion-input>
+      </ion-item>
+      <ion-item no-lines *ngIf="(signupform.get('CardNumber').hasError('minlength') || signupform.get('CardNumber').hasError('maxlength') ||signupform.get('CardNumber').hasError('required') ) && signupform.get('CardNumber').touched">
+          <div class="error" *ngIf="signupform.get('CardNumber').hasError('required') && signupform.get('CardNumber').touched">
+            Input Required
+          </div>
+          
+          <div class="error" *ngIf="signupform.get('CardNumber').hasError('minlength') && signupform.get('CardNumber').touched">
+            Minimum 8 characters
+          </div>
+          <div class="error" *ngIf="signupform.get('CardNumber').hasError('maxlength') && signupform.get('CardNumber').touched">
+            Maximum 19 characters
+          </div>
+          <div class="error" *ngIf="signupform.get('CardNumber').hasError('pattern') && signupform.get('CardNumber').touched">
+            Numbers only
+          </div>
+          </ion-item>
+      
+        <ion-item>
+
+    <ion-label>Type:</ion-label>
+    <ion-select [(ngModel)]="log.type" name="type"  formControlName="type">
+      <ion-option *ngFor="let typ of typeList" [value]="typ">
+        {{typ}}
+      </ion-option>
+      
+      </ion-select>
+  </ion-item> 
+  <ion-item no-lines *ngIf="(signupform.get('type').hasError('required') ) && signupform.get('type').touched">
+      <div class="error" *ngIf="signupform.get('type').hasError('required') && signupform.get('type').touched">
+        Input Required
+      </div>
+      </ion-item>
+      <ion-item>
+        <ion-label>Valid Thru</ion-label>
+        <ion-datetime displayFormat="MM/YY" [(ngModel)]="log.validThru" name="validThru"   formControlName="validThru"Placeholder="MM/YY"></ion-datetime>
+      </ion-item>
+      <ion-item no-lines *ngIf="(signupform.get('validThru').hasError('required') ) && signupform.get('validThru').touched">
+          <div class="error" *ngIf="signupform.get('validThru').hasError('required') && signupform.get('validThru').touched">
+            Input Required
+          </div>
+          </ion-item>
+     </ion-list>
+
+     <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)" [disabled]="signupform.invalid">Submit</button> 
+</form>
+</ion-content>
+<style type="text/css">
+  .error {
+    color: rgb(223, 62, 62);
+    font-size: 11px;
+  }
+
+  .error1 {
+    color: rgb(75, 75, 75);
+    border-bottom: 1px solid #ff0000;
+  }
+</style>
+

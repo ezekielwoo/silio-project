@@ -5,11 +5,11 @@ export class bankAcc {
     constructor(
       
 
-      public name:string,
+      public bankname:string,
 
-      public amount: number,
+      public amount: string,
 
-      public bankaccnum:number,
+      public bankaccnum:string,
 
 
       public bank: string

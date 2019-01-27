@@ -14,17 +14,23 @@
   <ion-list class="list-setting">
  
   <ion-item-sliding *ngFor = "let expenseItem of log">
-    <ion-item color="none">
+    <ion-item (click)="goToExpenseDetail(expenseItem)">
 
-      <h1 (click)="goToExpenseDetail(expenseItem)">{{expenseItem.bank}} </h1>
+      <h1>{{expenseItem.bank}} </h1>
       <h2>{{expenseItem.type}}</h2>
 
       <p>Card Number: {{expenseItem.CardNumber}} </p>
 
       <p> Valid Thru: {{expenseItem.validThru}} </p>
 
+     
     </ion-item>
+  
     <ion-item-options side="right">
+        <button ion-button (click)=" goToUpdate(expenseItem)">
+            Edit
+         </button>
+     
       <button ion-button color="danger" (click)="deleteItem(expenseItem)">
          Delete
       </button>

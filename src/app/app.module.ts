@@ -8,45 +8,57 @@ import {IonicApp, IonicModule, IonicErrorHandler} from 'ionic-angular';
 import {MyApp} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CdkTableModule} from '@angular/cdk/table';
+import {HttpModule} from '@angular/http'
+import {HttpClientModule} from '@angular/common/http';
+import {IonicStorageModule} from '@ionic/storage';
+import {AdMobFree} from '@ionic-native/admob-free';
+import {HTTP} from '@ionic-native/http';
+import {newsPage} from '../pages/news/news';
+import {HomePage} from '../pages/home/home';
+import {TabsPage} from '../pages/tabs/tabs';
+import {StatusBar} from '@ionic-native/status-bar';
+import {SplashScreen} from '@ionic-native/splash-screen';
+import {ApiProvider} from '../providers/api/api';
+import {watchListPage} from '../pages/watch-list/watch-list';
+import {SettingProvider} from '../providers/setting/setting';
+import {ComponentsModule} from '../components/components.module';
+import {AddManualPage} from '../pages/AddManual/AddManual';
+import {InAppBrowser} from '@ionic-native/in-app-browser';
+import {AdmobFreeProvider} from '../providers/admob/admob';
+import {Network} from '@ionic-native/network';
+import {StockMarketPage} from "../pages/stock-market/stock-market";
+import {BankDetailsPage} from "../pages/bank-details/bank-details";
+import {ValuationPage} from "../pages/valuation/valuation";
+import {AssetPage} from "../pages/asset/asset";
+import {AngularFireModule} from 'angularfire2';
+import {AngularFireDatabaseModule} from 'angularfire2/database';
+import {AddEquityPage} from "../pages/add-equity/add-equity";
+import {CurrencyMarketPage} from "../pages/currency-market/currency-market";
+import {ViewEquityPage} from "../pages/view-equity/view-equity";
+import {EquityDetailsPage} from "../pages/equity-details/equity-details";
+import {AddCryptoPage} from "../pages/add-crypto/add-crypto"
+import {ViewCryptoPage} from "../pages/view-crypto/view-crypto"
+import {OwnCryptoDetailPage} from "../pages/own-crypto-detail/own-crypto-detail"
 import {AddPropertyPage} from "../pages/add-property/add-property";
 import {PropertymarketPage} from "../pages/propertymarket/propertymarket";
-import { HttpModule } from '@angular/http'
-import { HttpClientModule } from '@angular/common/http';
-import { IonicStorageModule } from '@ionic/storage';
-import { AdMobFree } from '@ionic-native/admob-free';
-import { HTTP } from '@ionic-native/http';
-import { newsPage } from '../pages/news/news';
-import { HomePage } from '../pages/home/home';
-import { TabsPage } from '../pages/tabs/tabs';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { ApiProvider } from '../providers/api/api';
-import { watchListPage } from '../pages/watch-list/watch-list';
-import { SettingProvider } from '../providers/setting/setting';
-import { ComponentsModule } from '../components/components.module';
-import { SettingsPage } from '../pages/settings/settings';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { AdmobFreeProvider } from '../providers/admob/admob';
-import { Network } from '@ionic-native/network';
-import { LoginPage } from '../pages/Login/Login';
-import { ViewCreditPage } from '../pages/ViewCredit/ViewCredit';
-import { FormsModule }   from '@angular/forms';
-import { AngularFireModule } from 'angularfire2';
-import { TransactionFbProvider } from '../providers/transaction-firebase';
-import { ExpenseFbProvider } from '../providers/expense-firebase';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { TransactionPage } from '../pages/CcTrans/Transaction';
-import { bankAccPage } from '../pages/bankAcc/bankAcc';
+import { BankFormPage } from '../pages/BankForm/BankForm';
 import{TransactionFormPage}from '../pages/TransForm/TransactionForm';
+import {AddCreditPage} from '../pages/AddCredit/AddCredit'
+import {ViewCreditPage} from '../pages/ViewCredit/ViewCredit'
+import {CreditUpdatePage} from '../pages/CreditUpdate/CreditUpdate'
+import{TransactionFbProvider} from '../providers/transaction-firebase'
+import{ExpenseFbProvider} from '../providers/expense-firebase'
+import{bankFbProvider} from '../providers/bankform-firebase'
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBx5aQ20Hw078hGznDITkiPS7wNfBjHZi8",
-  authDomain: "silio-4f410.firebaseapp.com",
-  databaseURL: "https://silio-4f410.firebaseio.com",
-  projectId: "silio-4f410",
-  storageBucket: "silio-4f410.appspot.com",
-  messagingSenderId: "283218915062"
+  apiKey: "AIzaSyBwKnps43TxEz6f9AWxqdtEIfrcnBIlCEY",
+  authDomain: "silio-project-f156e.firebaseapp.com",
+  databaseURL: "https://silio-project-f156e.firebaseio.com",
+  projectId: "silio-project-f156e",
+  storageBucket: "silio-project-f156e.appspot.com",
+  messagingSenderId: "446357654949"
 };
 
 @NgModule({
@@ -54,30 +66,32 @@ const firebaseConfig = {
     MyApp,
     newsPage,
     HomePage,
-    bankAccPage,
     TransactionPage,
     TabsPage,
+    BankFormPage,
     ViewCreditPage,
     TransactionFormPage,
     CryptoDetailsPage,
     GlobalMarketPage,
-    SettingsPage,
-    LoginPage,
+    CreditUpdatePage,
+    AddManualPage,
+    AddCreditPage,
     watchListPage,
     StockDetailsPage,
-    // StockMarketPage,
-    // BankDetailsPage,
-    // ValuationPage,
-    // AssetPage,
-    // AddEquityPage,
-    // CurrencyMarketPage,
-    // AddEquityPage,
-    // ViewEquityPage,
-    // EquityDetailsPage,
-    // AddCryptoPage,
-    // ViewCryptoPage,
-    // OwnCryptoDetailPage,
-    PropertymarketPage
+    StockMarketPage,
+    BankDetailsPage,
+    ValuationPage,
+    AssetPage,
+    AddEquityPage,
+    CurrencyMarketPage,
+    AddEquityPage,
+    ViewEquityPage,
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
+    PropertymarketPage,
+    AddPropertyPage
   ],
   imports: [
     BrowserModule,
@@ -100,27 +114,28 @@ const firebaseConfig = {
     HomePage,
     TabsPage,
     TransactionPage,
-    bankAccPage,
     CryptoDetailsPage,
     TransactionFormPage,
+    CreditUpdatePage,
     ViewCreditPage,
     GlobalMarketPage,
-    SettingsPage,
-    LoginPage,
+    AddManualPage,
+    AddCreditPage,
     watchListPage,
     StockDetailsPage,
-    // StockMarketPage,
-    // BankDetailsPage,
-    // ValuationPage,
-    // AssetPage,
-    // AddEquityPage,
-    // CurrencyMarketPage,
-    // AddEquityPage,
-    // ViewEquityPage,
-    // EquityDetailsPage,
-    // AddCryptoPage,
-    // ViewCryptoPage,
-    // OwnCryptoDetailPage,
+    StockMarketPage,
+    BankDetailsPage,
+    ValuationPage,
+    AssetPage,
+    AddEquityPage,
+    BankFormPage,
+    CurrencyMarketPage,
+    AddEquityPage,
+    ViewEquityPage,
+    EquityDetailsPage,
+    AddCryptoPage,
+    ViewCryptoPage,
+    OwnCryptoDetailPage,
     AddPropertyPage,
     PropertymarketPage,
   ],
@@ -136,7 +151,8 @@ const firebaseConfig = {
     Network,
     TransactionFbProvider,
     ExpenseFbProvider,
-    HTTP,
+    bankFbProvider,
+    HTTP
   ]
 })
 export class AppModule {

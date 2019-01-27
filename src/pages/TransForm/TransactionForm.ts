@@ -25,7 +25,7 @@ export class TransactionFormPage {
               private expenseService: TransactionFbProvider) {
                 this.TypeList = ['Auto & Parking','Bills & Utilities','Business Services','Cash & Cheque','Education','Entertainment','Family','Fees & Charges','Finance & Investments','Food & Beverages','Gas & Fuel','Taxes'];
                 let ccnum = navParams.data;
-                this.sac = new Sac ('','',ccnum);
+                this.sac = new Sac ('','',ccnum,'');
               }
 
 
@@ -34,9 +34,10 @@ export class TransactionFormPage {
   }
 
   goToCredit(){
+    
 
     this.navCtrl.push(ViewCreditPage);
-
+    
   }
 
  
@@ -53,9 +54,9 @@ export class TransactionFormPage {
    this.expenseService.addItem(this.sac);
    this.navCtrl.push(ViewCreditPage);
    
- }
+ }}
  
 
  
 }
-}
+  

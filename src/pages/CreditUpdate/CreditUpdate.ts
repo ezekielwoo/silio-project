@@ -6,42 +6,48 @@ import { Log } from '../../models/log';
 import { NgForm } from '@angular/forms';
 import { ExpenseFbProvider } from '../../providers/expense-firebase';
 import { ViewCreditPage } from '../ViewCredit/ViewCredit';
+import { AngularFireDatabase} from 'angularfire2/database';
 
 @Component({
-  selector: 'page-Login',
-  templateUrl: 'Login.html',
+  selector: 'page-CreditUpdate',
+  templateUrl: 'CreditUpdate.html',
   
 })
-export class LoginPage {
+export class CreditUpdatePage {
 
   currencyList: string[];
   typeList: string[];
-  isDarkTheme  = true;
   log: Log;
   
  submitted = false;
+
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public settingProvider:SettingProvider,
               public alertCtrl: AlertController,
-              public admob:AdmobFreeProvider, private expenseService: ExpenseFbProvider) {
+              public admob:AdmobFreeProvider, private expenseService: ExpenseFbProvider
+              ,public db:AngularFireDatabase) {
 
                 this.typeList = ['Credit Card','Bank Account'];
-                this.currencyList = ['sgd','usd','aud','eur','cad','aed','gbp','jpy','idr','inr'];
-                this.typeList = ['MasterCard','Visa','American Express'];
-                this.log = new Log ('','','','','');
                
+                this.typeList = ['MasterCard','Visa','American Express','Discover'];
+                
+                let CardNumber = navParams.get('CardNumber');
+                let validThru = navParams.get('validThru');
+                let type = navParams.get('type');
+                let bank = navParams.get('bank');
+                
+
+                this.log = new Log (CardNumber,validThru,type,bank);
+              
+  }
+  
+  updateItem(item:Log){
+  
+    this.expenseService.updateItem(item)
+    
   }
 
- onSubmit(form: NgForm) {
 
-   this.submitted = true;
-    if (form.valid) {
-
-  this.expenseService.addItem(this.log);
-  this.navCtrl.push(ViewCreditPage);
-  
-}
-
-    }
+    
 }

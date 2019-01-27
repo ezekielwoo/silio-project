@@ -7,7 +7,7 @@ export class Log {
 
       public CardNumber:string,
 
-      public currency: string,
+
 
       public validThru:string,
 
@@ -16,5 +16,6 @@ export class Log {
 
       public bank: string,
 
+      
     ) {}
   }

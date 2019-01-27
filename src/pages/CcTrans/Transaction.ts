@@ -18,6 +18,7 @@ export class TransactionPage {
   isDarkTheme  = true;
   sac: Sac[];
   ccnum:any;
+  currency:any;
   Temp:temp;
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
@@ -27,11 +28,15 @@ export class TransactionPage {
               private expenseService: TransactionFbProvider) {
                 
                 this.ccnum = navParams.get('CardNumber');
-                
-                this.Temp = new temp (this.ccnum);
+                let currency= navParams.get('currency');
+              
+                this.Temp = new temp (currency);
 
                 
               
+  }
+  deleteItem(item:Sac){
+    this.expenseService.removeItem(item);
   }
   goToExpenseDetailz(ccnum){
    

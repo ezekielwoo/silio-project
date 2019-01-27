@@ -5,6 +5,7 @@ import { AdmobFreeProvider } from '../../providers/admob/admob';
 import { Log } from '../../models/log';
 import { ExpenseFbProvider } from '../../providers/expense-firebase';
 import { TransactionPage } from '../../pages/CcTrans/Transaction';
+import { CreditUpdatePage } from '../../pages/CreditUpdate/CreditUpdate';
 @Component({
   selector: 'page-ViewCredit',
   templateUrl: 'ViewCredit.html',
@@ -22,7 +23,7 @@ export class ViewCreditPage {
               public settingProvider:SettingProvider,
               public alertCtrl: AlertController,
               public admob:AdmobFreeProvider,
-              private expenseService: ExpenseFbProvider ) {
+              private expenseService: ExpenseFbProvider) {
 
                 
   }
@@ -50,7 +51,11 @@ export class ViewCreditPage {
     this.expenseService.removeItem(item);
   
   }
+  
 
+  goToUpdate(params){
+    this.navCtrl.push(CreditUpdatePage, params);
+  }
 
   updateTheme() {
     this.settingProvider.currentSetting.theme = (this.isDarkTheme) ? 'dark' : 'light';

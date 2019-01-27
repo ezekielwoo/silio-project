@@ -10,6 +10,8 @@ export class Sac {
       public amount: string,
 
       public ccnum: string,
+
+      public date:string,
       
       
 
