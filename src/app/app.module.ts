@@ -22,7 +22,7 @@ import { ApiProvider } from '../providers/api/api';
 import { watchListPage } from '../pages/watch-list/watch-list';
 import { SettingProvider } from '../providers/setting/setting';
 import { ComponentsModule } from '../components/components.module';
-// import { SettingsPage } from '../pages/settings/settings';
+import { SettingsPage } from '../pages/settings/settings';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { AdmobFreeProvider } from '../providers/admob/admob';
 import { Network } from '@ionic-native/network';
@@ -147,6 +147,7 @@ const firebaseConfig = {
     SellCurrencyPage,
     PersonalAssetPage,
     LiabilitiesPage,
+    SettingsPage,
     // Transactions
     SortPipe,
     OverviewTransactionsPage,
@@ -227,6 +228,7 @@ const firebaseConfig = {
     SellCurrencyPage,
     PersonalAssetPage,
     LiabilitiesPage,
+    SettingsPage,
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,
