@@ -6,6 +6,7 @@ import { ProfilePage } from '../profile/profile';
 import {MainPage} from "../main/main";
 import { Storage } from '@ionic/storage';
 
+
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html',

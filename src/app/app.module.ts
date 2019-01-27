@@ -50,9 +50,9 @@ import { ProfilePage } from "../pages/profile/profile";
 import { ForgetPassPage } from "../pages/forget-pass/forget-pass";
 import { UserFbProvider } from "../providers/user-firebase";
 import { Camera } from '@ionic-native/camera';
-// import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { FingerprintAIO } from "@ionic-native/fingerprint-aio";
-//import { Facebook } from '@ionic-native/facebook/ngx';
+// import { Facebook } from '@ionic-native/facebook/ngx';
 import { TransactionFbProvider } from '../providers/transaction-firebase';
 import { ExpenseFbProvider } from '../providers/expense-firebase';
 import { bankFbProvider } from '../providers/bankform-firebase';
@@ -147,6 +147,7 @@ const firebaseConfig = {
     SellCurrencyPage,
     PersonalAssetPage,
     LiabilitiesPage,
+    SettingsPage,
     // Transactions
     SortPipe,
     OverviewTransactionsPage,
@@ -228,6 +229,7 @@ const firebaseConfig = {
     SellCurrencyPage,
     PersonalAssetPage,
     LiabilitiesPage,
+    SettingsPage,
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,
@@ -259,14 +261,14 @@ const firebaseConfig = {
     bankFbProvider,
     //Transactions
     Camera,
-    // PhotoViewer,
+    PhotoViewer,
     CurrencyPipe,
     TransactionService,
     TransactionCategoriesService,
     CurrencyListService,
     CitibankService,
     ReceiptService,
-    //Facebook,
+    // Facebook,
     { provide: APP_INITIALIZER, useFactory: currenciesProviderFactory, deps: [CurrencyListService], multi: true }
 
   ]

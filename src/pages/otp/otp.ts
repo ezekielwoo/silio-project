@@ -17,7 +17,7 @@ import { TabsPage } from '../tabs/tabs';
  * Ionic pages and navigation.
  */
 
-declare function require(name: string);
+// declare function require(name: string);
 
 @IonicPage()
 @Component({
@@ -31,28 +31,32 @@ export class OtpPage {
   userOTP: number;
   oneTP: number;
   key:string = 'email';
-
+  logged = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, private userService: UserFbProvider, private alertCtrl: AlertController, private storage: Storage) {
     this.email = this.navParams.get('email');
   }
 
   otpLogin(){
-
+    if(this.logged == false){
+      this.logged = true;
+    var emailExist = false;
+    var keepGoing = true;
     this.userService.getUserOTP().subscribe(userOTPList => {
       console.log(this.email);
       console.log(userOTPList);
       for(var i = 0; i < userOTPList.length; i++){
+        if(keepGoing == true){
         if(userOTPList[i].email == this.email){
+          keepGoing = false;
+          emailExist = true;
           if(userOTPList[i].OTP == this.oneTP){
-
-            let alert = this.alertCtrl.create({
+            let alertOTP1 = this.alertCtrl.create({
               title: 'Login',
               message: 'You have successfully login',
               buttons: [
                 {
                   text: 'Confirm',
                   handler: () => {
-                    this.userService.deleteOTP(this.email);
                     this.storage.set(this.key, this.email);
                     console.log(this.key);
                     this.navCtrl.setRoot(TabsPage);
@@ -61,36 +65,40 @@ export class OtpPage {
                 }
               ]
             });
-            alert.present();
+            alertOTP1.present();
           }
-          else{
-            let alert = this.alertCtrl.create({
+          else if (userOTPList[i].OTP != this.oneTP && this.oneTP != null ) {
+            let alertOTP2 = this.alertCtrl.create({
               title: 'Alert',
               subTitle: 'Invalid OTP.',
               buttons: ['Dismiss']
             });
-            alert.present();
-          }
+            this.logged = false;
+            alertOTP2.present();
         }
-        else{
-          let alert = this.alertCtrl.create({
+        }
+        else if(emailExist == false){
+          let alertEmail3 = this.alertCtrl.create({
             title: 'Error',
-            subTitle: 'Invalid',
+            subTitle: 'Invalid Email',
             buttons: ['Dismiss']
           });
-          alert.present();
+          this.logged = false;
+          alertEmail3.present();
         }
       }
-
+    }
     });
-
+    emailExist = false;
+    keepGoing = true;
+  }
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad OtpPage');
   }
 
   clearOTP(email){
-
+    
   }
   }
 

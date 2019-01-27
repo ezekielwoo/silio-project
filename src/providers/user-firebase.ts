@@ -38,9 +38,9 @@ export class UserFbProvider {
 
 // USER OTP
       addUserOTP(email: string,  otp:  string){
-      
+      console.log('email: %s otp: %s' ,email, otp);
         this.getUsers().subscribe(allUsers => {
-  
+          console.log('here -> ' + JSON.stringify(allUsers, null, 2));
           for(var i =0; i < allUsers.length; i ++){
             if(allUsers[i].email == email){
               this.db.list('/UserOTP/').push({

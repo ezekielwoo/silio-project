@@ -4,6 +4,5 @@ export class Account {
     public amount: number,
     public bankaccnum: string,
     public bank: string
-  ) {
-  }
+  ) { }
 }

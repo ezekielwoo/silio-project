@@ -2,15 +2,32 @@ import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
 import { map, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { Storage } from '@ionic/storage';
+import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 
 import { Transaction } from '../../models/transaction-model';
 
+const STORAGE_KEY = 'email';
+
 @Injectable()
 export class TransactionService {
-    private transactionsRef = this.db.list<Transaction>('transaction-list');
+    private transactionsRef: AngularFireList<Transaction>;
+    private userEmail: string = '';
 
-    constructor(private httpClient: HttpClient, private db: AngularFireDatabase) { }
+    constructor(
+        private httpClient: HttpClient,
+        private db: AngularFireDatabase,
+        private storage: Storage
+    ) {
+        this.storage.ready().then(() => {
+            console.log('Storage ready');
+            this.storage.get(STORAGE_KEY).then((email: string) => {
+                console.log('Logged in as', email);
+                this.userEmail = email;
+                this.transactionsRef = this.db.list<Transaction>(`/transaction-list/${btoa(this.userEmail)}`);
+            });
+        });
+    }
 
     // Ref: https://stackoverflow.com/questions/36289495/how-to-make-a-simple-jsonp-asynchronous-request-in-angular-2
     fetchCurrencyRate(baseCurrency: string) {
@@ -38,10 +55,10 @@ export class TransactionService {
     }
 
     // TODO: Fetch transaction by bankAccNo
-    fetchBankTransactions(account: any) {
-        console.log('fetchBankTransactions() ' + account.displayAccountNumber);
-        return this.db.list<Transaction>('transaction-list',
-            (ref) => ref.orderByChild('bankAccountNo').equalTo(account.displayAccountNumber))
+    fetchBankTransactions(bankAccountNo: string): Observable<Array<Transaction>> {
+        console.log('fetchBankTransactions() ' + bankAccountNo);
+        return this.db.list<Transaction>(`/transaction-list/${btoa(this.userEmail)}`,
+            (ref) => ref.orderByChild('bankAccountNo').equalTo(bankAccountNo))
             .snapshotChanges()
             .pipe(map((changes) => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     }
@@ -53,7 +70,6 @@ export class TransactionService {
         let end = new Date(currentYear, 11, 31);
         return this.fetchTransactions(start, end);
     }
-    //*///
 
     fetchTransactions(start: Date, end: Date): Observable<Array<Transaction>> {
         // let currentYear = new Date().getFullYear();
@@ -64,4 +80,5 @@ export class TransactionService {
             .snapshotChanges()
             .pipe(map((changes) => changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     }
+    //*///
 }

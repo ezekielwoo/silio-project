@@ -1,5 +1,5 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import * as x2js from 'xml2js';
 
@@ -189,6 +189,10 @@ export class ApiProvider {
     })
   }
 
+  fetchOCBCLoansData() {
+
+  }
+
   getGlobalMarket() {
     return new Promise((resolve, reject) => {
       this.http.get(`${default_api_url}/global`).subscribe((response: any) => {
@@ -212,10 +216,10 @@ export class ApiProvider {
       console.log('dbs headers', headers);
       var reqData = 'code=' + authCode + '&grant_type=authorization_code&redirect_uri=http%3A//localhost%3A8100/';
 
-      this.http.post("https://cors-anywhere.herokuapp.com/" + "https://www.dbs.com/sandbox/api/sg/v1/oauth/tokens", reqData, {headers: headers})
+      this.http.post("https://cors-anywhere.herokuapp.com/" + "https://www.dbs.com/sandbox/api/sg/v1/oauth/tokens", reqData, { headers: headers })
         .subscribe(
           (data) => {
-            x2js.parseString(data, {trim: true}, function (err, result) {
+            x2js.parseString(data, { trim: true }, function (err, result) {
               console.log('resolved', data);
               resolve(data);
               console.log(result)
@@ -237,11 +241,11 @@ export class ApiProvider {
       headers = headers.append("clientId", clientId);
       headers = headers.append("accessToken", accessToken);
       headers = headers.append("cache-control", 'no-cache');
-      console.log('dbs link', "https://cors-anywhere.herokuapp.com/" + dbs_bank_api_savings, {headers: headers});
+      console.log('dbs link', "https://cors-anywhere.herokuapp.com/" + dbs_bank_api_savings, { headers: headers });
 
-      this.http.get("https://cors-anywhere.herokuapp.com/" + dbs_bank_api_savings, {headers: headers})
+      this.http.get("https://cors-anywhere.herokuapp.com/" + dbs_bank_api_savings, { headers: headers })
         .subscribe((data) => {
-          x2js.parseString(data, {trim: true}, function (err, result) {
+          x2js.parseString(data, { trim: true }, function (err, result) {
             console.log('data resolved', data);
             resolve(result);
           });

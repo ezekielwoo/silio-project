@@ -23,8 +23,14 @@
 
       <p> Valid Thru: {{expenseItem.validThru}} </p>
 
+     
     </ion-item>
+  
     <ion-item-options side="right">
+        <button ion-button (click)=" goToUpdate(expenseItem)">
+            Edit
+         </button>
+     
       <button ion-button color="danger" (click)="deleteItem(expenseItem)">
          Delete
       </button>

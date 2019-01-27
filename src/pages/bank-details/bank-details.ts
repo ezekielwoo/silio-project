@@ -1,20 +1,19 @@
-import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
-import {InAppBrowser, InAppBrowserOptions} from '@ionic-native/in-app-browser';
-import {SplashScreen} from '@ionic-native/splash-screen';
-import {ApiProvider} from './../../providers/api/api';
-import {globalChartTheme} from "../../theme/chart.dark";
-import {globalLightChartTheme} from "../../theme/chart.light";
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { ApiProvider } from './../../providers/api/api';
+import { globalChartTheme } from "../../theme/chart.dark";
+import { globalLightChartTheme } from "../../theme/chart.light";
 import * as HighCharts from 'HighCharts';
-import {SettingProvider} from '../../providers/setting/setting';
-import {AssetPage} from "../asset/asset";
-import {Observable} from "rxjs/index";
-import {map} from "rxjs/operators";
-import {AngularFireDatabase} from 'angularfire2/database';
+import { SettingProvider } from '../../providers/setting/setting';
+import { AssetPage } from "../asset/asset";
+import { Observable } from "rxjs/index";
+import { map } from "rxjs/operators";
+import { AngularFireDatabase } from 'angularfire2/database';
 import * as moment from 'moment';
 import {Storage} from "@ionic/storage";
 import {AddManualPage} from "../AddManual/AddManual";
-import {AlertController} from "ionic-angular";
 import {LiabilitiesPage} from "../liabilities/liabilities";
 
 @IonicPage()
@@ -105,6 +104,9 @@ export class BankDetailsPage {
   ionViewDidLoad() {
     this.settingsProvider.settingSubject.subscribe((data) => {
       this.currentChartTheme = data.theme;
+      // this.initChart();
+      // this.getTotalValueForEquities();
+      // this.getTotalValue();
     });
     setTimeout(() => {
       this.initLiabilitiesChart()
@@ -126,7 +128,7 @@ export class BankDetailsPage {
     let array = [];
     expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/total-values`).snapshotChanges().pipe(
       map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     expenseObservable.subscribe(result => {
       if (result.length == 0) {
         this.totalValue = 0;
@@ -158,7 +160,7 @@ export class BankDetailsPage {
     let array = [];
     expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/equities/total-values`).snapshotChanges().pipe(
       map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     expenseObservable.subscribe(result => {
       if (result.length == 0) {
         this.valueEquity = 0;
@@ -168,21 +170,22 @@ export class BankDetailsPage {
         this.equityArr = array;
         this.totalValueForEquities = array[array.length - 1];
         this.valueEquity = array[array.length - 1].value;
-        this.getTotalValueForCurrency(this.totalValueForEquities, userKey);
+        //this.getTotalValueForCurrency(this.totalValueForEquities, userKey);
       }
     });
     return expenseObservable;
   }
 
-  getTotalValueForCurrency(equity, userKey): Observable<any[]> {
+  getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     let array = [];
-    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/currency/total-values`).snapshotChanges().pipe(
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
       map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     expenseObservable.subscribe(result => {
+      console.log(result);
       if (result.length == 0) {
-        this.valueCurrency = 0;
+        this.valuePersonal = 0;
       }
       else if (result.length > 0) {
         array = result;
@@ -196,26 +199,26 @@ export class BankDetailsPage {
     return expenseObservable;
   }
 
-  getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
-    let expenseObservable: Observable<any[]>;
-    let array = [];
-    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
-      map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
-    expenseObservable.subscribe(result => {
-      if (result.length == 0) {
-        this.valuePersonal = 0;
-      }
-      else if (result.length > 0) {
-        array = result;
-        this.propertyArr = array;
-        this.totalValueForProeprty = array[array.length - 1];
-        this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
-        this.getTotalValueForDeposits(userKey, equity, currency, this.totalValueForProeprty)
-      }
-    });
-    return expenseObservable;
-  }
+  // getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
+  //   let expenseObservable: Observable<any[]>;
+  //   let array = [];
+  //   expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
+  //     map(changes =>
+  //       changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+  //   expenseObservable.subscribe(result => {
+  //     if (result.length == 0) {
+  //       this.valuePersonal = 0;
+  //     }
+  //     else if (result.length > 0) {
+  //       array = result;
+  //       this.propertyArr = array;
+  //       this.totalValueForProeprty = array[array.length - 1];
+  //       this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
+  //       this.getTotalValueForDeposits(userKey, equity, currency, this.totalValueForProeprty)
+  //     }
+  //   });
+  //   return expenseObservable;
+  // }
 
   getTotalValueForDeposits(userKey, equity, currency, property): Observable<any[]> {
     let expenseObservable: Observable<any[]>;

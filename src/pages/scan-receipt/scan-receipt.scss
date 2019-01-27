@@ -1,0 +1,31 @@
+page-scan-receipt {
+    .background-scan {
+        background-color: #201f27;
+        color: #ffffff;
+    }
+
+    .background-transaction-info {
+        background-color: #ac5d70; 
+        color: white;
+    }
+
+    ion-icon {
+        font-size: 50px;
+    }
+
+    ion-card {
+        //display: flex;
+        //flex-direction: row;
+        height: 30% !important;
+        //margin: 0 !important;
+    }
+
+    .card {
+        background: linear-gradient(to right, #ac5d70, #ab689b);
+    }
+
+    .icon {
+        width: 32px; 
+        height: auto;
+    }
+}

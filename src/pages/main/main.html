@@ -15,4 +15,19 @@
 <button ion-button class="button" full outline (click)='goLogin()'>Login</button>
 <button ion-button class="button" full outline (click)='goRegister()'>Register</button>
 </div>
+<div>
+  <p id='or'>Or</p>
+  <p id='connectW'>Connect with</p>
+  <img src="../../assets/imgs/facebook logo.PNG" tappable (click)="FBLogin()">
+</div>
+<div>
+<ion-card *ngIf="userData">
+  <ion-card-header>{{ userData.username }}</ion-card-header>
+  <img [src]="userData.picture" />
+  <ion-card-content>
+    <p>Email: {{ userData.email }}</p>
+    <p>First Name: {{ userData.first_name }}</p>
+  </ion-card-content>
+</ion-card>
+</div>
 </ion-content>

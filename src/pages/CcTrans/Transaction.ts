@@ -4,9 +4,8 @@ import { SettingProvider } from '../../providers/setting/setting';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
 import { ViewCreditPage } from '../ViewCredit/ViewCredit';
 import { TransactionFormPage } from '../TransForm/TransactionForm';
-import {Sac} from '../../models/Sac';
 import { TransactionFbProvider } from '../../providers/transaction-firebase';
-import {temp} from '../../models/temp';
+import { Sac } from '../../models/Sac';
 
 @Component({
   selector: 'page-Transaction',
@@ -19,7 +18,6 @@ export class TransactionPage {
   sac: Sac[];
   ccnum:any;
   currency:any;
-  Temp:temp;
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public settingProvider:SettingProvider,
@@ -29,8 +27,6 @@ export class TransactionPage {
                 
                 this.ccnum = navParams.get('CardNumber');
                 let currency= navParams.get('currency');
-              
-                this.Temp = new temp (currency);
 
                 
               

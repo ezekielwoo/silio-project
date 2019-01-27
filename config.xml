@@ -92,7 +92,15 @@
     <plugin name="cordova-plugin-admob-free" spec="^0.22.0">
         <variable name="ADMOB_APP_ID" value="" />
     </plugin>
+    <plugin name="cordova-sqlite-storage" spec="2.6.0" />
+    <plugin name="cordova-plugin-facebook4" spec="4.1.0">
+        <variable name="APP_ID" value="372872026862768" />
+        <variable name="APP_NAME" value="Silio" />
+        <variable name="FACEBOOK_HYBRID_APP_EVENTS" value="false" />
+        <variable name="FACEBOOK_ANDROID_SDK_VERSION" value="4.38.1" />
+    </plugin>
+    <plugin name="cordova-plugin-fingerprint-aio" spec="^1.5.0" />
+    <plugin name="com-sarriaroman-photoviewer" spec="~1.1.18" />
+    <plugin name="cordova-plugin-camera" spec="~4.0.3" />
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
-    <engine name="android" spec="^7.1.4" />
-    <plugin name="com-sarriaroman-photoviewer" spec="~1.2.0" />
 </widget>

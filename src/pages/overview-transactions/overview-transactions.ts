@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -11,6 +12,10 @@ import { TransactionService } from '../../providers/transactions/transaction.ser
 import { Transaction } from '../../models/transaction-model';
 import { TransactionCategoryPage } from '../transaction-category/transaction-category';
 import { populateData } from '../../data/transaction-categories';
+import { bankFbProvider } from '../../providers/bankform-firebase';
+import { Account } from '../../models/account';
+
+const STORAGE_KEY = 'email';
 
 @Component({
   selector: 'page-overview-transactions',
@@ -34,31 +39,69 @@ export class OverviewTransactionsPage implements OnDestroy {
   expenseSum: number = 0;
   incomeSum: number = 0;
 
+  bankAccounts: Array<Account> = [];
   selectedRange: string = '';
+  selectedAccount: string = '';
+  selectedAccountPosition: number = 0;
+  flagAccount: boolean = false;
   displayDaily: boolean = false;
   displayMonth: boolean = false;
   displayYear: boolean = false;
 
   private transactionSubscription: Subscription;
+  private bankAccountSubscription: Subscription;
 
   constructor(
     private navCtrl: NavController,
     private modalCtrl: ModalController,
-    private transactionService: TransactionService,
     private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private storage: Storage,
+    private bankAccountService: bankFbProvider,
+    private transactionService: TransactionService
   ) {
     this.selectedRange = 'week';
     this.displayDaily = true;
   }
 
   onShowAccountFilter() {
-
+    if (!Array.isArray(this.bankAccounts) || !this.bankAccounts.length) {
+      this.handleError('No Accounts Found', 'Please create or sync an account!').present();
+      return;
+    }
+    let inputs = [];
+    console.log('selectedAccountPosition: ' + this.selectedAccountPosition);
+    for (let account of this.bankAccounts) {
+      inputs.push({ type: 'radio', label: account.bankaccnum, value: account.bankaccnum, checked: this.flagAccount });
+    }
+    inputs[this.selectedAccountPosition].checked = !this.flagAccount;
+    const alert = this.alertCtrl.create({
+      title: 'Select an account',
+      inputs: inputs,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'OK',
+          handler: (data) => {
+            console.log(data);
+            this.selectedAccountPosition = inputs.map((inputEl: any) => inputEl.value).indexOf(data);
+            console.log('selectedAccountPosition -> ' + this.selectedAccountPosition);
+            this.resetData();
+            this.selectedAccount = data;
+            this.initCharts();
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   onRangeSelected() {
     this.resetData();
-    this.load();
+    this.initCharts();
   }
 
   ngOnDestroy() {
@@ -69,7 +112,7 @@ export class OverviewTransactionsPage implements OnDestroy {
     this.navCtrl.push(TransactionCategoryPage, { type: transactionType, transactions: this.data });
   }
 
-  private load() {
+  private initCharts() {
     const loading = this.loadingCtrl.create({
       spinner: 'circles',
       content: 'Loading Transactions ...'
@@ -77,99 +120,104 @@ export class OverviewTransactionsPage implements OnDestroy {
 
     loading.present();
 
-    let end = new Date(); // Current Date
-    let start = new Date(end); // Previous Date
-
-    switch (this.selectedRange) {
-      case 'week':
-        this.displayDaily = true;
-        start.setDate(end.getDate() - 7);
-        for (let i = 0; i < 7; i++) {
-          this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, "count": 7, "expenseTransactions": [], "incomeTransactions": [] }); // expenses/income: [sum, average]
-        }
-        for (let [index, catType] of populateData().entries()) {
-          if (index === 0) {
-            this.dailyTypeData.push({ category: 'expense', type: [] });
-            this.dailyDoughnutData.push({ category: 'expense', expenses: { labels: [], data: [], colors: [] } });
-            for (let catItem of catType.categoryItems) {
-              this.dailyTypeData[index].type.push({ name: catItem.name, amount: 0 });
-            }
-          } else {
-            this.dailyTypeData.push({ category: 'income', type: [] });
-            this.dailyDoughnutData.push({ category: 'income', income: { labels: [], data: [], colors: [] } });
-            for (let catItem of catType.categoryItems) {
-              this.dailyTypeData[index].type.push({ name: catItem.name, amount: 0 });
-            }
-          }
-        }
-        break;
-      case 'month':
-        this.displayMonth = true;
-        start = new Date(start.getFullYear(), 0, 1, 0, 0, 0, 0);
-        for (let i = 0; i < 12; i++) {
-          switch (i) {
-            // For months with 31 days
-            case 0:
-            case 2:
-            case 4:
-            case 6:
-            case 7:
-            case 9:
-            case 11:
-              this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 31, "expenseTransactions": [], "incomeTransactions": [] });
-              break;
-
-            // For months with 30 days
-            case 3:
-            case 5:
-            case 8:
-            case 10:
-              this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 30, "expenseTransactions": [], "incomeTransactions": [] });
-              break;
-
-            // For month with 28/29 days
-            case 1:
-              if (moment([end.getFullYear()]).isLeapYear()) {
-                this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 29, "expenseTransactions": [], "incomeTransactions": [] });
-              } else {
-                this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 28, "expenseTransactions": [], "incomeTransactions": [] });
-              }
-              break;
-          }
-        }
-        break;
-      case 'year':
-        this.displayYear = true;
-        start = new Date(start.getFullYear() - 5, 0, 1, 0, 0, 0, 0);
-        let year = end.getFullYear();
-        for (let i = 0; i < 5; i++) {
-          if (moment([year]).isLeapYear()) {
-            this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 366, "expenseTransactions": [], "incomeTransactions": [] });
-          } else {
-            this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 365, "expenseTransactions": [], "incomeTransactions": [] });
-          }
-          year--; // Check previous year
-        }
-        break;
-    }
-
-    this.transactionSubscription = this.transactionService.fetchTransactions(start, end)
+    this.transactionSubscription = this.transactionService.fetchBankTransactions(this.selectedAccount)
       .pipe(mergeMap((transactions: Array<Transaction>) => {
         console.log('Transactions: ' + JSON.stringify(transactions, null, 2));
 
         loading.dismiss();
 
+        let end = new Date(); // Current Date
+        let start = new Date(end); // Previous Date
+
+        switch (this.selectedRange) {
+          case 'week':
+            this.displayDaily = true;
+            start.setDate(end.getDate() - 7);
+            for (let i = 0; i < 7; i++) {
+              this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, "count": 7, "expenseTransactions": [], "incomeTransactions": [] }); // expenses/income: [sum, average]
+            }
+            for (let [index, catType] of populateData().entries()) {
+              if (index === 0) {
+                this.dailyTypeData.push({ category: 'expense', type: [] });
+                this.dailyDoughnutData.push({ category: 'expense', expenses: { labels: [], data: [], colors: [] } });
+                for (let catItem of catType.categoryItems) {
+                  this.dailyTypeData[index].type.push({ name: catItem.name, amount: 0 });
+                }
+              } else {
+                this.dailyTypeData.push({ category: 'income', type: [] });
+                this.dailyDoughnutData.push({ category: 'income', income: { labels: [], data: [], colors: [] } });
+                for (let catItem of catType.categoryItems) {
+                  this.dailyTypeData[index].type.push({ name: catItem.name, amount: 0 });
+                }
+              }
+            }
+            break;
+          case 'month':
+            this.displayMonth = true;
+            start = new Date(start.getFullYear(), 0, 1, 0, 0, 0, 0);
+            for (let i = 0; i < 12; i++) {
+              switch (i) {
+                // For months with 31 days
+                case 0:
+                case 2:
+                case 4:
+                case 6:
+                case 7:
+                case 9:
+                case 11:
+                  this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 31, "expenseTransactions": [], "incomeTransactions": [] });
+                  break;
+
+                // For months with 30 days
+                case 3:
+                case 5:
+                case 8:
+                case 10:
+                  this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 30, "expenseTransactions": [], "incomeTransactions": [] });
+                  break;
+
+                // For month with 28/29 days
+                case 1:
+                  if (moment([end.getFullYear()]).isLeapYear()) {
+                    this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 29, "expenseTransactions": [], "incomeTransactions": [] });
+                  } else {
+                    this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 28, "expenseTransactions": [], "incomeTransactions": [] });
+                  }
+                  break;
+              }
+            }
+            break;
+          case 'year':
+            this.displayYear = true;
+            start = new Date(start.getFullYear() - 5, 0, 1, 0, 0, 0, 0);
+            let year = end.getFullYear();
+            for (let i = 0; i < 5; i++) {
+              if (moment([year]).isLeapYear()) {
+                this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 366, "expenseTransactions": [], "incomeTransactions": [] });
+              } else {
+                this.data.push({ "labels": '', "expenses": [0, 0], "income": [0, 0], "savings": 0, count: 365, "expenseTransactions": [], "incomeTransactions": [] });
+              }
+              year--; // Check previous year
+            }
+            break;
+        }
+
         for (let transaction of transactions) {
-          switch (this.selectedRange) {
-            case 'week':
-              this.handleDailyData(transaction);
-              break;
-            case 'month':
-              this.handleMonthlyData(transaction);
-              break;
-            case 'year':
-              this.handleYearlyData(transaction);
-              break;
+          let transactionDate = moment(transaction.date).format('YYYY-MM-DD');
+          // console.log('transactionDate: %s start: %s end: %s', transactionDate, moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'), moment(transactionDate).isBetween(moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'), null, '[)'));
+          if (moment(transactionDate).isBetween(moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'), null, '[]')) {
+            console.log('transactionDate: %s start: %s end: %s', transactionDate, moment(start).format('YYYY-MM-DD'), moment(end).format('YYYY-MM-DD'));
+            switch (this.selectedRange) {
+              case 'week':
+                this.handleDailyData(transaction);
+                break;
+              case 'month':
+                this.handleMonthlyData(transaction);
+                break;
+              case 'year':
+                this.handleYearlyData(transaction);
+                break;
+            }
           }
         }
 
@@ -573,7 +621,7 @@ export class OverviewTransactionsPage implements OnDestroy {
     modal.onDidDismiss(() => {
       console.log('onDidDismiss()');
       this.resetData();
-      this.load();
+      this.initCharts();
     });
   }
 
@@ -591,6 +639,32 @@ export class OverviewTransactionsPage implements OnDestroy {
     this.dailyTypeData = [];
     this.dailyDoughnutData = [];
     this.transactionSubscription.unsubscribe();
+    this.bankAccountSubscription.unsubscribe();
+  }
+
+  private loadbankAccounts(userKey: string) {
+    this.bankAccountSubscription = this.bankAccountService.getBankAccounts(userKey)
+      .subscribe(
+        (list: Array<Account>) => {
+          if (list) {
+            this.bankAccounts = list;
+            console.log('bankAccounts: ' + JSON.stringify(list, null, 2));
+            this.selectedAccount = this.bankAccounts[0].bankaccnum;
+            this.initCharts();
+          } else {
+            this.bankAccounts = [];
+          }
+        },
+        (error) => this.handleError('Error', error.json().error).present()
+      );
+  }
+
+  private handleError(errorTitle: string, errorMessage: string) {
+    return this.alertCtrl.create({
+      title: errorTitle,
+      message: errorMessage,
+      buttons: ['OK']
+    });
   }
 
   //Runs when the page has loaded. This event only happens once per page being created. If a page leaves but is cached, then this event will not fire again on a subsequent viewing. The ionViewDidLoad event is good place to put your setup code for the page.
@@ -601,7 +675,13 @@ export class OverviewTransactionsPage implements OnDestroy {
 
   //Runs when the page is about to enter and become the active page.
   ionViewWillEnter() {
-    this.load();
+    this.storage.ready().then(() => {
+      console.log('Storage ready');
+      this.storage.get(STORAGE_KEY).then((userKey: string) => {
+        console.log('Logged in as', userKey);
+        this.loadbankAccounts(userKey);
+      });
+    });
   }
 
   //Runs when the page is about to leave and no longer be the active page.

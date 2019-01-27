@@ -17,6 +17,7 @@ export class Transaction {
         public categoryType: TransactionCategoryItem,
         public description: string,
         public date: string,
+        public receiptImageURL?: string,
         public bankAccountNo?: string,
         public bankTransRefId?: string
     ) { }

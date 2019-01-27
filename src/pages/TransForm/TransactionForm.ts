@@ -7,13 +7,13 @@ import { Sac } from '../../models/Sac';
 import { TransactionFbProvider } from '../../providers/transaction-firebase';
 import { TransactionPage } from '../CcTrans/Transaction';
 import { NgForm } from '@angular/forms';
-
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'page-TransactionForm',
   templateUrl: 'TransactionForm.html',
 })
 export class TransactionFormPage {
-
+  signupform: FormGroup;
   TypeList: string[];
   isDarkTheme  = true;
   sac: Sac;
@@ -27,7 +27,14 @@ export class TransactionFormPage {
                 let ccnum = navParams.data;
                 this.sac = new Sac ('','',ccnum,'');
               }
-
+              ngOnInit() {
+                this.signupform = new FormGroup({
+                  type: new FormControl('', [Validators.required]),
+                  amount: new FormControl('', [Validators.required, Validators.maxLength(10)]),
+          
+                  date: new FormControl('', [Validators.required]),
+                });
+              }
 
   ionViewWillEnter(){
     this.admob.showRandomAds();

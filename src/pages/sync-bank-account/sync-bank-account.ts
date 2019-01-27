@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { Subscription } from 'rxjs';
 
 import { CitibankService } from '../../providers/transactions/citibank.service';
 import { Transaction } from '../../models/transaction-model';
 import { TransactionService } from '../../providers/transactions/transaction.service';
 import { Currency } from '../../models/currency-model';
+import { Account } from '../../models/account';
+import { bankFbProvider } from '../../providers/bankform-firebase';
+
+const STORAGE_KEY = 'email';
 
 @Component({
   selector: 'page-sync-bank-account',
@@ -14,17 +19,22 @@ import { Currency } from '../../models/currency-model';
 export class SyncBankAccountPage implements OnInit {
   bankData: { accountType: string, accounts: Array<any> };
   transactions: Array<Transaction> = [];
+  accounts: Array<Account> = [];
   bankName: string = '';
+  userKey: string = '';
 
   private transactionSubscription: Subscription;
+  private bankAccountSubscription: Subscription;
 
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
+    private storage: Storage,
     private citibankService: CitibankService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private bankAccountService: bankFbProvider
   ) { }
 
   ngOnInit() {
@@ -33,6 +43,13 @@ export class SyncBankAccountPage implements OnInit {
       .then((data: { accountType: string, accounts: Array<any> }) => {
         this.bankData = data;
       });
+    this.storage.ready().then(() => {
+      console.log('Storage ready');
+      this.storage.get(STORAGE_KEY).then((userKey: string) => {
+        console.log('Logged in as', userKey);
+        this.userKey = userKey;
+      });
+    });
   }
 
   onSelectAccount(account: any) {
@@ -40,9 +57,10 @@ export class SyncBankAccountPage implements OnInit {
       content: 'Please wait...'
     });
     loading.present();
+    this.createNewAccount(account);
     this.citibankService.getCitibankTransactions(account)
       .then((data: any) => {
-        this.transactionSubscription = this.transactionService.fetchBankTransactions(account)
+        this.transactionSubscription = this.transactionService.fetchBankTransactions(account.displayAccountNumber)
           .subscribe(
             (list: Array<Transaction>) => {
               this.transactionSubscription.unsubscribe();
@@ -66,6 +84,33 @@ export class SyncBankAccountPage implements OnInit {
               this.showAlertMessage('An Error Occured', error.json().error).present();
             });
       });
+  }
+
+  private createNewAccount(account: any) {
+    this.bankAccountSubscription = this.bankAccountService.getBankAccounts(this.userKey)
+      .subscribe(
+        (list: Array<Account>) => {
+          this.bankAccountSubscription.unsubscribe();
+          if (list) {
+            console.log('bankAccounts: ' + JSON.stringify(list, null, 2));
+            this.accounts = list;
+            if (!this.checkAccountExist(account.displayAccountNumber)) {
+              const newAccount = new Account(account.productName, account.availableCredit, account.displayAccountNumber, 'CITI');
+              this.bankAccountService.addItem(this.userKey, newAccount);
+            }
+          } else {
+            const newAccount = new Account(account.productName, account.availableCredit, account.displayAccountNumber, 'CITI');
+            this.bankAccountService.addItem(this.userKey, newAccount);
+          }
+        },
+        (error) => this.showAlertMessage('Error', error.json().error).present()
+      );
+  }
+
+  private checkAccountExist(accountNo: string) {
+    return this.accounts.some((accountEl: Account) => {
+      return accountEl.bankaccnum === accountNo;
+    });
   }
 
   private checkTransactionExist(transaction: any) {
