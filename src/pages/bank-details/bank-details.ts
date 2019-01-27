@@ -385,6 +385,7 @@ export class BankDetailsPage {
   }
 
   initLiabilitiesChart() {
+    HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
     HighCharts.setOptions(HighCharts.theme);
     HighCharts.chart('chart-liabilities', {
       chart: {
