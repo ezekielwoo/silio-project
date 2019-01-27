@@ -1,20 +1,19 @@
-import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
-import {InAppBrowser, InAppBrowserOptions} from '@ionic-native/in-app-browser';
-import {SplashScreen} from '@ionic-native/splash-screen';
-import {ApiProvider} from './../../providers/api/api';
-import {globalChartTheme} from "../../theme/chart.dark";
-import {globalLightChartTheme} from "../../theme/chart.light";
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { ApiProvider } from './../../providers/api/api';
+import { globalChartTheme } from "../../theme/chart.dark";
+import { globalLightChartTheme } from "../../theme/chart.light";
 import * as HighCharts from 'HighCharts';
-import {SettingProvider} from '../../providers/setting/setting';
-import {AssetPage} from "../asset/asset";
-import {Observable} from "rxjs/index";
-import {map} from "rxjs/operators";
-import {AngularFireDatabase} from 'angularfire2/database';
+import { SettingProvider } from '../../providers/setting/setting';
+import { AssetPage } from "../asset/asset";
+import { Observable } from "rxjs/index";
+import { map } from "rxjs/operators";
+import { AngularFireDatabase } from 'angularfire2/database';
 import * as moment from 'moment';
-import {Storage} from "@ionic/storage";
-import {AddManualPage} from "../AddManual/AddManual";
-import {AlertController} from "ionic-angular";
+import { Storage } from "@ionic/storage";
+import { AddManualPage } from "../AddManual/AddManual";
 
 @IonicPage()
 @Component({
@@ -31,14 +30,17 @@ export class BankDetailsPage {
   currentChartTheme = "dark"; //default dark theme
   totalValueForEquities: any = [];
   totalValueForCurrency: any = [];
+  totalValueForProeprty: any = [];
   totalValue: any = [];
   currencyArr: any = [];
   equityArr: any = [];
+  propertyArr: any = [];
   allArr: any = [];
   lastUpdated = null;
   chartValue: any = {};
   valueEquity = 0;
   valueCurrency = 0;
+  valuePersonal = 0;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -106,6 +108,7 @@ export class BankDetailsPage {
     console.log('left')
     this.valueEquity = 0;
     this.valueCurrency = 0;
+    this.valuePersonal = 0;
   }
 
   getTotalValue(userKey): Observable<any[]> {
@@ -113,7 +116,7 @@ export class BankDetailsPage {
     let array = [];
     expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/total-values`).snapshotChanges().pipe(
       map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     expenseObservable.subscribe(result => {
       if (result.length == 0) {
         this.totalValue = 0;
@@ -148,7 +151,7 @@ export class BankDetailsPage {
     let array = [];
     expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/equities/total-values`).snapshotChanges().pipe(
       map(changes =>
-        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
     expenseObservable.subscribe(result => {
       console.log(result);
       if (result.length == 0) {
@@ -161,6 +164,38 @@ export class BankDetailsPage {
         this.valueEquity = array[array.length - 1].value;
         console.log('retrieve totalValueForEquities', this.totalValueForEquities, userKey);
         this.getTotalValueForCurrency(this.totalValueForEquities, userKey);
+      }
+    });
+    return expenseObservable;
+  }
+
+  getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))));
+    expenseObservable.subscribe(result => {
+      console.log(result);
+      if (result.length == 0) {
+        this.valuePersonal = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.propertyArr = array;
+        this.totalValueForProeprty = array[array.length - 1];
+        this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
+        console.log('retrieve totalValueForEquities', this.totalValueForProeprty, userKey);
+        this.chartValue = {
+          "year": this.lastUpdated.split(' ')[0],
+          "month": this.lastUpdated.split(' ')[1],
+          "day": this.lastUpdated.split(' ')[2],
+          "value": equity.value + currency.value +  parseFloat(this.totalValueForProeprty.value.toString())
+        };
+        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
+        // this.initChart(this.totalValueForCurrency.value, equity.value);
+        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
+        this.initChart(currency.value, equity.value, parseFloat(this.totalValueForProeprty.value.toString()));
       }
     });
     return expenseObservable;
@@ -181,15 +216,7 @@ export class BankDetailsPage {
         this.currencyArr = array;
         this.totalValueForCurrency = array[array.length - 1];
         this.valueCurrency = array[array.length - 1].value;
-        this.chartValue = {
-          "year": this.lastUpdated.split(' ')[0],
-          "month": this.lastUpdated.split(' ')[1],
-          "day": this.lastUpdated.split(' ')[2],
-          "value": equity.value + this.totalValueForCurrency.value
-        };
-        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
-        this.initChart(this.totalValueForCurrency.value, equity.value);
-        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
+        this.getTotalValuesForPersonal(userKey, equity, this.totalValueForCurrency)
       }
 
     });
@@ -212,7 +239,7 @@ export class BankDetailsPage {
     return last30Days.format('YYYY MM DD');
   }
 
-  initChart(currency, equity) {
+  initChart(currency, equity, property) {
     console.log(currency, equity, 'abab');
     HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
 
@@ -315,7 +342,7 @@ export class BankDetailsPage {
           y: 0
         }, {
           name: 'Property',
-          y: 0
+          y: property
         }]
       }]
     });

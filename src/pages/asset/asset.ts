@@ -16,6 +16,7 @@ import {Storage} from "@ionic/storage";
 import {ViewaccountsPage} from "../viewaccounts/viewaccounts"
 import {PropertymarketPage} from "../propertymarket/propertymarket";
 import {ViewPropertyPage} from "../view-property/view-property";
+import {PersonalAssetPage} from "../personal-asset/personal-asset";
 
 @IonicPage()
 @Component({
@@ -37,13 +38,17 @@ export class AssetPage {
   forexdata = [];
   totalEquityValue = null;
   totalCurrencyValue = null;
+  totalPersonalValue = 0;
   shareTotalValue = null;
+  carTotalValue = null;
+  propertyTotalValue = null;
   ocbcTotalValue = 0;
   etfTotalValue = null;
   cryptoTotalValue = null;
   unittrustTotalValue = null;
   forexTotalValue = null;
   equityValueChart = {};
+  personalValueChart = {};
   currencyValueChart = {};
   lastUpdated: string;
   TIME_IN_MS = 1500;
@@ -55,6 +60,7 @@ export class AssetPage {
   allArr: any = [];
   ocbc_arrName = [];
   ocbc_arrValue = [];
+  property_data = [];
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, private api: ApiProvider, private storage: Storage) {
@@ -79,6 +85,7 @@ export class AssetPage {
       this.getCryptoItems(val);
       this.getForexItems(val);
       this.getDepositAccountOCBC(val);
+      this.getPropertyItems(val);
     });
   }
 
@@ -100,6 +107,7 @@ export class AssetPage {
     this.unittrustTotalValue = 0;
     this.cryptoTotalValue = 0;
     this.forexTotalValue = 0;
+    this.propertyTotalValue = 0;
   }
 
   ionViewDidLoad() {
@@ -112,6 +120,7 @@ export class AssetPage {
         this.loadingChart = false;
         this.totalEquityValue = this.unittrustTotalValue + this.shareTotalValue + this.etfTotalValue;
         this.totalCurrencyValue = this.forexTotalValue + this.cryptoTotalValue;
+        this.totalPersonalValue = this.propertyTotalValue;
         this.equityValueChart = {
           "year": this.lastUpdated.split(' ')[0],
           "month": this.lastUpdated.split(' ')[1],
@@ -124,9 +133,17 @@ export class AssetPage {
           "day": this.lastUpdated.split(' ')[2],
           "value": this.totalCurrencyValue
         };
+
+        this.personalValueChart = {
+          "year": this.lastUpdated.split(' ')[0],
+          "month": this.lastUpdated.split(' ')[1],
+          "day": this.lastUpdated.split(' ')[2],
+          "value": this.totalPersonalValue
+        };
         console.log(btoa(val), 'btoa value');
         this.db.list(`userAsset/${btoa(val)}/equities/total-values`).push(this.equityValueChart);
         this.db.list(`userAsset/${btoa(val)}/currency/total-values`).push(this.currencyValueChart);
+        this.db.list(`userAsset/${btoa(val)}/personal/total-values`).push(this.personalValueChart);
         this.initChart();
         this.loadingChart = false;
       }, this.TIME_IN_MS);
@@ -156,6 +173,28 @@ export class AssetPage {
           console.log(this.ocbc_arrValue, this.ocbc_arrName, 'total value');
           this.ocbcTotalValue += result[0][i].balance.availableBalance;
         }
+      }
+
+    });
+    return expenseObservable;
+  }
+
+  getPropertyItems(userKey): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/property/`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      if (result.length > 0) {
+        this.property_data = result;
+        console.log(this.property_data, 'property data');
+        let data = result;
+        for (let i = 0; i < data.length; i++) {
+          this.propertyTotalValue += parseFloat(data[i].resalePrice.toString());
+        }
+      }
+      else {
+        this.propertyTotalValue = 0;
       }
 
     });
@@ -296,7 +335,7 @@ export class AssetPage {
   }
 
   goToViewPropertyPage() {
-    this.navCtrl.push(ViewPropertyPage);
+    this.navCtrl.push(PersonalAssetPage);
   }
 
   initChart() {
@@ -700,6 +739,51 @@ export class AssetPage {
         }, {
           name: 'Unit Trusts',
           y: this.unittrustTotalValue
+        }]
+      }]
+    });
+    HighCharts.chart('chart-personal', {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        height: 250
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      credits: {
+        enabled: false
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          size: 160,
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+            style: {
+              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+            }
+          }
+        }
+      },
+      title: {
+        text: ''
+      },
+      series: [{
+        name: 'Personal',
+        colorByPoint: true,
+        data: [{
+          name: 'Property',
+          y: this.propertyTotalValue,
+          sliced: true,
+          selected: true
+        }, {
+          name: 'Car',
+          y: this.carTotalValue
         }]
       }]
     });

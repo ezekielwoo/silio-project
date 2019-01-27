@@ -31,7 +31,7 @@ export class LoginPage {
   userList: User[];
   defEmail: string;
 
-  constructor(public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, private faio: FingerprintAIO, public userService: UserFbProvider,public modalCtrl: ModalController, private storage: Storage) {
+  constructor(private alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, private faio: FingerprintAIO, public userService: UserFbProvider,public modalCtrl: ModalController, private storage: Storage) {
     
     
   }
@@ -45,10 +45,12 @@ export class LoginPage {
       var textCode = "";
       var num = 0;
       var check: boolean;
+      var keepGoing = true;
       for (var i = 0; i < this.userList.length; i++) {
         //email password validation
+        if(keepGoing == true){
         if (this.userList[i].email == this.email && this.userList[i].password == this.password) {
-
+          keepGoing = false;
           //OTP codes
           // const Nexmo = require('nexmo');
           // const nexmo = new Nexmo({
@@ -77,11 +79,18 @@ export class LoginPage {
           check = false;
         }
       }
+    }
 
-      if (check == false) {
-        alert('Invalid email or password');
+    if(keepGoing == true){
+            if (check == false) {
+        let alertInvalid = this.alertCtrl.create({
+          title: 'Error',
+          subTitle: 'Invalid Email and Password.',
+          buttons: ['Dismiss']
+        });
+        alertInvalid.present();
       }
-
+    }
 
     });
   }

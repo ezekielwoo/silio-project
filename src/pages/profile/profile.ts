@@ -47,12 +47,13 @@ export class ProfilePage {
 
   }
   goToEditPage(){
-    this.navCtrl.push("EditProfilePage");
+    this.navCtrl.push(EditProfilePage);
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
   }
+
 
 }
 

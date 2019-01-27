@@ -7,6 +7,21 @@ page-settings {
         transform: translateY(-2px);
     }
 }
+ion-input {
+    input {
+      text-align: left;
+      
+      ::-webkit-input-placeholder {
+        text-align: right;
+      }
+   
+    
+  }
+  input[type=text]:before {
+    content: "$";
+}
+}
+ 
 
 .alert-wrapper{
     background: linear-gradient(to right, #ac5d70, #ab689b);

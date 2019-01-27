@@ -46,8 +46,8 @@
         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAENSURBVEhLYxgFdAWrQkPZlub5Tlya6/N+YZbXf2pjqDWYYGmeX//OxvivX3dN/v//yByqYrwWL8nz/UALS0EYr8UgyTebusEK4+aU0QxDrUMAkMWriwP/vNrYCVaw68FeqmOcFp+ckPtnWb7fPxCb2hivxehxQy08ajEKGLWYXAwyhxgMtZa6FmMTR8Y0tXhbfcz/7XWxGPIgTFOLt9fHgTG6PAjT1GJ8mGYWE4Oh1lLPYmwYZPZoAQIHi7J9fnzbPQWrRkoxyGKQpVgtXpbnt/PSzJLf2DRSikEWQ63BBPNzfDSW5Ph8vDij+PdXKvscr8UgMC/TTXZZnv+2Rdne30CKqYmhVoyCgQAMDADUwXnw+e+tqQAAAABJRU5ErkJggg=="
           alt="Wallet Icon" class="icon" />
       </div>
-      <h2 *ngIf="manualAccountNo; else accountTitle" color="light">{{ manualAccountNo }}</h2> 
-      <ng-template #accountTitle>Select a Manual Account</ng-template> 
+      <h2 *ngIf="bankAccountNo; else accountTitle" color="light">{{ bankAccountNo }}</h2>
+      <ng-template #accountTitle>Select a Manual Account</ng-template>
     </button>
 
     <ion-item detail-push class="background-transaction-info">
@@ -67,9 +67,6 @@
 
     <button ion-button clear color="danger" [navPush]="scanReceiptPage">
       <strong>Scan Receipt</strong>
-    </button>
-    <button ion-button clear color="secondary" [navPush]="selectBankPage">
-      <strong>Sync from bank account</strong>
     </button>
   </ion-grid>
 

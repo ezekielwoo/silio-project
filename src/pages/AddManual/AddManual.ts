@@ -1,14 +1,16 @@
-import {Component, ViewChild} from '@angular/core';
-import {IonicPage, NavController, NavParams, AlertController} from 'ionic-angular';
-import {AdmobFreeProvider} from '../../providers/admob/admob';
-import {AddCreditPage} from '../AddCredit/AddCredit';
-import {ViewCreditPage} from '../ViewCredit/ViewCredit';
-import {BankFormPage} from '../BankForm/BankForm'
-import {ApiProvider} from "../../providers/api/api";
-import {InAppBrowser, InAppBrowserOptions} from "@ionic-native/in-app-browser";
-import {TabsPage} from "../tabs/tabs";
-import {Storage} from "@ionic/storage";
-import {AngularFireDatabase} from "angularfire2/database";
+import { Component, ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { AdmobFreeProvider } from '../../providers/admob/admob';
+import { AddCreditPage } from '../AddCredit/AddCredit';
+import { ViewCreditPage } from '../ViewCredit/ViewCredit';
+import { BankFormPage } from '../BankForm/BankForm'
+import { ApiProvider } from "../../providers/api/api";
+import { InAppBrowser, InAppBrowserOptions } from "@ionic-native/in-app-browser";
+import { TabsPage } from "../tabs/tabs";
+import { Storage } from "@ionic/storage";
+import { AngularFireDatabase } from "angularfire2/database";
+import { CitibankService } from '../../providers/transactions/citibank.service';
+import { SyncBankAccountPage } from '../sync-bank-account/sync-bank-account';
 
 
 @Component({
@@ -41,13 +43,16 @@ export class AddManualPage {
   code = null;
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              public alertCtrl: AlertController,
-              public admob: AdmobFreeProvider,
-              private api: ApiProvider,
-              private iab: InAppBrowser,
-              private storage: Storage,
-              private db: AngularFireDatabase,) {
+    public navParams: NavParams,
+    public alertCtrl: AlertController,
+    public admob: AdmobFreeProvider,
+    private api: ApiProvider,
+    private iab: InAppBrowser,
+    private storage: Storage,
+    private db: AngularFireDatabase,
+    private loadingCtrl: LoadingController,
+    private citibankService: CitibankService
+  ) {
 
     if (document.URL.indexOf("?") > 0) {
       let splitURL = document.URL.split('?')[1];
@@ -105,6 +110,32 @@ export class AddManualPage {
     }).catch((err) => {
       // Instead, this happens:
       console.log("oh no", err);
+    });
+  }
+
+  syncCB() {
+    const loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
+    this.citibankService.login().then(
+      (success: boolean) => {
+        loading.dismiss();
+        if (success) {
+          this.navCtrl.push(SyncBankAccountPage, { bankType: 'Citibank' });
+        }
+      },
+      (error) => {
+        loading.dismiss();
+        this.handleError('Please try again later!').present();
+      });
+  }
+
+  private handleError(errorMessage: string) {
+    return this.alertCtrl.create({
+      title: 'An error occured!',
+      message: errorMessage,
+      buttons: ['Ok']
     });
   }
 

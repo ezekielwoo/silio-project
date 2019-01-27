@@ -31,22 +31,25 @@ export class OtpPage {
   userOTP: number;
   oneTP: number;
   key:string = 'email';
-
+  logged = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, private userService: UserFbProvider, private alertCtrl: AlertController, private storage: Storage) {
     this.email = this.navParams.get('email');
   }
 
   otpLogin(){
+    if(this.logged == false){
+      this.logged = true;
     var emailExist = false;
-
+    var keepGoing = true;
     this.userService.getUserOTP().subscribe(userOTPList => {
       console.log(this.email);
       console.log(userOTPList);
       for(var i = 0; i < userOTPList.length; i++){
+        if(keepGoing == true){
         if(userOTPList[i].email == this.email){
+          keepGoing = false;
           emailExist = true;
           if(userOTPList[i].OTP == this.oneTP){
-
             let alertOTP1 = this.alertCtrl.create({
               title: 'Login',
               message: 'You have successfully login',
@@ -54,10 +57,10 @@ export class OtpPage {
                 {
                   text: 'Confirm',
                   handler: () => {
-                    this.userService.deleteOTP(this.email);
                     this.storage.set(this.key, this.email);
                     console.log(this.key);
                     this.navCtrl.setRoot(TabsPage);
+
                   }
                 }
               ]
@@ -70,8 +73,9 @@ export class OtpPage {
               subTitle: 'Invalid OTP.',
               buttons: ['Dismiss']
             });
+            this.logged = false;
             alertOTP2.present();
-          }
+        }
         }
         else if(emailExist == false){
           let alertEmail3 = this.alertCtrl.create({
@@ -79,12 +83,15 @@ export class OtpPage {
             subTitle: 'Invalid Email',
             buttons: ['Dismiss']
           });
+          this.logged = false;
           alertEmail3.present();
         }
       }
-      
+    }
     });
-  
+    emailExist = false;
+    keepGoing = true;
+  }
   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad OtpPage');

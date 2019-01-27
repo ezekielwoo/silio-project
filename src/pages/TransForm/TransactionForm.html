@@ -12,38 +12,59 @@
 
 
 <ion-content padding>
-  <form #submitExpenseForm="ngForm">
+  <form #submitExpenseForm="ngForm" [formGroup]="signupform">
     <ion-list class="list-setting">
         <ion-item class="item">
             <ion-label>Type</ion-label>
-            <ion-select [(ngModel)]="sac.type" name="type" #currency="ngModel">
+            <ion-select [(ngModel)]="sac.type" name="type" formControlName="type" text-right>
                 <ion-option *ngFor="let typ of TypeList" [value]="typ">
                   {{typ}}
                 </ion-option>
                 
                 </ion-select>
           </ion-item>
-          <p ion-text *ngIf="sac.type=='' && submitted == true" color="danger" padding-left>
-
-            Type is required
-      </p>
+          <ion-item no-lines *ngIf="(signupform.get('type').hasError('required') ) && signupform.get('type').touched">
+              <div class="error" *ngIf="signupform.get('type').hasError('required') && signupform.get('type').touched">
+                  Input Required
+                </div>
+  
+                </ion-item>
+               
           <ion-item>
               <ion-label>Amount:</ion-label>
-            <ion-input type="text" [(ngModel)]="sac.amount" name="amount" #amount="ngModel" required text-right></ion-input>
+            <ion-input type="text" [(ngModel)]="sac.amount" name="amount" formControlName="amount" text-right></ion-input>
           </ion-item>
-          <p ion-text *ngIf="sac.amount=='' && submitted == true" color="danger" padding-left>
-
-            Amount is required
-      </p>
+          
+          <ion-item no-lines *ngIf="(signupform.get('amount').hasError('maxlength') ||signupform.get('amount').hasError('required') ) && signupform.get('amount').touched">
+              <div class="error" *ngIf="signupform.get('amount').hasError('required') && signupform.get('amount').touched">
+                  Input Required
+                </div>
+          
+            <div class="error" *ngIf="signupform.get('amount').hasError('maxlength') && signupform.get('amount').touched">
+                  Maximum 10 characters
+                </div>
+                </ion-item>
+                
           <ion-item>
             <ion-label>Date:</ion-label>
-            <ion-datetime displayFormat="DD/MM/YY" [(ngModel)]="sac.date" name="date"></ion-datetime>
+            <ion-datetime displayFormat="DD/MM/YY" [(ngModel)]="sac.date" formControlName="date" name="date"></ion-datetime>
         </ion-item>
-        <p ion-text *ngIf="sac.date=='' && submitted == true" color="danger" padding-left>
-
-          Date is required
-    </p>
+        <ion-item no-lines *ngIf="(signupform.get('date').hasError('required') ) && signupform.get('date').touched">
+            <div class="error" *ngIf="signupform.get('date').hasError('required') && signupform.get('date').touched">
+                Input Required
+              </div>
+              </ion-item>
     </ion-list>
-    <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)">Submit</button> 
+    <button ion-button type="submit" (click)="onSubmit(submitExpenseForm)" [disabled]="signupform.invalid">Submit</button> 
   </form>
 </ion-content>
+<style type="text/css">
+  .error {
+    color: rgb(223, 62, 62);
+    font-size: 11px;
+  }
+
+  .error1 {
+    color: rgb(75, 75, 75);
+    border-bottom: 1px solid #ff0000;
+  }</style>
