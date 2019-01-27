@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons left>
+      <button ion-button (click)="onCloseModal()">
+        Cancel
+      </button>
+    </ion-buttons>
+    <ion-title text-center style="margin-right: 20px;">{{ mode }} Transaction</ion-title>
+    <ion-buttons right>
+      <button ion-button [disabled]="checkEmptyFields()" (click)="onNewTransaction()">
+        Save
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="background-add">
+  <h5 margin-left>Amount</h5>
+  <ion-input text-center autofocus style="font-size: x-large;" type="number" placeholder="0.00" [(ngModel)]="amount"></ion-input>
+
+  <ion-list>
+    <ion-item class="background-transaction-info">
+      <div item-start>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABZSURBVEhLYxgFowAZCNIBcwExw3864GlAzHCXDrgJiEcB+cCYilgFiHECbKmEXLwFiHGCM1TEE4B4FFAfuJCBTYCYZIAt9RDCh4GYZLCKDDxado2CQQ8YGAC7snMMO9ICCgAAAABJRU5ErkJggg=="
+          alt="Description Icon" class="icon" />
+      </div>
+      <ion-input type="text" placeholder="Enter description.." [(ngModel)]="desc"></ion-input>
+    </ion-item>
+
+    <button ion-item detail-push class="background-transaction-info" (click)="onLoadCurrencies()">
+      <div item-start>
+        <img [src]="currency.flag" [alt]="currency.name" class="icon" />
+      </div>
+      {{ currency.name }}
+    </button>
+
+    <button ion-item detail-push class="background-transaction-info" [navPush]="selectCategoryPage">
+      <div item-start>
+        <img [src]="category.icon" [alt]="category.name" class="icon" />
+      </div>
+      {{ category.name }}
+    </button>
+
+    <button ion-item detail-push class="background-transaction-info" [navPush]="selectTransactionAccPage">
+      <div item-start>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAENSURBVEhLYxgFdAWrQkPZlub5Tlya6/N+YZbXf2pjqDWYYGmeX//OxvivX3dN/v//yByqYrwWL8nz/UALS0EYr8UgyTebusEK4+aU0QxDrUMAkMWriwP/vNrYCVaw68FeqmOcFp+ckPtnWb7fPxCb2hivxehxQy08ajEKGLWYXAwyhxgMtZa6FmMTR8Y0tXhbfcz/7XWxGPIgTFOLt9fHgTG6PAjT1GJ8mGYWE4Oh1lLPYmwYZPZoAQIHi7J9fnzbPQWrRkoxyGKQpVgtXpbnt/PSzJLf2DRSikEWQ63BBPNzfDSW5Ph8vDij+PdXKvscr8UgMC/TTXZZnv+2Rdne30CKqYmhVoyCgQAMDADUwXnw+e+tqQAAAABJRU5ErkJggg=="
+          alt="Wallet Icon" class="icon" />
+      </div>
+      <h2 *ngIf="manualAccountNo; else accountTitle" color="light">{{ manualAccountNo }}</h2> 
+      <ng-template #accountTitle>Select a Manual Account</ng-template> 
+    </button>
+
+    <ion-item detail-push class="background-transaction-info">
+      <ion-icon name="md-calendar" item-left></ion-icon>
+      <ion-datetime displayFormat="DD MMMM YYYY" [(ngModel)]="currentDate"></ion-datetime>
+    </ion-item>
+  </ion-list>
+
+  <ion-grid *ngIf="mode === 'New'">
+    <ion-row align-items-center>
+      <ion-col col-5 class="border"></ion-col>
+      <ion-col col-2 align-self-start>
+        <h6 ion-text text-center style="color: white;">OR</h6>
+      </ion-col>
+      <ion-col col-5 class="border"></ion-col>
+    </ion-row>
+
+    <button ion-button clear color="danger" [navPush]="scanReceiptPage">
+      <strong>Scan Receipt</strong>
+    </button>
+    <button ion-button clear color="secondary" [navPush]="selectBankPage">
+      <strong>Sync from bank account</strong>
+    </button>
+  </ion-grid>
+
+</ion-content>

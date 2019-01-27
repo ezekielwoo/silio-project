@@ -1,0 +1,69 @@
+<ion-header no-border>
+  <ion-toolbar color="primary">
+    <ion-title text-center style="margin-right: -50px;">Overview Transactions</ion-title>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="onShowAccountFilter()">
+        <ion-icon name="md-options"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding-top>
+
+  <ion-segment color="secondary" [(ngModel)]="selectedRange" (ionChange)="onRangeSelected()">
+    <ion-segment-button value="week">Week</ion-segment-button>
+    <ion-segment-button value="month">Month</ion-segment-button>
+    <ion-segment-button value="year">Year</ion-segment-button>
+  </ion-segment>
+
+  <canvas padding [hidden]="!displayDaily" #barCanvasDaily width="400" height="400"></canvas>
+  <canvas padding [hidden]="!displayMonth" #barCanvasMonthly width="400" height="400"></canvas>
+  <canvas padding [hidden]="!displayYear" #lineCanvasYearly width="400" height="400"></canvas>
+
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col col-6 [hidden]="!displayDaily">
+        <canvas #expDoughnutCanvasDaily width="400" height="400"></canvas>
+      </ion-col>
+      <ion-col col-6 [hidden]="!displayDaily">
+        <canvas #incDoughnutCanvasDaily width="400" height="400"></canvas>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- <ion-list>
+    <button class="coin-card-pink" ion-item detail-push (click)="onViewTransactions('Expenses')">
+      <ion-row>
+        <ion-col col-4>Expenses</ion-col>
+        <ion-col col-3 offset-5 class="subtitle">{{ expenseSum | currency:'SGD':'symbol-narrow':'1.2-2' }}</ion-col>
+      </ion-row>
+    </button>
+    <button class="coin-card-pink" ion-item detail-push (click)="onViewTransactions('Income')">
+      <ion-row>
+        <ion-col col-4>Income</ion-col>
+        <ion-col col-3 offset-5 class="subtitle">{{ incomeSum | currency:'SGD':'symbol-narrow':'1.2-2' }}</ion-col>
+      </ion-row>
+    </button>
+  </ion-list> -->
+
+  <div padding class="coin-card-pink" (click)="onViewTransactions('Expenses')">
+    <ion-row>
+      <ion-col col-4 class="subtitle">Expenses</ion-col>
+      <ion-col col-3 offset-5 class="subtitle">{{ expenseSum | currency:'SGD':'symbol-narrow':'1.2-2' }}</ion-col>
+    </ion-row>
+  </div>
+
+  <div padding class="coin-card-pink" (click)="onViewTransactions('Income')">
+    <ion-row>
+      <ion-col col-4 class="subtitle">Income</ion-col>
+      <ion-col col-3 offset-5 class="subtitle">{{ incomeSum | currency:'SGD':'symbol-narrow':'1.2-2' }}</ion-col>
+    </ion-row>
+  </div>
+
+  <ion-fab right bottom>
+    <button ion-fab color="primary" (click)="onAddTransaction()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>

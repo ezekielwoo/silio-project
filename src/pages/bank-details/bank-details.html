@@ -15,27 +15,37 @@
 
 <ion-content padding-top>
 
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
   <div class="coin-card-pink" padding>
     <ion-row>
       <ion-col col-4 text-left class="margin-top">
-        <h3 style="margin-top:1px"><b>Net Worth</b></h3>
+        <h3 style="margin-top:1px;font-size: 20px"><b>Net Worth</b></h3>
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
-        <h1>297,501.81 SGD</h1>
+        <h1>{{valueCurrency + valueEquity + valuePersonal | number: 0 || 0}} SGD</h1>
       </ion-col>
     </ion-row>
   </div>
 
-  <div class="coin-card-pink" padding tappable (click)="goToAssetPage(totalValueForCurrency,totalValueForEquities,totalValue,currencyArr,equityArr,allArr)">
+  <div class="coin-card-pink" padding tappable
+       (click)="goToAssetPage(totalValueForCurrency,totalValueForEquities,totalValue,currencyArr,equityArr,allArr)">
     <ion-row>
       <ion-col col-4 text-left class="margin-top">
-        <h3 style="margin-top:1px"><b>Assets</b></h3>
+        <h3 style="margin-top:1px;font-size: 20px"><b>Assets</b></h3>
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
         <h1>
-          {{totalValueForCurrency.value + totalValueForEquities.value | number: 0}} SGD
+          {{valueCurrency + valueEquity + valuePersonal | number: 0 || 0}} SGD
         </h1>
       </ion-col>
     </ion-row>
@@ -44,11 +54,11 @@
   <div class="coin-card-pink" padding>
     <ion-row>
       <ion-col col-4 text-left class="margin-top">
-        <h3 style="margin-top:1px"><b>Liabilities</b></h3>
+        <h3 style="margin-top:1px;font-size: 20px;"><b>Liabilities</b></h3>
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
-        <h1>1,000,000.00 SGD</h1>
+        <h1>0 SGD</h1>
       </ion-col>
     </ion-row>
   </div>
@@ -57,8 +67,8 @@
     <ion-row>
 
       <ion-col col-6>
-        <button ion-button round class="buttons" (click)="accessDBS()" style="background-color: #ac5d70">
-          View Account
+        <button ion-button round class="buttons" (click)="goToSyncAcc()" style="background-color: #ac5d70">
+          Sync Account
         </button>
       </ion-col>
 

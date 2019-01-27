@@ -46,7 +46,7 @@ export class ApiProvider {
 
   getPropertyMarket(pageNumber, infiniteScroll?) {
     return new Promise((resolve, reject) => {
-      this.http.get(`https://data.gov.sg/api/action/datastore_search?resource_id=1b702208-44bf-4829-b620-4615ee19b57c&limit=5000`).subscribe((data) => {
+      this.http.get(`https://data.gov.sg/api/action/datastore_search?resource_id=1b702208-44bf-4829-b620-4615ee19b57c&limit=1000`).subscribe((data) => {
         if (infiniteScroll) {
           infiniteScroll.complete();
         }
@@ -168,22 +168,23 @@ export class ApiProvider {
     })
   }
 
-  getOCBCData() {
+  getOCBCAccountData() {
     return new Promise((resolve, reject) => {
       var headers = new HttpHeaders();
+      headers = headers.append('sessionToken', 'OAuth2INB')
       headers = headers.append('Authorization', `Bearer ${tokenOCBC}`);
       console.log('ocbc headers', headers);
 
-      this.http.get(ocbc_bank_api_savings, {responseType: 'json', headers: headers})
-        .subscribe((data) => {
-          x2js.parseString(data, {trim: true}, function (err, result) {
-            console.log('ocbc resolved', data);
-            resolve(result);
-
-          });
+      this.http.get('https://api.ocbc.com:8243/transactional/accountbalance/1.0', {
+        responseType: 'json',
+        headers: headers
+      })
+        .subscribe((data: any) => {
+          console.log(data, 'resolved');
+          resolve(data);
         }, (e) => {
-          console.log('rejected');
           reject(e);
+          console.log('rejected');
         })
     })
   }

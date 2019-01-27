@@ -1,11 +1,15 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {AlertController, IonicPage, NavController, NavParams} from 'ionic-angular';
 import {AddEquity} from "../../models/add-equity";
 import {NgForm} from '@angular/forms';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {Observable} from "rxjs/index";
 import {map} from "rxjs/operators";
 import {AddCrypto} from "../../models/add-crypto";
+import {Storage} from "@ionic/storage";
+import {TabsPage} from "../tabs/tabs";
+import {AssetPage} from "../asset/asset";
+import {ViewCryptoPage} from "../view-crypto/view-crypto";
 
 /**
  * Generated class for the AddCryptoPage page.
@@ -22,7 +26,7 @@ import {AddCrypto} from "../../models/add-crypto";
 export class AddCryptoPage {
 
   type = "crypto";
-  path = "asset/currency/crypto";
+  path = null;
   coin: any = {};
   price = null;
   currency = null;
@@ -42,42 +46,46 @@ export class AddCryptoPage {
   key = null;
   name = null;
   symbol = null;
+  userkey: string = 'email';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, private storage: Storage, private alertCtrl: AlertController) {
     this.coin = this.navParams.get('coin');
     this.currency = this.navParams.get('currency');
-    if (this.coin) {
-      if (this.coin.type == "forex") {
-        console.log('checkpoint1');
-        this.path = "asset/currency/forex";
-        this.type = "forex";
-        this.price = this.coin.purchsePrice;
-      }
-      else {
-        if (this.coin.market_data == null) {
-          this.price = this.navParams.get('price');
+    this.storage.get(this.userkey).then((val) => {
+      console.log('Logged in as', val);
+      if (this.coin) {
+        this.path = `userAsset/${btoa(val)}/currency/crypto`;
+        if (this.coin.type == "forex") {
+          console.log('checkpoint1');
+          this.path = `userAsset/${btoa(val)}/currency/forex`;
+          this.type = "forex";
+          this.price = this.coin.purchsePrice;
         }
         else {
-          this.price = this.coin.market_data.current_price['sgd']
+          if (this.coin.market_data == null) {
+            this.price = this.navParams.get('price');
+          }
+          else {
+            this.price = this.coin.market_data.current_price['sgd']
+          }
         }
+        this.getItems(this.path);
       }
-      this.name = this.coin.name;
-      this.symbol = this.coin.symbol;
-      console.log(this.coin);
-
-      this.addCrypto = new AddCrypto(this.coin.name, this.coin.symbol, this.price, 0, 0, 0, true, this.type)
-    }
+    });
+    this.name = this.coin.name;
+    this.symbol = this.coin.symbol;
+    console.log(this.coin);
+    this.addCrypto = new AddCrypto(this.coin.name, this.coin.symbol, this.price, 0, 0, 0, true, this.type);
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AddCryptoPage');
-    this.getItems();
   }
 
-  getItems(): Observable<any[]> {
+  getItems(path): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     let coinDatafromDB: any = {};
-    expenseObservable = this.db.list(this.path).snapshotChanges().pipe(
+    expenseObservable = this.db.list(path).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
     expenseObservable.subscribe(result => {
@@ -103,78 +111,112 @@ export class AddCryptoPage {
     this.submitted = true;
     console.log(this.coinExist);
 
-    if (this.coinExist == false) {
+    this.storage.get(this.userkey).then((val) => {
+      console.log('Logged in as', val);
+      this.path = `userAsset/${btoa(val)}/currency/crypto`;
 
-      if (this.addCrypto.purchasePrice == 0) {
-        this.addCrypto.purchasePrice = this.coin.market_data.current_price.sgd;
+      if (this.coin.type == "forex") {
+        this.path = `userAsset/${btoa(val)}/currency/forex`;
+        this.type = "forex";
+        this.price = this.coin.purchsePrice;
       }
 
-      if (form.valid && this.addCrypto.amount > 0) {
-        this.load = true;
+      if (this.coinExist == false) {
 
-        this.coinholding = {
-          "company": this.addCrypto.name,
-          "symbol": this.addCrypto.symbol,
-          "market": this.addCrypto.market,
-          "quantity": this.addCrypto.amount,
-          "purchasePrice": this.addCrypto.purchasePrice,
-          "value": this.addCrypto.purchasePrice * this.addCrypto.amount,
-          "stockExist": true,
-          "type": this.type
-        };
+        if (this.addCrypto.purchasePrice == 0) {
+          this.addCrypto.purchasePrice = this.coin.market_data.current_price.sgd;
+        }
 
-        this.addCrypto.value = this.addCrypto.purchasePrice * this.addCrypto.amount;
+        if (form.valid && this.addCrypto.amount > 0) {
+          this.load = true;
 
-        alert('Added ' + this.addCrypto.name + ' valued at this ' + this.addCrypto.purchasePrice * this.addCrypto.amount);
-        this.db.list(this.path).push(this.addCrypto);
-        console.log(this.addCrypto, this.coinExisted, 'equityyy');
-      }
-    }
+          this.coinholding = {
+            "company": this.addCrypto.name,
+            "symbol": this.addCrypto.symbol,
+            "market": this.addCrypto.market,
+            "quantity": this.addCrypto.amount,
+            "purchasePrice": this.addCrypto.purchasePrice,
+            "value": this.addCrypto.purchasePrice * this.addCrypto.amount,
+            "stockExist": true,
+            "type": this.type
+          };
 
-    else if (this.coinExist == true) {
+          this.addCrypto.value = this.addCrypto.purchasePrice * this.addCrypto.amount;
 
-      let amount = null;
-      let value = null;
-      let purchasePrice = null;
-
-      if (this.coin.type == "crypto") {
-        amount = parseInt(this.addCrypto.amount.toString()) + parseInt(this.amount.toString());
-        value = (parseFloat(this.totalvalue.toString()) + this.addCrypto.purchasePrice * this.addCrypto.amount) / 2;
-        purchasePrice = ((
-          parseFloat(this.addCrypto.purchasePrice.toString()) * parseInt(this.addCrypto.amount.toString())
-          +
-          parseFloat(this.purchasePrice.toString()) * parseFloat(this.amount.toString()))
-          / parseFloat(amount.toString()));
-      }
-
-      else {
-        amount = parseInt(this.addCrypto.amount.toString()) + parseInt(this.amount.toString());
-        purchasePrice = ((
-          parseFloat(this.addCrypto.purchasePrice.toString()) * parseInt(this.addCrypto.amount.toString())
-          +
-          parseFloat(this.purchasePrice.toString()) * parseFloat(this.amount.toString()))
-          / parseFloat(amount.toString()));
-        value = amount * purchasePrice;
+          let alert = this.alertCtrl.create({
+            title: 'Success',
+            message: 'You have added ' + this.addCrypto.name + ' valued at this ' + this.addCrypto.purchasePrice * this.addCrypto.amount,
+            buttons: [
+              {
+                text: 'Confirm',
+                handler: () => {
+                  this.navCtrl.push(ViewCryptoPage);
+                }
+              }
+            ]
+          });
+          alert.present();
+          this.db.list(this.path).push(this.addCrypto);
+          console.log(this.addCrypto, this.coinExisted, 'equityyy');
+        }
       }
 
+      else if (this.coinExist == true) {
 
-      console.log('calculations', amount, value, purchasePrice);
+        let amount = null;
+        let value = null;
+        let purchasePrice = null;
 
-      if (form.valid && this.addCrypto.amount > 0) {
-        this.load = true;
-        this.db.object(this.path + '/' + this.key).update({
-          name: this.addCrypto.name,
-          market: this.addCrypto.market || this.coin.market,
-          purchasePrice: purchasePrice,
-          amount: amount,
-          symbol: this.addCrypto.symbol,
-          value: value,
-          type: this.type,
-        });
-        alert('Add ' + this.addCrypto.name + ' valued at this ' + purchasePrice * amount);
+        if (this.coin.type == "crypto") {
+          amount = parseInt(this.addCrypto.amount.toString()) + parseInt(this.amount.toString());
+          value = (parseFloat(this.totalvalue.toString()) + this.addCrypto.purchasePrice * this.addCrypto.amount) / 2;
+          purchasePrice = ((
+            parseFloat(this.addCrypto.purchasePrice.toString()) * parseInt(this.addCrypto.amount.toString())
+            +
+            parseFloat(this.purchasePrice.toString()) * parseFloat(this.amount.toString()))
+            / parseFloat(amount.toString()));
+        }
+
+        else {
+          amount = parseInt(this.addCrypto.amount.toString()) + parseInt(this.amount.toString());
+          purchasePrice = ((
+            parseFloat(this.addCrypto.purchasePrice.toString()) * parseInt(this.addCrypto.amount.toString())
+            +
+            parseFloat(this.purchasePrice.toString()) * parseFloat(this.amount.toString()))
+            / parseFloat(amount.toString()));
+          value = amount * purchasePrice;
+        }
+
+
+        console.log('calculations', amount, value, purchasePrice);
+
+        if (form.valid && this.addCrypto.amount > 0) {
+          this.load = true;
+          this.db.object(this.path + '/' + this.key).update({
+            name: this.addCrypto.name,
+            market: this.addCrypto.market,
+            purchasePrice: purchasePrice,
+            amount: amount,
+            symbol: this.addCrypto.symbol,
+            value: value,
+            type: this.type,
+          });
+          let alert = this.alertCtrl.create({
+            title: 'Success',
+            message: 'You have added ' + this.addCrypto.name + ' valued at this ' + purchasePrice * amount,
+            buttons: [
+              {
+                text: 'Confirm',
+                handler: () => {
+                  this.navCtrl.push(ViewCryptoPage);
+                }
+              }
+            ]
+          });
+          alert.present();
+        }
       }
-    }
+    });
   }
-
-
 }
+

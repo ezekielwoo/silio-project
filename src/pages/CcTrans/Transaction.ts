@@ -6,7 +6,7 @@ import { ViewCreditPage } from '../ViewCredit/ViewCredit';
 import { TransactionFormPage } from '../TransForm/TransactionForm';
 import {Sac} from '../../models/Sac';
 import { TransactionFbProvider } from '../../providers/transaction-firebase';
-import {temp} from '../../models/temp';
+
 
 @Component({
   selector: 'page-Transaction',
@@ -19,7 +19,7 @@ export class TransactionPage {
   sac: Sac[];
   ccnum:any;
   currency:any;
-  Temp:temp;
+
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               public settingProvider:SettingProvider,
@@ -28,9 +28,9 @@ export class TransactionPage {
               private expenseService: TransactionFbProvider) {
                 
                 this.ccnum = navParams.get('CardNumber');
-                let currency= navParams.get('currency');
+             
               
-                this.Temp = new temp (currency);
+                
 
                 
               

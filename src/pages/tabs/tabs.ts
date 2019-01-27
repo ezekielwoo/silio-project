@@ -10,6 +10,8 @@ import {ValuationPage} from "../valuation/valuation";
 import {AddPropertyPage} from "../add-property/add-property";
 import {PropertymarketPage} from "../propertymarket/propertymarket";
 
+import {OverviewTransactionsPage} from "../overview-transactions/overview-transactions";
+
 @Component({
   templateUrl: 'tabs.html'
 })
@@ -17,9 +19,9 @@ export class TabsPage {
 
   tab1Root = ValuationPage;
   tab2Root = BankDetailsPage;
-  tab3Root = AddManualPage;
-  tab4Root = GlobalMarketPage;
-  tab5root = PropertymarketPage;
+  tab3Root = OverviewTransactionsPage;
+  tab4Root = AddManualPage;
+
 
   constructor() {
 

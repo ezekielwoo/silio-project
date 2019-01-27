@@ -10,6 +10,8 @@ import {AdmobFreeProvider} from '../../providers/admob/admob';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {AddPropertyPage} from "../add-property/add-property";
 import {NgForm} from '@angular/forms';
+import {StockDetailsPage} from "../stock-details/stock-details";
+import {ViewPropertyPage} from "../view-property/view-property";
 
 @IonicPage()
 @Component({
@@ -127,6 +129,10 @@ export class PropertymarketPage {
     if (this.currentPage === this.maxPageNumber) {
       infiniteScroll.enable(false);
     }
+  }
+
+  openProperty(data) {
+    this.navCtrl.push(ViewPropertyPage, {property: data});
   }
 
   goToAddProperty() {

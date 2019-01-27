@@ -9,6 +9,14 @@
 
 
 <ion-content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
   <!-- if chart API is loading display loading_bars -->
   <ng-container *ngIf="loadingChart">
     <div *ngFor="let in of [0,1,2,3,4]" class="loading_bar">
@@ -44,13 +52,13 @@
   <div class="con-card">
     <ion-slides pager="true" spaceBetween="5px">
       <ion-slide>
-        <h3 text-center>Forex</h3>
-        <div [hidden]="loadingChart" id="chart-currencies" style="display: block;"></div>
+        <h3 text-center>Crypto</h3>
+        <div [hidden]="loadingChart" id="chart-crypto" style="display: block;"></div>
       </ion-slide>
 
       <ion-slide>
-        <h3 text-center>Crypto</h3>
-        <div [hidden]="loadingChart" id="chart-crypto" style="display: block;"></div>
+        <h3 text-center>Forex</h3>
+        <div [hidden]="loadingChart" id="chart-currencies" style="display: block;"></div>
       </ion-slide>
     </ion-slides>
   </div>

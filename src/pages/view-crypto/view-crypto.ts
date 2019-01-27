@@ -11,6 +11,9 @@ import * as HighCharts from 'HighCharts';
 import {ApiProvider} from './../../providers/api/api';
 import {AddCrypto} from "../../models/add-crypto";
 import {OwnCryptoDetailPage} from "../own-crypto-detail/own-crypto-detail";
+import {Storage} from "@ionic/storage";
+import * as moment from "moment";
+import {Subscription} from "rxjs/Subscription";
 
 /**
  * Generated class for the ViewCryptoPage page.
@@ -39,34 +42,39 @@ export class ViewCryptoPage {
   cryptoPrice = 0;
   currencyValue = null;
   path = "/asset/currency/crypto/";
+  key: string = 'email';
+  subscription: Subscription;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider,) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider, private storage: Storage) {
   }
 
-
-  ionViewWillEnter() {
-    this.getTotalValue();
+  ionViewWillLeave() {
+    this.subscription.unsubscribe();
+    this.coin = null;
+    this.initCryptoChart(0);
+    this.initForexChart(null);
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ViewCryptoPage');
     this.loadingChart = false;
+    this.getTotalValue();
   }
 
-  getCryptoItems(): Observable<any[]> {
+  getCryptoItems(userkey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
 
-    expenseObservable = this.db.list('/asset/currency/crypto/').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`/userAsset/${btoa(userkey)}/currency/crypto/`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
 
     return expenseObservable;
   }
 
-  getCurrencyItems(): Observable<any[]> {
+  getCurrencyItems(userkey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
 
-    expenseObservable = this.db.list('/asset/currency/forex/').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`/userAsset/${btoa(userkey)}/currency/forex/`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
 
@@ -89,6 +97,7 @@ export class ViewCryptoPage {
           }
           this.cryptoPrice = marketvalueOfCrypto;
         });
+        console.log(this.cryptoPrice)
       }
     }
   }
@@ -98,161 +107,210 @@ export class ViewCryptoPage {
   }
 
   deleteCryptoItem(item) {
-    console.log(this.path, item, 'aaa');
-    this.coin.splice(this.coin.indexOf(item), 1);
-    this.db.list("/asset/currency/crypto/").remove(item.key);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      console.log(item, this.coin.indexOf(item), 'aaa');
+      this.coin.splice(this.coin.indexOf(item), 1);
+      this.db.list(`/userAsset/${btoa(val)}/currency/crypto/`).remove(item.key);
+    })
   }
 
   deleteForexItem(item) {
-    console.log(this.path, item, 'aaa');
-    this.coin.splice(this.coin.indexOf(item), 1);
-    this.db.list("/asset/currency/forex/").remove(item.key);
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      console.log(item, this.coin.indexOf(item), 'aaa');
+      this.coin.splice(this.coin.indexOf(item), 1);
+      this.db.list(`/userAsset/${btoa(val)}/currency/forex/`).remove(item.key);
+    })
+  }
+
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      this.getTotalValue();
+      refresher.complete();
+    }, 4000);
   }
 
   getTotalValue() {
-    this.getCryptoItems().subscribe(result => {
-      this.coin = result;
-      console.log(this.coin);
-      this.getCryptoData(this.coin);
-      if (this.coin) {
-        this.initCryptoChart(this.coin);
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        const arrayOfValues = this.coin.map(value => value.value);
-        console.log(arrayOfValues, 'crypto array');
-        if (arrayOfValues.length != 0) {
-          this.totalValueCrypto = arrayOfValues.reduce(reducer);
-        }
-      }
-    });
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      this.subscription = this.getCryptoItems(val).subscribe(result => {
+        console.log(result, 'result');
+        if (result.length > 0) {
+          this.coin = result;
+          console.log(this.coin, 'coin');
+          this.getCryptoData(this.coin);
+          if (this.coin) {
+            if (this.coin.length > 0) {
+              let cryptochartData = [];
+              const arrayOfValues = this.coin.map(value => value.value);
+              const arrayOfCompanies = this.coin.map(value => value.symbol.toUpperCase());
+              console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
+              if (arrayOfValues) {
+                for (let i = 0; i < this.coin.length; i++) {
+                  cryptochartData.push({
+                    name: arrayOfCompanies[i],
+                    y: arrayOfValues[i]
+                  });
+                }
+                this.initCryptoChart(cryptochartData);
+              }
+            }
 
-    this.getCurrencyItems().subscribe(result => {
-      this.coin_data = result;
-      console.log(this.coin_data);
-      if (this.coin_data) {
-        this.initForexChart(this.coin_data);
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        const arrayOfValues = this.coin_data.map(value => value.value);
-        console.log(arrayOfValues, 'forex array');
-        if (arrayOfValues.length != 0) {
-          this.totalValueForex = arrayOfValues.reduce(reducer);
-        }
-      }
-      this.totalValue = this.totalValueCrypto + this.totalValueForex;
-    });
-  }
-
-  initCryptoChart(value) {
-    console.log(value, 'valueeee');
-    let chartData = [];
-    const arrayOfValues = value.map(value => value.value);
-    const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
-    console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
-    if (arrayOfValues) {
-      for (let i = 0; i < value.length; i++) {
-        chartData.push({
-          name: arrayOfCompanies[i],
-          y: arrayOfValues[i]
-        });
-      }
-    }
-
-    HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-crypto', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+            const reducer = (accumulator, currentValue) => accumulator + currentValue;
+            const arrayOfValues = this.coin.map(value => value.value);
+            console.log(arrayOfValues, 'crypto array');
+            if (arrayOfValues.length != 0) {
+              this.totalValueCrypto = arrayOfValues.reduce(reducer);
             }
           }
         }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Equities',
-        colorByPoint: true,
-        data: chartData
-      }]
+        else {
+          this.totalValueCrypto = 0;
+          this.cryptoPrice = 0;
+          this.totalValueForex = 0;
+          this.initCryptoChart(null);
+        }
+
+        this.getCurrencyItems(val).subscribe(result => {
+          if (result.length > 0) {
+            this.coin_data = result;
+            console.log(this.coin_data);
+            if (this.coin_data) {
+              this.initForexChart(this.coin_data);
+              const reducer = (accumulator, currentValue) => accumulator + currentValue;
+              const arrayOfValues = this.coin_data.map(value => value.value);
+              console.log(arrayOfValues, 'forex array');
+              if (arrayOfValues.length != 0) {
+                this.totalValueForex = arrayOfValues.reduce(reducer);
+              }
+            }
+          }
+          else {
+            this.totalValueForex = 0;
+          }
+          this.totalValue = this.totalValueCrypto + this.totalValueForex;
+          console.log(this.totalValue, this.totalValueCrypto, this.totalValueForex, 'valuessss');
+          let currencyValueChart = {
+            "year": this.getCurrentTime().split(' ')[0],
+            "month": this.getCurrentTime().split(' ')[1],
+            "day": this.getCurrentTime().split(' ')[2],
+            "value": this.totalValue
+          };
+          console.log(btoa(val), 'btoa value');
+          this.db.list(`userAsset/${btoa(val)}/currency/total-values`).push(currencyValueChart);
+        });
+      });
     });
+  }
+
+  initCryptoChart(chartData) {
+    if (chartData !== 0) {
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
+      HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-crypto', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          height: 250
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            size: 160,
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+              }
+            }
+          }
+        },
+        title: {
+          text: ''
+        },
+        series: [{
+          name: 'Equities',
+          colorByPoint: true,
+          data: chartData
+        }]
+      });
+    }
   }
 
   initForexChart(value) {
     console.log(value, 'valueeee');
 
-    const arrayOfValues = value.map(value => value.value);
-    const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
-    console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
-    let chartData = [];
-    if (arrayOfValues) {
-      for (let i = 0; i < value.length; i++) {
-        chartData.push({
-          name: arrayOfCompanies[i],
-          y: arrayOfValues[i]
-        });
+    if (value) {
+      let chartData = [];
+      const arrayOfValues = value.map(value => value.value);
+      const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
+      console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
+      if (arrayOfValues) {
+        for (let i = 0; i < value.length; i++) {
+          chartData.push({
+            name: arrayOfCompanies[i],
+            y: arrayOfValues[i]
+          });
+        }
       }
-    }
-
-    console.log('chartData', chartData);
-    HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-currencies', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
+      HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-currencies', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          height: 250
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            size: 160,
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+              }
             }
           }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Equities',
-        colorByPoint: true,
-        data: chartData
-      }]
-    });
+        },
+        title: {
+          text: ''
+        },
+        series: [{
+          name: 'Equities',
+          colorByPoint: true,
+          data: chartData
+        }]
+      });
+    }
+  }
+
+  getCurrentTime() {
+    let last30Days = moment().subtract(1, 'months');
+    return moment().format('YYYY MM DD');
   }
 
 }

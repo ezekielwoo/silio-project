@@ -12,7 +12,9 @@ import {Observable} from "rxjs/index";
 import {map} from "rxjs/operators";
 import {AngularFireDatabase} from 'angularfire2/database';
 import * as moment from 'moment';
-
+import {Storage} from "@ionic/storage";
+import {AddManualPage} from "../AddManual/AddManual";
+import {AlertController} from "ionic-angular";
 
 @IonicPage()
 @Component({
@@ -21,37 +23,25 @@ import * as moment from 'moment';
 })
 export class BankDetailsPage {
 
+  key: string = 'email';
   tokens: any = {};
   accessToken = null;
   code = "";
   ocbcData: any = {};
   currentChartTheme = "dark"; //default dark theme
-  totalValueForEquities : any = [];
-  totalValueForCurrency : any = [];
+  totalValueForEquities: any = [];
+  totalValueForCurrency: any = [];
+  totalValueForProeprty: any = [];
   totalValue: any = [];
   currencyArr: any = [];
   equityArr: any = [];
+  propertyArr: any = [];
   allArr: any = [];
   lastUpdated = null;
   chartValue: any = {};
-
-  options: InAppBrowserOptions = {
-    location: 'yes',//Or 'no'
-    hidden: 'no', //Or  'yes'
-    clearcache: 'yes',
-    clearsessioncache: 'yes',
-    zoom: 'yes',//Android only ,shows browser zoom controls
-    hardwareback: 'yes',
-    mediaPlaybackRequiresUserAction: 'no',
-    shouldPauseOnSuspend: 'no', //Android only
-    closebuttoncaption: 'Close', //iOS only
-    disallowoverscroll: 'no', //iOS only
-    toolbar: 'yes', //iOS only
-    enableViewportScale: 'no', //iOS only
-    allowInlineMediaPlayback: 'no',//iOS only
-    presentationstyle: 'pagesheet',//iOS only
-    fullscreen: 'yes',//Windows only
-  };
+  valueEquity = 0;
+  valueCurrency = 0;
+  valuePersonal = 0;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -59,96 +49,175 @@ export class BankDetailsPage {
               public splashScreen: SplashScreen,
               public api: ApiProvider,
               public settingsProvider: SettingProvider,
-              private db: AngularFireDatabase) {
+              private db: AngularFireDatabase,
+              private storage: Storage,
+              public alertCtrl: AlertController) {
 
-    this.lastUpdated = this.getCurrentTime();
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      this.storage.get('defaultEmail').then((defVal) => {
+        if (defVal != val) {
+          let alertDefault = this.alertCtrl.create({
+            title: 'Default Account',
+            message: 'Do you wish to set this as your default account? (You will be able to login with your fingerprint)',
+            buttons: [
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                handler: () => {
+                  console.log('Cancel clicked');
+                }
+              },
+              {
+                text: 'Ok',
+                handler: () => {
+                  this.storage.set("defaultEmail", val);
+                }
+              }
+            ]
+          });
+          alertDefault.present();
+        }
+      });
+    });
+  }
 
-    // if (location.href != 'http://localhost:8100/') {
-    //   this.code = location.href.split('?')[1].split('code=')[1].split('&')[0] || null;
-    //   console.log(this.code, 'code');
-    // }
-
-    this.api.getOCBCData().then((data: any) => {
-      this.ocbcData = data;
-      console.log(this.ocbcData, 'ocbc dataaaa');
+  ionViewWillEnter() {
+    this.storage.get(this.key).then((val) => {
+      console.log('Logged in as', val);
+      this.getTotalValueForEquities(val);
+      this.getTotalValue(val);
     });
 
-    //     this.api.getDBSAccessToken(this.code).then((data: any) => {
-    //   console.log(data.access_token, 'ATATAT');
-    //   this.api.getDBSData(data.access_token).then((data: any) => {
-    //     console.log(data, 'DBSDATA');
-    //   })
-    // }).catch((err) => {
-    //   // Instead, this happens:
-    //   console.log("oh no", err);
-    // });
-
+    this.lastUpdated = this.getCurrentTime();
   }
 
   ionViewDidLoad() {
     this.settingsProvider.settingSubject.subscribe((data) => {
       this.currentChartTheme = data.theme;
-      this.initChart();
-      this.getTotalValueForEquities();
-      this.getTotalValue();
     });
   }
 
-  getTotalValue(): Observable<any[]> {
+  goToSyncAcc() {
+    this.navCtrl.push(AddManualPage);
+  }
+
+  ionViewWillLeave() {
+    console.log('left')
+    this.valueEquity = 0;
+    this.valueCurrency = 0;
+    this.valuePersonal = 0;
+  }
+
+  getTotalValue(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     let array = [];
-    expenseObservable = this.db.list('asset/total-values').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/total-values`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
     expenseObservable.subscribe(result => {
-      array = result;
-      this.allArr = array;
-      this.totalValue = array[array.length - 1];
-      console.log('retrieve totalValueForEquities', this.totalValue);
+      if (result.length == 0) {
+        this.totalValue = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.allArr = array;
+        this.totalValue = array[array.length - 1];
+      }
+
     });
     return expenseObservable;
   }
 
-  getTotalValueForEquities(): Observable<any[]> {
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+
+    setTimeout(() => {
+      this.ionViewDidLoad();
+      this.storage.get(this.key).then((val) => {
+        console.log('Logged in as', val);
+        this.getTotalValueForEquities(val);
+        this.getTotalValue(val);
+      });
+      console.log('Async operation has ended');
+      refresher.complete();
+    }, 2000);
+  }
+
+  getTotalValueForEquities(userKey): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     let array = [];
-    expenseObservable = this.db.list('asset/equities/total-values').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/equities/total-values`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
     expenseObservable.subscribe(result => {
-      array = result;
-      this.equityArr = array;
-      this.totalValueForEquities = array[array.length - 1];
-      console.log('retrieve totalValueForEquities', this.totalValueForEquities);
-      this.getTotalValueForCurrency(this.totalValueForEquities);
+      console.log(result);
+      if (result.length == 0) {
+        this.valueEquity = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.equityArr = array;
+        this.totalValueForEquities = array[array.length - 1];
+        this.valueEquity = array[array.length - 1].value;
+        console.log('retrieve totalValueForEquities', this.totalValueForEquities, userKey);
+        this.getTotalValueForCurrency(this.totalValueForEquities, userKey);
+      }
     });
     return expenseObservable;
   }
 
-  getTotalValueForCurrency(equity): Observable<any[]> {
+  getTotalValuesForPersonal(userKey, equity, currency): Observable<any[]> {
     let expenseObservable: Observable<any[]>;
     let array = [];
-    expenseObservable = this.db.list('asset/currency/total-values').snapshotChanges().pipe(
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/personal/total-values`).snapshotChanges().pipe(
       map(changes =>
         changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
     expenseObservable.subscribe(result => {
-      array = result;
-      this.currencyArr = array;
-      this.totalValueForCurrency = array[array.length - 1];
-      this.chartValue = {
-        "year": this.lastUpdated.split(' ')[0],
-        "month": this.lastUpdated.split(' ')[1],
-        "day": this.lastUpdated.split(' ')[2],
-        "value": equity.value + this.totalValueForCurrency.value
-      };
-      this.db.list('asset/total-values').push(this.chartValue);
+      console.log(result);
+      if (result.length == 0) {
+        this.valuePersonal = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.propertyArr = array;
+        this.totalValueForProeprty = array[array.length - 1];
+        this.valuePersonal = parseFloat(array[array.length - 1].value.toString());
+        console.log('retrieve totalValueForEquities', this.totalValueForProeprty, userKey);
+        this.chartValue = {
+          "year": this.lastUpdated.split(' ')[0],
+          "month": this.lastUpdated.split(' ')[1],
+          "day": this.lastUpdated.split(' ')[2],
+          "value": equity.value + currency.value +  parseFloat(this.totalValueForProeprty.value.toString())
+        };
+        console.log(equity.value, this.totalValueForCurrency.value), 'abab';
+        this.db.list(`userAsset/${btoa(userKey)}/total-values`).push(this.chartValue);
+        this.initChart(currency.value, equity.value, parseFloat(this.totalValueForProeprty.value.toString()));
+      }
     });
     return expenseObservable;
   }
 
-  accessDBS() {
-    const url = 'https://www.dbs.com/sandbox/api/sg/v1/oauth/authorize?client_id=1edf0eab-7b4d-474b-adcf-d5034d08e4de&redirect_uri=http%3A%2F%2Flocalhost%3A8100%2F&scope=Read&response_type=code&state=0399';
-    this.iab.create(url, '_self');
+  getTotalValueForCurrency(equity, userKey): Observable<any[]> {
+    let expenseObservable: Observable<any[]>;
+    let array = [];
+    expenseObservable = this.db.list(`userAsset/${btoa(userKey)}/currency/total-values`).snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))));
+    expenseObservable.subscribe(result => {
+      if (result.length == 0) {
+        this.valueCurrency = 0;
+      }
+      else if (result.length > 0) {
+        array = result;
+        this.currencyArr = array;
+        this.totalValueForCurrency = array[array.length - 1];
+        this.valueCurrency = array[array.length - 1].value;
+        this.getTotalValuesForPersonal(userKey, equity, this.totalValueForCurrency)
+      }
+
+    });
+    return expenseObservable;
   }
 
   goToAssetPage(currencyTotalValue, equityTotalValue, totalValue, currencyArr, equityArr, allArr) {
@@ -167,8 +236,8 @@ export class BankDetailsPage {
     return last30Days.format('YYYY MM DD');
   }
 
-  initChart() {
-
+  initChart(currency, equity, property) {
+    console.log(currency, equity, 'abab');
     HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
 
     HighCharts.setOptions(HighCharts.theme);
@@ -259,18 +328,18 @@ export class BankDetailsPage {
         colorByPoint: true,
         data: [{
           name: 'Equities',
-          y: 27.5,
+          y: equity,
           sliced: true,
           selected: true
         }, {
-          name: 'Cash',
-          y: 13.1
+          name: 'Currency',
+          y: currency
         }, {
-          name: 'Personal',
-          y: 20.6
+          name: 'Deposits',
+          y: 0
         }, {
           name: 'Property',
-          y: 38.8
+          y: property
         }]
       }]
     });

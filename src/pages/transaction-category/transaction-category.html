@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title text-center style="margin-right: 20px;">{{ type }}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onShowOptions($event)">
+        <ion-icon name="ios-options"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-searchbar placeholder="Search Transactions" showCancelButton="true" (ionInput)="onSearchItems($event)"></ion-searchbar>
+
+  <ion-list *ngFor="let transaction of filteredTransactions; let i = index">
+    <ng-container *ngIf="getTransactionTypeItems(i)?.length">
+      <ion-list-header class="category-header">
+        <ion-row>
+          <ion-col col-4>{{ transaction.labels }}</ion-col>
+          <ion-col col-3 offset-5 *ngIf="!istransactionsFiltered">
+            <b>{{ type === 'Expenses' ? (transaction.expenses[0] | currency:'SGD ':'code') : (transaction.income[0] |
+              currency:'SGD ':'code') }}</b>
+          </ion-col>
+        </ion-row>
+      </ion-list-header>
+
+      <ion-item-sliding *ngFor="let item of getTransactionTypeItems(i); let y = index">
+        <ion-item class="category-item">
+          <ion-thumbnail item-start>
+            <img [src]="item.categoryType.icon" [alt]="item.categoryType.name" />
+          </ion-thumbnail>
+          <h2>{{ item.description }}</h2>
+          <h3>{{ item.categoryType.name }} </h3>
+          <h3 item-end>
+            <strong>{{ item.localCurrencyAmt | currency:'SGD ':'code' }}</strong><br />
+            <h4 text-right>{{ item.date | date:'dd MMM' }}</h4>
+          </h3>
+        </ion-item>
+
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="onRemoveTransaction(item, i, y)">
+            <ion-icon name="trash"></ion-icon>
+            Remove
+          </button>
+
+          <button ion-button color="secondary" (click)="onEditTransaction(item, i, y)">
+            <ion-icon name="ios-create"></ion-icon>
+            Edit
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ng-container>
+  </ion-list>
+</ion-content>

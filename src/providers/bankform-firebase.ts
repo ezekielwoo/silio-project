@@ -4,7 +4,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { bankAcc } from '../models/bankAcc';
+import { Account } from '../models/account';
 
  
 
@@ -12,7 +12,7 @@ import { bankAcc } from '../models/bankAcc';
 
 export class bankFbProvider {
 
-  expenseList: bankAcc[]; // Stores the expense list for search functionality
+  expenseList: Account[]; // Stores the expense list for search functionality
 
  
 
@@ -52,7 +52,7 @@ export class bankFbProvider {
 
  
 
-  searchItems(val: string): bankAcc[] {
+  searchItems(val: string): Account[] {
 
     if (!val || !val.trim()) {
 

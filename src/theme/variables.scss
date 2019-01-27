@@ -5,15 +5,12 @@
 // roboto, and noto sans fonts
 $font-path: "../assets/fonts";
 
-
 // The app direction is used to include
 // rtl styles in your app. For more info, please see:
 // http://ionicframework.com/docs/theming/rtl-support/
 $app-direction: ltr;
 
-
 @import "ionic.globals";
-
 
 // Shared Variables
 // --------------------------------------------------
@@ -21,9 +18,6 @@ $app-direction: ltr;
 // the Sass variables found in Ionic's source scss files.
 // To view all the possible Ionic variables, see:
 // http://ionicframework.com/docs/theming/overriding-ionic-variables/
-
-
-
 
 // Named Color Variables
 // --------------------------------------------------
@@ -34,27 +28,26 @@ $app-direction: ltr;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #1f2936,
-  secondary:  #354ece,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #222
+  primary: #1f2936,
+  secondary: #354ece,
+  danger: #f53d3d,
+  light: #f4f4f4,
+  dark: #222
 );
 
 @font-face {
   font-family: 'gilroy';
-  src:url('../assets/fonts/gilroy-light-webfont.ttf') format('truetype');
+  src: url('../assets/fonts/gilroy-light-webfont.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
- }
- $font-family-base: "gilroy";
- $font-family-ios-base: $font-family-base;
- $font-family-md-base: $font-family-base;
- $font-family-wp-base: $font-family-base;
+}
 
+$font-family-base: "gilroy";
+$font-family-ios-base: $font-family-base;
+$font-family-md-base: $font-family-base;
+$font-family-wp-base: $font-family-base;
 
 @import "ionic.theme.default";
-
 
 // Ionicons
 // --------------------------------------------------
@@ -63,13 +56,24 @@ $colors: (
 
 @import "ionic.ionicons";
 
-
 // Fonts
 // --------------------------------------------------
 
 @import "roboto";
 @import "noto-sans";
 
+$searchbar-md-input-search-icon-color: #ffffff;
+$searchbar-md-input-background-color: #ffffff00;
+$searchbar-md-input-text-color: #ffffff;
+$searchbar-md-input-box-shadow: #ffffff00;
+
+$list-md-header-border-top: #ffffff00;
+$list-md-header-color: #ffffff;
+
+$item-md-thumbnail-size: 50px;
+$item-md-detail-push-show: true;
+
+$text-input-placeholder-color: white;
 
 @import "theme.dark";
 @import "theme.light";

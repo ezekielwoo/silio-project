@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{ bankName }} Accounts</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h4 ion-text>Account Summary</h4>
+
+  <ion-grid no-padding>
+    <ion-row align-items-center>
+      <ion-col col-1>
+        <img width="24" height="24" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMWSURBVGhD7ZnJbhNBEIYttgM3tgNgsB0iDlwREZx4CBKW8CAgDlggRHIN8czE5A0SERSxPADLA0DgAdgkliSyp7FlOHj4a1wg06qxuz2LDfIn/bJFqqt+ejrdNZ3cmDFjEmAl2Flw62dLrn+j6KoHJUe9hbaLjv+TFH53/TfhzxBDsblysINHD48TTvNYyVXzMPUJn4GVHP8jPucnFxp5TpcdJ6v+QRS/j9n98ZepAcQ5PMrJ6dMFxWaxJLa6TSShoqO+4XOWyyTPqZVgD4os64UTl6OWTleD3Vw2GQ5Xg71Ys0/FgikIy+oJ1eTy8aCZz9L8HzlqPZEnkcmyiRKWE9sYjJKnroqJMxQm8BLbsWNywT+EBJt6wqxFu9ORxfoBtmUOPT4poaluv2gFXxrtULeet8QYU+GXusK2zKATNs4hdfFhM+imDU2vNcVYE5GXvNc4yvb6g0FoD+RkJrrzstVx3gX9mxRrKiylObbXBzRZ3KeIiUw0IzyBCzGeAAnN4HujBrCwVD8nJbBV+Vkr+Py9Heomvksx1vJqU2wzGmp3xcEjoAnXv842o8HusyYNHgXhfWKVbUZDLx7S4FEQdqMNthkNnsC2NNhWOlLMANpkm9HE2f+7pSPF2Iq8sc1o/vn/wP+whDaEgdbSkWJshQ3mNduMpnP1ISewkY4UYyujbTSpg0xHirEVVsc1thlN54JKTmAjHSnGWk7jDNvsARomrLUPYgIL6UgxNjJu5ghqXaUkNtKRYmyE9X+X7fWHrvvingc6UoypMPstqxcaAgM9PdGwhMlcZFvm0Is0Bg//pd5VX/PLtf1sy46JiroiJc1YM2xnMNBaVIWkGcm/xzYGp3O1qNblAikKNekPJ2wjHnTRirX4WCyUgrCNP0rscvc3dNGKWYl12WUi2nHOl4NdXDZ5Cq66TNd9UvE4CnNW/Gkuky60xWKmKnEPOxIdUjTrx93aPk6fHZ0TW83BwDvJXC/RGGoPrE/YVKDbPK82Rfc21LPTiwd+X7boCYVPib67/qvwZ2iJw67StDEbM2ZMD3K5X0jQ0LPlkUmCAAAAAElFTkSuQmCC"
+          alt="Information Icon" />
+      </ion-col>
+      <ion-col col-11>
+        <p ion-text>Note: Please select an account to sync.</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list margin-top *ngIf="bankData">
+    <ion-item *ngFor="let account of bankData.accounts" (click)="onSelectAccount(account)">
+      <ion-thumbnail item-start>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIoSURBVGhD7ZbdKkRRGIbnyPE4RMmRojQlEilCETM34Nw9cOYKHJGSEiV/JfIzF4AyBy7COPFT5D8zYz7zznwrY8+nxRprman11Ft7vr3W+77stWuHPB6Px1OxnE6GT3I65p/VR2IqfATxz+qBNltrnta7ZlK7gw8QrjHj25XL80ak4WWzeyezN5KmeIyKhRnuYQ0vrxxe1jp6Xrd6z94PRrOqcHp3iB5WInnhWs2xBmuxh7f/H08bXRNv2/0XFI8WCh6OUa4c3S420+Vs3RdhhntYU/hjooS98GA7NxSfb/VfzewN0+NqO13PN5YUDwprsBZ71H4n74l0vt+2++huqSVXrL6kqF71+b3wUH5W3pPg+X7fH6XntU66WWgSSpkJXvCEdz7jL96T4PlO7QzQ/XIbXc01iCX+QvBGBrIKT6WM96RgUDniWj9HMvlPca3fIz1ql+Ia5kimLsU1zJFMXYprmJE9jJ6oM5hcGaLp8ea8ksufnwa259l41PxzHJuV0XnOVAXg2tU8G4+V9zmujJS5kqs51zBHF2B7zjXM0QXYnnMNc3QBtudcwxxdgO051zBHF2B7zjXM0QXYnnMNc3QBtudcwxxdgO051zBHF2B7zjXM0QXYnnMNMxJTtVQs6WvRhoK5XOf3BI2kMBsK5nKdnxM0gNQjdSWpA9fTI22WQmxK6sD1vkfaBEmP2YWkLhDXLUVaDEnmLiR1gbiux+PxeMolFPoAZt/jAO59ragAAAAASUVORK5CYII="
+          alt="Account Icon" />
+      </ion-thumbnail>
+      <p><b>{{ account.productName }}</b></p>
+      <p ion-text>{{ account.displayAccountNumber }}</p>
+      <div item-end text-right>
+        <h6><b>${{ account.availableBalance || account.availableCredit }}</b></h6>
+        <p ion-text>Available Credit</p>
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

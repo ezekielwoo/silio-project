@@ -1,0 +1,53 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title></ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+    <ion-label style="color:white; text-align: center"> Sign In </ion-label>
+
+
+    <ion-item style="background-color: #ac5d70">
+        <ion-label style="color:white" stacked>Email</ion-label>
+        <ion-input type="email" clearInput [(ngModel)] = 'email'></ion-input>
+      </ion-item>
+
+      <ion-item style="background-color: #ac5d70">
+        <ion-label style="color:white" stacked>Password</ion-label>
+        <ion-input type="password" clearInput [(ngModel)] = 'password'></ion-input>
+      </ion-item>
+
+    <br>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+
+        </ion-col>
+        <ion-col>
+            <button ion-button style="border-color:white; color:white" round outline (click) = "Login()">Login</button>
+          </ion-col>
+          <ion-col>
+
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <p id='or'>Or</p>
+    <p id='connectW'>Sign in with</p>
+
+    <div>
+      <img src="../../assets/imgs/fingerprinticon.jpeg" style="display:block;margin-left:auto;margin-right:auto;height:50px" tappable (click)="FPLogin()">
+    </div>
+
+    <hr>
+
+    <button id="fgPw" ion-button clear (click)="ForgetPassword()">
+      <ion-label>Forgot your password?</ion-label>
+    </button>
+</ion-content>

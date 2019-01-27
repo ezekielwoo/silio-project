@@ -2,10 +2,10 @@ import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { SettingProvider } from '../../providers/setting/setting';
 import { AdmobFreeProvider } from '../../providers/admob/admob';
-import { bankAcc } from '../../models/bankAcc';
+import { Account } from '../../models/account';
 import { NgForm} from '@angular/forms';
 import { bankFbProvider } from '../../providers/bankform-firebase';
-import { ViewCreditPage } from '../ViewCredit/ViewCredit';
+import { ViewaccountsPage } from '../viewaccounts/viewaccounts';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'page-BankForm',
@@ -14,7 +14,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class BankFormPage {
   signupform: FormGroup;
-  log: bankAcc;
+  log: Account;
 
  submitted = false;
 
@@ -29,7 +29,7 @@ export class BankFormPage {
              
                 
                
-                this.log = new bankAcc ('','','','');
+                this.log = new Account ('',0,'','');
                
   }
   ngOnInit() {
@@ -47,9 +47,8 @@ export class BankFormPage {
    if (form.valid) {
 
   this.expenseService.addItem(this.log);
-  this.navCtrl.push(ViewCreditPage);
+  this.navCtrl.push(ViewaccountsPage);
    }
-
 
     }
 }
