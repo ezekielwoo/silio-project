@@ -50,9 +50,12 @@ export class ViewEquityPage {
 
   }
 
-  ionViewWillLeave(){
+  ionViewWillLeave() {
     this.subscription.unsubscribe();
     this.stock = null;
+    this.initStockChart(null);
+    this.initETFChart(null);
+    this.initUTChart(null);
   }
 
   ionViewDidLoad() {
@@ -243,157 +246,162 @@ export class ViewEquityPage {
 
   initStockChart(chartdata?) {
     console.log(chartdata, 'chartdata');
-    HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-stocks', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+    if (chartdata) {
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
+      HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-stocks', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          height: 250
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            size: 160,
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+              }
             }
           }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Equities',
-        colorByPoint: true,
-        data: chartdata
-      }]
-    });
+        },
+        title: {
+          text: ''
+        },
+        series: [{
+          name: 'Equities',
+          colorByPoint: true,
+          data: chartdata
+        }]
+      });
+    }
   }
 
   initETFChart(value) {
-    console.log(value, 'valueeee');
-    let etfchartData = [];
-    const arrayOfValues = value.map(value => value.value);
-    const arrayOfCompanies = value.map(value => value.symbol);
-    if (arrayOfValues) {
-      for (let i = 0; i < value.length; i++) {
-        etfchartData.push({
-          name: arrayOfCompanies[i],
-          y: arrayOfValues[i]
-        });
+    if (value) {
+      let etfchartData = [];
+      const arrayOfValues = value.map(value => value.value);
+      const arrayOfCompanies = value.map(value => value.symbol);
+      if (arrayOfValues) {
+        for (let i = 0; i < value.length; i++) {
+          etfchartData.push({
+            name: arrayOfCompanies[i],
+            y: arrayOfValues[i]
+          });
+        }
       }
-    }
 
-    console.log('chartData');
-    HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-etf', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+      console.log('chartData');
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
+      HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-etf', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          height: 250
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            size: 160,
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+              }
             }
           }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Equities',
-        colorByPoint: true,
-        data: etfchartData
-      }]
-    });
+        },
+        title: {
+          text: ''
+        },
+        series: [{
+          name: 'Equities',
+          colorByPoint: true,
+          data: etfchartData
+        }]
+      });
+    }
   }
 
   initUTChart(value) {
-    console.log(value, 'valueeee');
-    let utchartData = [];
-    const arrayOfValues = value.map(value => value.value);
-    const arrayOfCompanies = value.map(value => value.symbol);
-    if (arrayOfValues) {
-      for (let i = 0; i < value.length; i++) {
-        utchartData.push({
-          name: arrayOfCompanies[i],
-          y: arrayOfValues[i]
-        });
+    if (value) {
+      console.log(value, 'valueeee');
+      let utchartData = [];
+      const arrayOfValues = value.map(value => value.value);
+      const arrayOfCompanies = value.map(value => value.symbol);
+      if (arrayOfValues) {
+        for (let i = 0; i < value.length; i++) {
+          utchartData.push({
+            name: arrayOfCompanies[i],
+            y: arrayOfValues[i]
+          });
+        }
       }
-    }
 
-    console.log('chartData');
-    HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-ut', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+      console.log('chartData');
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
+      HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-ut', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          height: 250
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            size: 160,
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+              }
             }
           }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Equities',
-        colorByPoint: true,
-        data: utchartData
-      }]
-    });
+        },
+        title: {
+          text: ''
+        },
+        series: [{
+          name: 'Equities',
+          colorByPoint: true,
+          data: utchartData
+        }]
+      });
+    }
   }
 
   goToStockDetail(data) {

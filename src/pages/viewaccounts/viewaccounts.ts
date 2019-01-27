@@ -1,19 +1,19 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
-import { ApiProvider } from './../../providers/api/api';
-import { CryptoDetailsPage } from './../crypto-details/crypto-details';
-import { MatTableDataSource, MatSort } from '@angular/material';
-import { Events } from 'ionic-angular';
-import { watchListPage } from '../watch-list/watch-list';
-import { SettingProvider } from '../../providers/setting/setting';
-import { StockDetailsPage } from "../stock-details/stock-details";
-import { Account } from '../../models/account';
+import {Component, ViewChild, OnInit} from '@angular/core';
+import {IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
+import {Storage} from '@ionic/storage';
+import {ApiProvider} from './../../providers/api/api';
+import {CryptoDetailsPage} from './../crypto-details/crypto-details';
+import {MatTableDataSource, MatSort} from '@angular/material';
+import {Events} from 'ionic-angular';
+import {watchListPage} from '../watch-list/watch-list';
+import {SettingProvider} from '../../providers/setting/setting';
+import {StockDetailsPage} from "../stock-details/stock-details";
+import {Account} from '../../models/account';
 import * as HighCharts from 'HighCharts';
-import { darkChartTheme, globalChartTheme } from '../../theme/chart.dark';
-import { lightChartTheme, globalLightChartTheme } from '../../theme/chart.light';
+import {darkChartTheme, globalChartTheme} from '../../theme/chart.dark';
+import {lightChartTheme, globalLightChartTheme} from '../../theme/chart.light';
 import * as moment from 'moment';
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
 
 /**
@@ -59,13 +59,14 @@ export class ViewaccountsPage implements OnInit {
 
 
   constructor(public navCtrl: NavController,
-    public api: ApiProvider,
-    private storage: Storage,
-    public navParams: NavParams,
-    public events: Events,
-    public settingsProvider: SettingProvider,
-    public platform: Platform) {
+              public api: ApiProvider,
+              private storage: Storage,
+              public navParams: NavParams,
+              public events: Events,
+              public settingsProvider: SettingProvider,
+              public platform: Platform) {
   }
+
   ngOnInit() {
     this.accounts = [
 
@@ -84,6 +85,7 @@ export class ViewaccountsPage implements OnInit {
     this.accounts.splice(this.accounts.indexOf(item), 1);
 
   }
+
   getCurrentTime() {
     let last30Days = moment().subtract(1, 'months');
     return last30Days.format('YYYY MM DD');
@@ -96,33 +98,43 @@ export class ViewaccountsPage implements OnInit {
       this.currentChartTheme = data.theme;
     })
   }
+
+
   initChart(arr1, arr2, arr3, arr4) {
     HighCharts.theme = (this.currentChartTheme == 'dark') ? globalChartTheme : globalLightChartTheme;
-
     let maybank = null;
-    let ocbc = null
     let chartData1 = [];
 
-    for (let i = 0; i < arr4.length; i++) {
-      maybank += arr4[i]
+
+    for (let i = 0; i < arr3.length; i++) {
+      //ocbc += arr3[i]
       chartData1.push({
-        name: arr2[i],
+        name: arr1[i],
+        y: arr3[i]
+
+
+      })
+    }
+    //  for (let i = 1; i < arr3.length; i++) {
+    //   ocbc1 += arr3[i]
+    //    chartData1.push({
+    //      name: arr1[i],
+    //      y: ocbc1
+    //    })
+    //  }
+
+    for (let i = 0; i < arr4.length; i++) {
+      maybank += arr4[0]
+      chartData1.push({
+        name: arr2[0],
         y: maybank
       })
     }
 
-    for (let i = 0; i < arr3.length; i++) {
-      ocbc += arr3[i]
-      chartData1.push({
-        name: arr1[1],
-        y: ocbc
-      })
-    }
 
     console.log(chartData1, 'chart data ocbc');
 
 
-   
     HighCharts.chart('chart-amount', {
       chart: {
         plotBackgroundColor: null,
@@ -162,12 +174,10 @@ export class ViewaccountsPage implements OnInit {
         data: chartData1
 
 
-
       }]
 
     });
   }
-
 
 
   initAccountChart() {
@@ -175,14 +185,16 @@ export class ViewaccountsPage implements OnInit {
     let arr2 = [];
     let arr3 = [];
     let arr4 = [];
+    let accountAmt = 0;
     const accountsBank = this.accounts.map(accounts => accounts.bank);
     const accountsAmt = this.accounts.map(accounts => accounts.amount);
 
     for (let i = 0; i < this.accounts.length; i++) {
       if (accountsBank[i] == "OCBC") {
         console.log(accountsBank[i], i)
+        accountAmt += this.accounts[i].amount
         arr1.push(accountsBank[i]);
-        arr3.push(accountsAmt[i]);
+
       }
 
       else if (accountsBank[i] == "Maybank") {
@@ -194,28 +206,15 @@ export class ViewaccountsPage implements OnInit {
 
     }
 
+    console.log('accountAmt' + accountAmt);
+    arr3.push(accountAmt);
+
     this.initChart(arr1, arr2, arr3, arr4);
     console.log(arr1, arr2, arr3, arr4);
     //console.log(chartData1);
     //console.log(arr1, arr2);
 
   }
-
-
-
-
-
-
-  loadMoreCoins(infiniteScroll) {
-    this.currentPage++;
-
-    if (this.currentPage === this.maxPageNumber) {
-      infiniteScroll.enable(false);
-    }
-
-  }
-
-
 
 
 }

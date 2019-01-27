@@ -1,26 +1,26 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title text-center style="margin-left: -25px">Sell Equity</ion-title>
+    <ion-title text-center style="margin-left: -25px">Sell Crypto</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <form #submitEquityForm="ngForm">
+  <form #submitCryptoForm="ngForm">
     <ion-list>
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>
           Name
         </ion-label>
-        <ion-label class="coin-info-name">{{stock.companyName || stock.name}}</ion-label>
+        <ion-label class="coin-info-name">{{coin.name}}</ion-label>
       </ion-item>
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>Symbol</ion-label>
-        <ion-label class="coin-info-name">{{stock.symbol}}</ion-label>
+        <ion-label class="coin-info-name">{{coin.symbol}}</ion-label>
       </ion-item>
 
       <ion-item style="background-color: #ac5d70">
@@ -30,17 +30,17 @@
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>Quantity</ion-label>
-        <ion-input type="number" [(ngModel)]="addEquity.amount" name="amount"
+        <ion-input type="number" [(ngModel)]="addCrypto.amount" name="amount"
                    style="color:white"></ion-input>
       </ion-item>
 
-      <p ion-text *ngIf="addEquity.amount <= 0 && submitted == true" color="danger" padding-left>
+      <p ion-text *ngIf="addCrypto.amount <= 0 && submitted == true" color="danger" padding-left>
         Amount is invalid
       </p>
 
       <ion-item style="background-color: #ac5d70">
         <ion-label class="coin-info-name" fixed>Price</ion-label>
-        <ion-input type="number" [(ngModel)]="addEquity.purchasePrice" name="purchase" style="color:white"></ion-input>
+        <ion-input type="number" [(ngModel)]="addCrypto.purchasePrice" name="purchase" style="color:white"></ion-input>
       </ion-item>
 
       <p>Not entering a purchase price would automatically set your amount to market value in SGD</p>
@@ -51,8 +51,8 @@
       <ion-row>
 
         <ion-col col-12 style="text-align:center;">
-          <button ion-button round class="buttons" (click)="onSubmit(submitEquityForm)" style="background-color: #ac5d70;text-align: center" [disabled]="enabled">
-            Sell Equity
+          <button ion-button round class="buttons" (click)="onSubmit(submitCryptoForm)" style="background-color: #ac5d70;text-align: center" [disabled]="enabled">
+            Sell Currency
           </button>
         </ion-col>
 

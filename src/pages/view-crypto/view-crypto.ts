@@ -13,6 +13,7 @@ import {AddCrypto} from "../../models/add-crypto";
 import {OwnCryptoDetailPage} from "../own-crypto-detail/own-crypto-detail";
 import {Storage} from "@ionic/storage";
 import * as moment from "moment";
+import {Subscription} from "rxjs/Subscription";
 
 /**
  * Generated class for the ViewCryptoPage page.
@@ -31,7 +32,6 @@ export class ViewCryptoPage {
   coin_data: any = [];
   coin: AddCrypto[];
   value = [];
-  chartData: any = [];
   totalValueCrypto = 0;
   totalValueForex = 0;
   totalValue = 0;
@@ -43,16 +43,16 @@ export class ViewCryptoPage {
   currencyValue = null;
   path = "/asset/currency/crypto/";
   key: string = 'email';
+  subscription: Subscription;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: AngularFireDatabase, public api: ApiProvider, private storage: Storage) {
   }
 
   ionViewWillLeave() {
+    this.subscription.unsubscribe();
     this.coin = null;
-  }
-
-
-  ionViewWillEnter() {
+    this.initCryptoChart(0);
+    this.initForexChart(null);
   }
 
   ionViewDidLoad() {
@@ -136,7 +136,7 @@ export class ViewCryptoPage {
   getTotalValue() {
     this.storage.get(this.key).then((val) => {
       console.log('Logged in as', val);
-      this.getCryptoItems(val).subscribe(result => {
+      this.subscription = this.getCryptoItems(val).subscribe(result => {
         console.log(result, 'result');
         if (result.length > 0) {
           this.coin = result;
@@ -206,104 +206,106 @@ export class ViewCryptoPage {
     });
   }
 
-  initCryptoChart(chartData?) {
-    HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-crypto', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+  initCryptoChart(chartData) {
+    if (chartData !== 0) {
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
+      HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-crypto', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          height: 250
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            size: 160,
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+              }
             }
           }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Equities',
-        colorByPoint: true,
-        data: chartData
-      }]
-    });
+        },
+        title: {
+          text: ''
+        },
+        series: [{
+          name: 'Equities',
+          colorByPoint: true,
+          data: chartData
+        }]
+      });
+    }
   }
 
   initForexChart(value) {
     console.log(value, 'valueeee');
 
-    let chartData = [];
-    const arrayOfValues = value.map(value => value.value);
-    const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
-    console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
-    if (arrayOfValues) {
-      for (let i = 0; i < value.length; i++) {
-        chartData.push({
-          name: arrayOfCompanies[i],
-          y: arrayOfValues[i]
-        });
+    if (value) {
+      let chartData = [];
+      const arrayOfValues = value.map(value => value.value);
+      const arrayOfCompanies = value.map(value => value.symbol.toUpperCase());
+      console.log(arrayOfValues, arrayOfCompanies, 'valueeee');
+      if (arrayOfValues) {
+        for (let i = 0; i < value.length; i++) {
+          chartData.push({
+            name: arrayOfCompanies[i],
+            y: arrayOfValues[i]
+          });
+        }
       }
-    }
-
-    console.log('chartData', this.chartData);
-    HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
-    HighCharts.setOptions(HighCharts.theme);
-    HighCharts.chart('chart-currencies', {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-        height: 250
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          size: 160,
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-            style: {
-              color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+      HighCharts.theme = (this.currentChartTheme == 'dark') ? darkChartTheme : lightChartTheme;
+      HighCharts.setOptions(HighCharts.theme);
+      HighCharts.chart('chart-currencies', {
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie',
+          height: 250
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        credits: {
+          enabled: false
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            size: 160,
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (HighCharts.theme && HighCharts.theme.contrastTextColor) || 'black'
+              }
             }
           }
-        }
-      },
-      title: {
-        text: ''
-      },
-      series: [{
-        name: 'Equities',
-        colorByPoint: true,
-        data: chartData
-      }]
-    });
+        },
+        title: {
+          text: ''
+        },
+        series: [{
+          name: 'Equities',
+          colorByPoint: true,
+          data: chartData
+        }]
+      });
+    }
   }
 
   getCurrentTime() {

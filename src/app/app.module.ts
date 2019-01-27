@@ -79,6 +79,10 @@ import {SelectCurrencyPage} from '../pages/select-currency/select-currency';
 import {TransactionCategoryPage} from '../pages/transaction-category/transaction-category';
 import {CategoryFilterOptionsPage} from '../pages/transaction-category/category-filter-options';
 import {ViewPropertyPage} from "../pages/view-property/view-property";
+import {SellEquityPage} from "../pages/sell-equity/sell-equity";
+import {SellCurrencyPage} from "../pages/sell-currency/sell-currency";
+import {PersonalAssetPage} from "../pages/personal-asset/personal-asset";
+import {LiabilitiesPage} from "../pages/liabilities/liabilities";
 
 
 const firebaseConfig = {
@@ -129,6 +133,10 @@ const firebaseConfig = {
     AddCreditPage,
     ViewaccountsPage,
     ViewPropertyPage,
+    SellEquityPage,
+    SellCurrencyPage,
+    PersonalAssetPage,
+    LiabilitiesPage,
     // Transactions
     SortPipe,
     OverviewTransactionsPage,
@@ -198,6 +206,10 @@ const firebaseConfig = {
     AddCreditPage,
     ViewaccountsPage,
     ViewPropertyPage,
+    SellEquityPage,
+    SellCurrencyPage,
+    PersonalAssetPage,
+    LiabilitiesPage,
     // Transactions
     OverviewTransactionsPage,
     AddTransactionPage,

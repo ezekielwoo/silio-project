@@ -10,6 +10,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {AssetPage} from "../asset/asset";
 import {AddEquityPage} from "../add-equity/add-equity";
 import {ViewEquityPage} from "../view-equity/view-equity";
+import {SellEquityPage} from "../sell-equity/sell-equity";
 
 /**
  * Generated class for the StockDetailsPage page.
@@ -62,10 +63,10 @@ export class StockDetailsPage {
 
     this.api.getStockPrice(this.symbol.toUpperCase()).then((data: any) => {
       console.log(data.data);
-        this.price = data.data[0].price;
-        this.volume = data.data[0].volume;
-        this.dayHigh = data.data[0].day_high;
-        this.dayLow = data.data[0].day_low;
+      this.price = data.data[0].price;
+      this.volume = data.data[0].volume;
+      this.dayHigh = data.data[0].day_high;
+      this.dayLow = data.data[0].day_low;
     });
 
     this.api.getCompanyInfo(this.symbol).then((data: any) => {

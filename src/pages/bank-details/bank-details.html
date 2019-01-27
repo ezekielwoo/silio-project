@@ -31,7 +31,7 @@
       </ion-col>
 
       <ion-col col-8 text-right class="margin-top">
-        <h1>{{valueCurrency + valueEquity | number: 0 || 0}} SGD</h1>
+        <h1>{{valueCurrency + valueEquity + valuePersonal | number: 0 || 0}} SGD</h1>
       </ion-col>
     </ion-row>
   </div>
@@ -45,7 +45,7 @@
 
       <ion-col col-8 text-right class="margin-top">
         <h1>
-          {{valueCurrency + valueEquity | number: 0 || 0}} SGD
+          {{valueCurrency + valueEquity + valuePersonal | number: 0 || 0}} SGD
         </h1>
       </ion-col>
     </ion-row>
